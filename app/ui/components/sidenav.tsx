@@ -1,0 +1,52 @@
+import Link from "next/link";
+import { signOut } from "@/auth";
+import { Button } from "antd";
+
+import {
+  HomeIcon,
+  MagnifyingGlassIcon,
+  PowerIcon,
+  HeartIcon
+} from "@heroicons/react/24/solid";
+
+export default function SideNav() {
+  return (
+    <div className="flex flex-col h-full text-white p-3">
+      {/* Top Navigation */}
+      <div className="flex flex-col items-center gap-6 mt-4">
+        {/* Home */}
+        <Link href="/home">
+          <HomeIcon className="w-8 h-8 text-gray-300 hover:text-white transition" />
+        </Link>
+
+        {/* Favorites */}
+        <Link href="/favorites">
+          <HeartIcon className="w-8 h-8 text-gray-300 hover:text-white transition" />
+        </Link>
+      </div>
+
+      {/* Spacer to push logout to bottom */}
+      <div className="flex-grow"></div>
+
+      {/* Logout */}
+      <form
+        action={async () => {
+          "use server";
+          await signOut({ redirectTo: "/" });
+        }}
+      >
+        <Button
+          htmlType="submit"
+          type="text"
+          className="w-full flex items-center justify-center text-red-400 hover:text-red-500"
+          style={{
+            background: "transparent",
+            border: "none",
+            padding: "20px 0",
+          }}
+          icon={<PowerIcon className="w-7 h-7" />}
+        />
+      </form>
+    </div>
+  );
+}

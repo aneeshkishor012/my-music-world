@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+input[type='number'] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+
+/* Custom Dark Scrollbar for the Entire App */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0A0F24;
+  /* Dark navy */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #343F63;
+  /* Subtle bluish thumb */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #4A5B8C;
+  /* Hover effect */
+}
+
+/* Firefox support */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #343F63 #0A0F24;
+}
+
+/* Remove focus border & glow */
+.ant-input,
+.ant-input:focus,
+.ant-input-focused {
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Optional: also remove hover border */
+.ant-input:hover {
+  border: none !important;
+}
