@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import type React from 'react';
 import { CheckCircleIcon, MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import { useGetArtistListOnSearch } from "../../hooks/jiosaavn/jiosaavn"; // Adjust path if needed
 
@@ -108,7 +109,7 @@ export default function PreferencesPage() {
                         placeholder="Search for artists (e.g. Arijit Singh)..."
                         className="bg-transparent border-none outline-none text-white w-full"
                         value={artistQuery}
-                        onChange={(e) => setArtistQuery(e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setArtistQuery(e.target.value)}
                     />
                 </div>
 

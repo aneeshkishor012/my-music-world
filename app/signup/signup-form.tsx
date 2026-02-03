@@ -47,9 +47,9 @@ export default function SignUpForm() {
         redirect: false,
         email,
         password,
-      } as any);
+      } as any) as any;
 
-      if (signInResult && (signInResult as any).error) {
+      if ((signInResult as any)?.error) {
         // If automatic sign-in failed, fallback to manual sign-in page
         message.success('Signup successful — please sign in');
         router.push('/login');

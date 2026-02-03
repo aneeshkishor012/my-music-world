@@ -3,6 +3,7 @@
 import { useParams, useRouter } from "next/navigation";
 import { useGetPlayListWithId } from "@/app/hooks/jiosaavn/jiosaavn";
 import Image from "next/image";
+import type React from 'react';
 import { PlayIcon, HeartIcon } from "@heroicons/react/24/solid";
 import { HeartIcon as HeartIconOutline } from "@heroicons/react/24/outline";
 import { usePlayer } from "@/app/context/PlayerContext";
@@ -112,7 +113,7 @@ export default function PlaylistDetailPage() {
                             </div>
                             <div className="flex items-center justify-end gap-4">
                                 <button
-                                    onClick={(e) => {
+                                    onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                                         e.stopPropagation();
                                         toggleFavorite({ ...song, type: 'song', title: song.name || song.title, imageUri: song.image?.[2]?.url });
                                     }}

@@ -19,7 +19,7 @@ type FavoritesContextType = {
 
 const FavoritesContext = createContext<FavoritesContextType | undefined>(undefined);
 
-export function FavoritesProvider({ children }: { children: ReactNode }) {
+export function FavoritesProvider({ children }: { children?: ReactNode }) {
     const [favorites, setFavorites] = useState<FavoriteItem[]>([]);
 
     // Load from LocalStorage

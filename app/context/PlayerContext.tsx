@@ -40,7 +40,7 @@ type PlayerContextType = {
 
 const PlayerContext = createContext<PlayerContextType | undefined>(undefined);
 
-export function PlayerProvider({ children }: { children: ReactNode }) {
+export function PlayerProvider({ children }: { children?: ReactNode }) {
     const [currentSong, setCurrentSong] = useState<Song | null>(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [queue, setQueue] = useState<Song[]>([]);

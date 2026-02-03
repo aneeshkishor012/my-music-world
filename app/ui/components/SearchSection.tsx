@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import type React from 'react';
 import { PlayIcon, HeartIcon } from "@heroicons/react/24/outline";
 import { HeartIcon as HeartIconSolid } from "@heroicons/react/24/solid";
 import { useGenericData } from "@/app/hooks/useGenericData";
@@ -87,7 +88,7 @@ export function ResuableSearchSection({ title, type, query, onShowMore, limit = 
                         >
                             {/* Heart Button */}
                             <button
-                                onClick={(e) => {
+                                onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                                     e.stopPropagation();
                                     toggleFavorite({ ...item, type });
                                 }}

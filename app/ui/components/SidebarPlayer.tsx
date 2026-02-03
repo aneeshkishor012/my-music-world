@@ -257,7 +257,7 @@ export default function SidebarPlayer() {
                             >
                                 {/* Selection Indicator */}
                                 <div
-                                    onClick={(e) => handleToggleSelect(song.id, e)}
+                                    onClick={(e: React.MouseEvent) => handleToggleSelect(song.id, e)}
                                     className={`w-5 h-5 rounded border flex items-center justify-center shrink-0 transition-colors ${isSelected ? 'bg-blue-500 border-blue-500' : 'border-gray-600 group-hover:border-gray-400'}`}
                                 >
                                     {isSelected && <CheckIcon className="w-3 h-3 text-white" />}
@@ -294,7 +294,7 @@ export default function SidebarPlayer() {
                                 </div>
                                 <div className="opacity-0 group-hover:opacity-100 transition-opacity">
                                     <button
-                                        onClick={(e) => {
+                                        onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                                             e.stopPropagation();
                                             toggleFavorite(song);
                                         }}

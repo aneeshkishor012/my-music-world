@@ -12,7 +12,7 @@ const defaultTheme = {
 };
 
 type ThemeProviderProps = {
-  children: ReactNode;
+  children?: ReactNode;
 };
 
 export default function ThemeProvider({ children }: ThemeProviderProps) {
