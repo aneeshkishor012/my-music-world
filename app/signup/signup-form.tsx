@@ -33,9 +33,11 @@ export default function SignUpForm() {
         // If validation errors were returned as an object
         if (data?.error && typeof data.error === 'object') {
           const firstErr = Object.values(data.error).flat()[0];
-          message.error(firstErr || 'Signup failed');
+          const errMsg = typeof firstErr === 'string' ? firstErr : (firstErr ? JSON.stringify(firstErr) : 'Signup failed');
+          message.error(errMsg);
         } else {
-          message.error(data?.error || 'Signup failed');
+          const errMsg = typeof data?.error === 'string' ? data.error : (data?.error ? String(data.error) : 'Signup failed');
+          message.error(errMsg);
         }
         return;
       }
