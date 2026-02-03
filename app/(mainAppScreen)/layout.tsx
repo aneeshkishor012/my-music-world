@@ -7,7 +7,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
             {/* Top Navbar */}
             <nav className="bg-[#0B1A33] text-white p-4 shadow-lg flex items-center justify-between m-2 rounded-xl">
-                <h1 className="text-xl font-semibold">Good Morning ANEESH</h1>
+                <h1 className="text-xl font-semibold">Good Morning</h1>
                 <div className="flex items-center gap-6">
                     <button className="hover:text-purple-300">
                         <BellIcon className="w-7 h-7" />
