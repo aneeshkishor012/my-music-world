@@ -9,7 +9,7 @@ export const authConfig = {
             const isLoggedIn = !!auth?.user;
 
             // Public routes (no auth required)
-            const publicRoutes = ["/login", "/signup", "/welcome"];
+            const publicRoutes = ["/", "/login", "/signup", "/welcome"];
             const isPublic = publicRoutes.includes(nextUrl.pathname);
 
             // Protect all other routes
@@ -17,9 +17,9 @@ export const authConfig = {
                 return false; // redirects to login
             }
 
-            // If logged in and visiting login/signup again → send to welcome
+            // If logged in and visiting login/signup again → send to home
             if (isLoggedIn && ["/login", "/signup"].includes(nextUrl.pathname)) {
-                return Response.redirect(new URL("/welcome", nextUrl));
+                return Response.redirect(new URL("/home", nextUrl));
             }
 
             return true;

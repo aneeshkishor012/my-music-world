@@ -1,5 +1,6 @@
 import NextAuth from 'next-auth';
 import { authConfig } from './auth.config';
 
-// Next.js 16 convention: export as 'proxy' from 'proxy.ts'
-export const proxy = NextAuth(authConfig).auth;
+// Initialize with config only to keep it Edge-compatible
+// (Avoids importing auth.ts which depends on bcrypt)
+export const { auth: proxy } = NextAuth(authConfig);
