@@ -38,6 +38,10 @@ export default function SongCategoryScreen() {
 
     const [localQuery, setLocalQuery] = useState(initialQuery || query);
 
+    // Home configuration (code-only): set to a number to limit initial songs,
+    // or `null` to enable infinite scroll on Home.
+    const HOME_INITIAL_SONG_COUNT: number | null = 14; // <-- change here to configure
+
     // Debounce Search
     const [debouncedQuery, setDebouncedQuery] = useState(initialQuery || query);
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -47,6 +51,8 @@ export default function SongCategoryScreen() {
         setLocalQuery(query);
         setDebouncedQuery(query);
     }, [query]);
+
+    // no localStorage or UI config — HOME_INITIAL_SONG_COUNT controls behavior
 
     // Update URL query parameter when debounced query changes
     useEffect(() => {
@@ -81,6 +87,8 @@ export default function SongCategoryScreen() {
         setQuery("");
     };
 
+
+
     const handleChipClick = (cat: string) => {
         const newQuery = `${cat}`;
         setLocalQuery(newQuery);
@@ -111,29 +119,22 @@ export default function SongCategoryScreen() {
     const { isFavorite, toggleFavorite } = useFavorites();
 
     return (
-        <div className="text-white space-y-6 h-full flex flex-col">
+        <div className="text-white space-y-6 h-full flex flex-col overflow-hidden">
 
             {/* Search Bar */}
-            <div className="bg-[#1A2340] p-4 rounded-xl flex items-center shadow-lg border border-gray-700 focus-within:border-[#343F63] transition-colors">
-                <MagnifyingGlassIcon className="w-6 h-6 text-gray-400 mr-3" />
-                <Input
-                    placeholder={debouncedQuery ? "Searching..." : "Search for songs, artists, playlists..."}
-                    className="bg-transparent text-white border-none outline-none shadow-none placeholder-gray-500 hover:bg-transparent focus:bg-transparent"
-                    style={{ backgroundColor: 'transparent', color: 'white' }}
-                    value={localQuery}
-                    onChange={handleSearch}
-                />
-                {localQuery && (
-                    <XMarkIcon
-                        className="w-6 h-6 text-gray-500 cursor-pointer hover:text-white"
-                        onClick={clearSearch}
-                    />
-                )}
-            </div>
+            <Input
+                prefix={<MagnifyingGlassIcon className="w-6 h-6 text-gray-400 mr-3" />}
+                placeholder={debouncedQuery ? "Searching..." : "Search for songs, artists, playlists..."}
+                className="bg-[#1A203A] p-4 rounded-xl text-white border-none  placeholder-gray-500  shadow-lg border"
+                value={localQuery}
+                onChange={handleSearch}
+                variant="borderless"
+                allowClear={{ clearIcon: <XMarkIcon className="w-6 h-4 text-gray-400" /> }}
+            />
 
             {/* Category Chips - Always visible? Or only when no search? User said "keep the Song suggection chips". */}
             {/* If I keep them always visible, it's easy to switch context. */}
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2 justify-evenly">
                 {categories.map((cat, index) => (
                     <div
                         key={index}
@@ -148,37 +149,57 @@ export default function SongCategoryScreen() {
                 ))}
             </div>
 
+            {/* Home initial songs configured in code via `HOME_INITIAL_SONG_COUNT` above. */}
+
             {/* Logic: If No Query -> Show Nothing (or placeholder). If Query -> Show Results. */}
 
             {debouncedQuery ? (
-                <div className="flex-1 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-[#343F63] scrollbar-track-transparent animate-fadeIn">
-                    <div className="space-y-6">
-                        <div className="text-gray-400 text-sm mb-2">Results for "{debouncedQuery}"</div>
+                <div className="bg-[#0e1730] rounded-xl p-3 h-50">
+                    <div className="flex-1 overflow-y-auto h-[60vh] pr-2 scrollbar-thin scrollbar-thumb-[#343F63] scrollbar-track-transparent animate-fadeIn">
+                        <div className="space-y-6">
+                            <div className="text-gray-400 text-sm mb-2">Results for "{debouncedQuery}"</div>
 
-                        <ResuableSearchSection
-                            title="Songs"
-                            type="song"
-                            query={debouncedQuery}
-                            onShowMore={() => router.push(`/search/songs?q=${debouncedQuery}`)}
-                        />
-                        <ResuableSearchSection
-                            title="Artists"
-                            type="artist"
-                            query={debouncedQuery}
-                            onShowMore={() => router.push(`/search/artists?q=${debouncedQuery}`)}
-                        />
-                        <ResuableSearchSection
-                            title="Albums"
-                            type="album"
-                            query={debouncedQuery}
-                            onShowMore={() => router.push(`/search/albums?q=${debouncedQuery}`)}
-                        />
-                        <ResuableSearchSection
-                            title="Playlists"
-                            type="playlist"
-                            query={debouncedQuery}
-                            onShowMore={() => router.push(`/search/playlists?q=${debouncedQuery}`)}
-                        />
+                            <ResuableSearchSection
+                                title="Songs"
+                                type="song"
+                                query={debouncedQuery}
+                                showPagination={false}
+                                limit={HOME_INITIAL_SONG_COUNT ?? 24}
+                                infinite={HOME_INITIAL_SONG_COUNT === null}
+                                maxItems={HOME_INITIAL_SONG_COUNT}
+                                onShowMore={() => router.push(`/search/songs?q=${debouncedQuery}`)}
+                            />
+                            <ResuableSearchSection
+                                title="Artists"
+                                type="artist"
+                                query={debouncedQuery}
+                                showPagination={false}
+                                limit={HOME_INITIAL_SONG_COUNT ?? 24}
+                                infinite={HOME_INITIAL_SONG_COUNT === null}
+                                maxItems={HOME_INITIAL_SONG_COUNT}
+                                onShowMore={() => router.push(`/search/artists?q=${debouncedQuery}`)}
+                            />
+                            <ResuableSearchSection
+                                title="Albums"
+                                type="album"
+                                query={debouncedQuery}
+                                showPagination={false}
+                                limit={HOME_INITIAL_SONG_COUNT ?? 24}
+                                infinite={HOME_INITIAL_SONG_COUNT === null}
+                                maxItems={HOME_INITIAL_SONG_COUNT}
+                                onShowMore={() => router.push(`/search/albums?q=${debouncedQuery}`)}
+                            />
+                            <ResuableSearchSection
+                                title="Playlists"
+                                type="playlist"
+                                query={debouncedQuery}
+                                showPagination={false}
+                                limit={HOME_INITIAL_SONG_COUNT ?? 24}
+                                infinite={HOME_INITIAL_SONG_COUNT === null}
+                                maxItems={HOME_INITIAL_SONG_COUNT}
+                                onShowMore={() => router.push(`/search/playlists?q=${debouncedQuery}`)}
+                            />
+                        </div>
                     </div>
                 </div>
             ) : (

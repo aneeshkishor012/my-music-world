@@ -88,7 +88,7 @@ export default function MusicPlaylistScreen() {
                     <div
                         key={`${song.id}-${index}`}
                         onClick={() => playList(songs, index)}
-                        className="flex items-center justify-between bg-[#1A2340] p-3 rounded-lg hover:bg-[#232F4D] transition group cursor-pointer"
+                        className="flex items-center justify-between bg-[#1A2340] pt-3 rounded-lg hover:bg-[#232F4D] transition group cursor-pointer"
                     >
                         {/* Left Section */}
                         <div className="flex items-center gap-3">

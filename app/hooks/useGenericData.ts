@@ -71,7 +71,14 @@ export function useGenericData(query: string, type: SearchType, initialLimit = 2
         }
     }, [loading, hasMore, page, query]);
 
-    return { data, loading, error, hasMore, loadMore, total };
+    // Load a specific page (for pagination controls)
+    const loadPage = useCallback((pageNum: number) => {
+        if (pageNum < 1) return;
+        setPage(pageNum);
+        loadData(pageNum, query);
+    }, [query]);
+
+    return { data, loading, error, hasMore, loadMore, total, page, loadPage };
 }
 
 // Helper to standardise display fields

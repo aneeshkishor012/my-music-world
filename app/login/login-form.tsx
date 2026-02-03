@@ -1,11 +1,12 @@
 "use client";
 
-import { UserIcon, LockClosedIcon, XMarkIcon, ExclamationCircleIcon } from "@heroicons/react/24/solid";
+import { UserIcon, LockClosedIcon, XMarkIcon, ExclamationCircleIcon, EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
-import { Button, Form, Input } from "antd";
+import { Button, Input } from "antd";
 import { useSearchParams } from "next/navigation";
 import { useActionState } from "react";
 import { authenticate } from "../lib/actions";
+import styles from "./login-form.module.css";
 
 export default function LoginForm() {
   const searchParams = useSearchParams();
@@ -30,39 +31,29 @@ export default function LoginForm() {
         <div className="text-center text-3xl sm:text-4xl italic mb-6 font-light">AK</div>
 
         {/* FORM (SERVER ACTIONS WORK HERE) */}
-        <form action={formAction} className="space-y-4">
+        <form action={formAction} className={`${styles.loginForm} space-y-4`}>
           {/* Username */}
-          <div className="flex items-center bg-white/10 rounded-lg px-3 py-2 mb-4">
-            <UserIcon className="w-5 h-5 sm:w-6 sm:h-6 text-gray-300 mr-2" />
-
             <Input
+              prefix={<LockClosedIcon className="w-5 h-5 sm:w-6 sm:h-6 mr-2 ant-input" />}
               name="email"
               placeholder="Username or phone......"
-              className="bg-transparent text-white placeholder-gray-300 border-none shadow-none focus:outline-none"
+              className="bg-white/10 rounded-lg px-3 py-2 mb-4 text-white border-none shadow-none focus:outline-none"
               variant="borderless"
-              allowClear
+              allowClear={{ clearIcon: <XMarkIcon className="w-4 h-4" /> }}
               required
             />
 
-            <XMarkIcon className="w-5 h-5 sm:w-6 sm:h-6 text-gray-300" />
-          </div>
-
           {/* Password */}
-          <div className="flex items-center bg-white/10 rounded-lg px-3 py-2 mb-4">
-            <LockClosedIcon className="w-5 h-5 sm:w-6 sm:h-6 text-gray-300 mr-2" />
-
             <Input.Password
+              prefix={<LockClosedIcon className="w-5 h-5 sm:w-6 sm:h-6 mr-2 ant-input" />}
               name="password"
               placeholder="Password........"
-              className="bg-transparent text-white placeholder-gray-300 border-none shadow-none focus:outline-none"
+              className="bg-white/10 rounded-lg px-3 py-2 mb-4 text-white border-none shadow-none focus:outline-none"
               variant="borderless"
-              allowClear
+              allowClear={{ clearIcon: <XMarkIcon className="w-4 h-4" /> }}
               required
               minLength={6}
             />
-
-            <XMarkIcon className="w-5 h-5 sm:w-6 sm:h-6 text-gray-300" />
-          </div>
 
           {/* Hidden RedirectTo Field */}
           <input type="hidden" name="redirectTo" value={callbackUrl} />

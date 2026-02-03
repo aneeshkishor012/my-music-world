@@ -2,9 +2,67 @@
 
 import { UserIcon, LockClosedIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, message } from "antd";
+import { useRouter } from "next/navigation";
+import { signIn as nextAuthSignIn } from 'next-auth/react';
 
 export default function SignUpForm() {
+  const router = useRouter();
+
+  const onFinish = async (values: any) => {
+    const { name, email, password, confirmPassword } = values;
+    if (!name || !email || !password) {
+      message.error('Please fill all required fields');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      message.error('Passwords do not match');
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        // If validation errors were returned as an object
+        if (data?.error && typeof data.error === 'object') {
+          const firstErr = Object.values(data.error).flat()[0];
+          message.error(firstErr || 'Signup failed');
+        } else {
+          message.error(data?.error || 'Signup failed');
+        }
+        return;
+      }
+
+      // Attempt automatic sign in using NextAuth credentials provider
+      const signInResult = await nextAuthSignIn('credentials', {
+        redirect: false,
+        email,
+        password,
+      } as any);
+
+      if (signInResult && (signInResult as any).error) {
+        // If automatic sign-in failed, fallback to manual sign-in page
+        message.success('Signup successful — please sign in');
+        router.push('/login');
+        return;
+      }
+
+      // On success, navigate to welcome or home
+      message.success('Signup successful — signed in');
+      router.push('/welcome');
+    } catch (err) {
+      console.error(err);
+      message.error('Signup failed');
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-[#050B24] text-white px-4">
 
@@ -25,52 +83,58 @@ export default function SignUpForm() {
         <div className="text-center text-3xl sm:text-4xl italic mb-6 font-light">AK</div>
 
         {/* Form */}
-        <Form layout="vertical" className="space-y-4">
+        <Form layout="vertical" className="space-y-4" onFinish={onFinish}>
 
-          {/* Username */}
-          <Form.Item name="username" className="!mb-4">
-            <div className="flex items-center bg-white/10 rounded-lg px-3 py-2">
-              <UserIcon className="w-5 h-5 sm:w-6 sm:h-6 text-gray-300 mr-2" />
+          <Form.Item name="name" rules={[{ required: true, message: 'Please enter your name' }]} className="!mb-4">
+            <Input
+              prefix={<UserIcon className="w-5 h-5 sm:w-6 sm:h-6 text-gray-300 mr-2 ant-input" />}
+              placeholder="Full name"
+              className="bg-white/10 rounded-lg px-3 py-2  text-white border-none shadow-none focus:outline-none"
+              variant="borderless"
+              allowClear={{ clearIcon: <XMarkIcon className="w-4 h-4" /> }}
+              required
+            />
+          </Form.Item>
 
-              <Input
-                placeholder="Username or phone......"
-                variant="borderless"
-                allowClear
-                className="bg-transparent text-white placeholder-gray-300 outline-none shadow-none"
-              />
-            </div>
+          <Form.Item name="email" rules={[{ required: true, message: 'Please enter your email' }, { type: 'email', message: 'Enter a valid email' }]} className="!mb-4">
+            <Input
+              prefix={<UserIcon className="w-5 h-5 sm:w-6 sm:h-6 text-gray-300 mr-2" />}
+              placeholder="Email"
+              className="bg-white/10 rounded-lg px-3 py-2  text-white border-none shadow-none focus:outline-none"
+              variant="borderless"
+              allowClear={{ clearIcon: <XMarkIcon className="w-4 h-4" /> }}
+              required
+            />
           </Form.Item>
 
           {/* Password */}
-          <Form.Item name="password" className="!mb-4">
-            <div className="flex items-center bg-white/10 rounded-lg px-3 py-2">
-              <LockClosedIcon className="w-5 h-5 sm:w-6 sm:h-6 text-gray-300 mr-2" />
-
-              <Input.Password
-                placeholder="Password"
-                variant="borderless"
-                className="bg-transparent text-white placeholder-gray-300 outline-none shadow-none"
-                allowClear
-              />
-            </div>
+          <Form.Item name="password" rules={[{ required: true, message: 'Please enter a password' }]} className="!mb-4">
+            <Input.Password
+              prefix={<LockClosedIcon className="w-5 h-5 sm:w-6 sm:h-6 text-gray-300 mr-2" />}
+              placeholder="Password"
+              className="bg-white/10 rounded-lg px-3 py-2  text-white border-none shadow-none focus:outline-none"
+              variant="borderless"
+              allowClear={{ clearIcon: <XMarkIcon className="w-4 h-4" /> }}
+              required
+            />
           </Form.Item>
 
           {/* Confirm Password */}
-          <Form.Item name="confirmPassword" className="!mb-6">
-            <div className="flex items-center bg-white/10 rounded-lg px-3 py-2">
-              <LockClosedIcon className="w-5 h-5 sm:w-6 sm:h-6 text-gray-300 mr-2" />
+          <Form.Item name="confirmPassword" rules={[{ required: true, message: 'Please confirm password' }]} className="!mb-6">
 
-              <Input.Password
-                placeholder="Confirm Password"
-                variant="borderless"
-                className="bg-transparent text-white placeholder-gray-300 outline-none shadow-none"
-                allowClear
-              />
-            </div>
+            <Input.Password
+              prefix={<LockClosedIcon className="w-5 h-5 sm:w-6 sm:h-6 text-gray-300 mr-2" />}
+              placeholder="Confirm Password"
+              className="bg-white/10 rounded-lg px-3 py-2  text-white border-none shadow-none focus:outline-none"
+              variant="borderless"
+              allowClear={{ clearIcon: <XMarkIcon className="w-4 h-4" /> }}
+              required
+            />
           </Form.Item>
 
           {/* Submit Button */}
           <Button
+            htmlType="submit"
             style={{ alignSelf: "center", textAlign: "center", width: "100%", background: "white", opacity: 0.1 }}
             size="large"
           >

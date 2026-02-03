@@ -1,0 +1,16 @@
+.loginForm :global(.ant-input::placeholder),
+.loginForm :global(.ant-input-affix-wrapper .ant-input::placeholder) {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.loginForm :global(.ant-input-clear-icon),
+.loginForm :global(.ant-input-password-icon) {
+  color: #ffffff !important;
+}
+
+.loginForm :global(.ant-input-clear-icon svg),
+.loginForm :global(.ant-input-password-icon svg) {
+  color: inherit;
+  fill: currentColor;
+}
+

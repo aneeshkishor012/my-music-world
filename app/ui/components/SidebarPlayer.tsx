@@ -3,19 +3,51 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import {
-    PlayIcon,
-    PauseIcon,
-    ForwardIcon,
-    BackwardIcon,
     Bars3BottomLeftIcon,
     ChevronLeftIcon,
     CheckIcon,
     ArrowDownTrayIcon,
     HeartIcon as HeartIconSolid
 } from "@heroicons/react/24/solid";
-import { HeartIcon } from "@heroicons/react/24/outline";
 import { usePlayer } from "@/app/context/PlayerContext";
 import { useFavorites } from "@/app/context/FavoritesContext";
+import PlayerControl from "@/app/ui/components/PlayerControl";
+import { Checkbox } from "antd";
+import {
+    HeartIcon,
+    QueueListIcon,
+    ArrowsRightLeftIcon,
+    ArrowPathRoundedSquareIcon,
+} from "@heroicons/react/24/outline";
+
+const PlayModeIcon = ({ mode }: { mode: string | undefined }) => {
+    switch (mode) {
+        case "shuffle":
+            return (
+                <ArrowsRightLeftIcon
+                    className="w-4 h-4 text-gray-400"
+                    title="Shuffle"
+                />
+            );
+
+        case "repeatOne":
+            return (
+                <ArrowPathRoundedSquareIcon
+                    className="w-4 h-4 text-gray-400"
+                    title="Repeat One"
+                />
+            );
+
+        case "order":
+        default:
+            return (
+                <QueueListIcon
+                    className="w-4 h-4 text-gray-400"
+                    title="Play in Order"
+                />
+            );
+    }
+};
 
 export default function SidebarPlayer() {
     const {
@@ -32,6 +64,13 @@ export default function SidebarPlayer() {
     } = usePlayer();
 
     const { toggleFavorite, isFavorite } = useFavorites();
+
+    // --- Size configuration (edit these values to change player image sizes) ---
+    // Change `COVER_DIM_PX` to adjust the main cover image height/width (px).
+    // Change `THUMB_SIZE_PX` to adjust small thumbnail width/height in the queue (px).
+    const COVER_DIM_PX = 150; // default smaller size; reduce/increase as needed
+    const THUMB_SIZE_PX = 24; // small queue thumbnails
+    // -------------------------------------------------------------------------
 
     const queueRef = useRef<HTMLDivElement>(null);
     const activeItemRef = useRef<HTMLDivElement>(null);
@@ -128,7 +167,7 @@ export default function SidebarPlayer() {
             )}
 
             {/* HEADER AREA */}
-            <div className="p-6 pb-0">
+            <div className="pb-0 p-3">
                 {activeEntity && (
                     <button
                         onClick={() => setActiveEntity(null)}
@@ -141,15 +180,20 @@ export default function SidebarPlayer() {
 
                 {!activeEntity ? (
                     <div className="mb-6">
-                        <div className="relative aspect-square w-full rounded-xl overflow-hidden shadow-2xl mb-4 group">
+                        <div
+                            className="relative w-full rounded-xl overflow-hidden shadow-2xl mb-4 group"
+                            style={{ height: `${COVER_DIM_PX}px` }}
+                        >
                             {currentSong?.imageUri ? (
-                                <Image
-                                    src={currentSong.imageUri.replace("150x150", "500x500")}
-                                    alt={currentSong.title}
-                                    fill
-                                    sizes="(max-width: 1024px) 100vw, 350px"
-                                    className="object-cover"
-                                />
+                                <>
+                                    <Image
+                                        src={currentSong.imageUri.replace("150x150", "500x500")}
+                                        alt={currentSong.title}
+                                        fill
+                                        sizes={`(max-width: 1024px) 100vw, ${COVER_DIM_PX}px`}
+                                        className="object-cover"
+                                    />
+                                </>
                             ) : (
                                 <div className="w-full h-full bg-gray-800 flex items-center justify-center">
                                     <Bars3BottomLeftIcon className="w-12 h-12 text-gray-700" />
@@ -157,30 +201,33 @@ export default function SidebarPlayer() {
                             )}
                         </div>
                         <div className="text-center">
-                            <h3 className="text-xl font-bold text-white truncate px-2">{currentSong?.title || "Not Playing"}</h3>
+                            <h3 className="text-xl font-bold text-white truncate px-1">{currentSong?.title || "Not Playing"}</h3>
                             <p className="text-sm text-gray-400 truncate mt-1">{currentSong?.description || "Select a song"}</p>
-
-                            <div className="flex items-center justify-center gap-6 mt-6">
-                                <button onClick={playPrev} className="text-gray-400 hover:text-white transition transform active:scale-90">
-                                    <BackwardIcon className="w-8 h-8" />
-                                </button>
-                                <button onClick={togglePlay} className="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-lg transform active:scale-95 transition">
-                                    {isPlaying ? <PauseIcon className="w-8 h-8" /> : <PlayIcon className="w-8 h-8 ml-0.5" />}
-                                </button>
-                                <button onClick={playNext} className="text-gray-400 hover:text-white transition transform active:scale-90">
-                                    <ForwardIcon className="w-8 h-8" />
-                                </button>
+                            <div className="flex items-center mb-4 px-1 justify-between mt-4">
+                                <div
+                                    onClick={handleSelectAll}
+                                    className={`w-5 h-5 rounded border flex items-center justify-center shrink-0 transition-colors ${displaySongs.length > 0 &&
+                                        selectedSongs.size === displaySongs.length ? 'bg-blue-500 border-blue-500' : 'border-gray-600 group-hover:border-gray-400'}`}
+                                >
+                                    {displaySongs.length > 0 &&
+                                        selectedSongs.size === displaySongs.length && <CheckIcon className="w-3 h-3 text-white" />}
+                                </div>
+                                <PlayerControl isPlaying={isPlaying} togglePlay={togglePlay} playNext={playNext} playPrev={playPrev} />
+                                <PlayModeIcon mode={"order"} />
                             </div>
                         </div>
                     </div>
                 ) : (
-                    <div className="flex gap-4 mb-6">
-                        <div className={`relative w-20 h-20 shrink-0 shadow-lg ${activeEntity.type === 'artist' ? 'rounded-full' : 'rounded-lg'} overflow-hidden`}>
+                    <div className="flex p-4 gap-4 mb-6">
+                        <div
+                            className={`relative shrink-0 shadow-lg ${activeEntity.type === 'artist' ? 'rounded-full' : 'rounded-lg'} overflow-hidden`}
+                            style={{ width: `${THUMB_SIZE_PX}px`, height: `${THUMB_SIZE_PX}px` }}
+                        >
                             <Image
                                 src={activeEntity.imageUri || (activeEntity.image?.[2]?.url) || ""}
                                 alt={title}
                                 fill
-                                sizes="80px"
+                                sizes={`${THUMB_SIZE_PX}px`}
                                 className="object-cover"
                             />
                         </div>
@@ -193,19 +240,7 @@ export default function SidebarPlayer() {
             </div>
 
             {/* LIST SECTION (Queue or Entity Songs) */}
-            <div className="flex-1 min-h-0 flex flex-col p-6 pt-0">
-                <div className="flex items-center justify-between mb-4 px-1">
-                    <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em]">
-                        {activeEntity ? "Album Tracks" : "Next In Queue"}
-                    </h4>
-                    <button
-                        onClick={handleSelectAll}
-                        className="text-[10px] text-blue-400 hover:text-blue-300 font-bold uppercase tracking-widest"
-                    >
-                        {selectedSongs.size === displaySongs.length ? "Deselect All" : "Select All"}
-                    </button>
-                </div>
-
+            <div className="flex-1 min-h-0 flex flex-col p-3 pt-0">
                 <div
                     ref={queueRef}
                     className="flex-1 overflow-y-auto pr-2 space-y-2 scrollbar-thin scrollbar-thumb-gray-800 scrollbar-track-transparent"
@@ -218,7 +253,7 @@ export default function SidebarPlayer() {
                                 key={`${song.id}-${idx}`}
                                 ref={isActive ? activeItemRef : null}
                                 onClick={() => playList(displaySongs, idx)}
-                                className={`flex items-center gap-3 p-2 rounded-lg transition overflow-hidden cursor-pointer group relative ${isActive ? 'bg-blue-600/20 border border-blue-500/30' : 'hover:bg-white/5 border border-transparent'}`}
+                                className={`flex items-center gap-3 p-1 rounded-lg transition overflow-hidden cursor-pointer group relative ${isActive ? 'bg-blue-600/20 border border-blue-500/30' : 'hover:bg-white/5 border border-transparent'}`}
                             >
                                 {/* Selection Indicator */}
                                 <div
@@ -228,12 +263,15 @@ export default function SidebarPlayer() {
                                     {isSelected && <CheckIcon className="w-3 h-3 text-white" />}
                                 </div>
 
-                                <div className="w-10 h-10 relative rounded overflow-hidden shrink-0">
+                                <div
+                                    className="relative rounded overflow-hidden shrink-0"
+                                    style={{ width: `${THUMB_SIZE_PX}px`, height: `${THUMB_SIZE_PX}px` }}
+                                >
                                     <Image
                                         src={song.imageUri || ""}
                                         alt={song.title}
                                         fill
-                                        sizes="40px"
+                                        sizes={`${THUMB_SIZE_PX}px`}
                                         className="object-cover"
                                     />
                                     {isActive && isPlaying && (

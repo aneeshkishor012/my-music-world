@@ -7,12 +7,48 @@ import { HeartIcon as HeartIconSolid } from "@heroicons/react/24/solid";
 import { useGenericData } from "@/app/hooks/useGenericData";
 import { usePlayer } from "@/app/context/PlayerContext";
 import { useFavorites } from "@/app/context/FavoritesContext";
+import { useRef, useEffect } from "react";
 
-export function ResuableSearchSection({ title, type, query, onShowMore }: any) {
+export function ResuableSearchSection({ title, type, query, onShowMore, limit = 5, showPagination = false, infinite = false, maxItems = null }: any) {
     const router = useRouter();
-    const { data, loading } = useGenericData(query, type, 5); // Fetch only 5
+    const { data, loading, hasMore, loadMore, total, page, loadPage } = useGenericData(query, type, limit); // Fetch configurable number
     const { play, playList, currentSong, isPlaying, loadEntity } = usePlayer();
     const { isFavorite, toggleFavorite } = useFavorites();
+    const sentinelRef = useRef<HTMLDivElement | null>(null);
+
+    // Helper: find nearest scrollable ancestor
+    // Also treat elements as scrollable when their scrollHeight exceeds clientHeight
+    const findScrollParent = (el: HTMLElement | null): HTMLElement | null => {
+        while (el) {
+            const style = getComputedStyle(el);
+            const overflowY = style.overflowY;
+            const isOverflowing = el.scrollHeight > el.clientHeight;
+            if (overflowY === 'auto' || overflowY === 'scroll' || overflowY === 'overlay' || isOverflowing) return el;
+            el = el.parentElement;
+        }
+        return null;
+    };
+
+    useEffect(() => {
+        if (!infinite) return; // only observe when infinite scrolling enabled
+        const sentinel = sentinelRef.current;
+        if (!sentinel) return;
+
+        const root = findScrollParent(sentinel.parentElement) || null;
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // If a maximum item limit is set, prevent loading beyond it
+                    if (maxItems != null && data.length >= maxItems) return;
+                    if (hasMore && !loading) loadMore();
+                }
+            });
+        }, { root, rootMargin: '200px' });
+
+        observer.observe(sentinel);
+
+        return () => observer.disconnect();
+    }, [infinite, hasMore, loading, loadMore, data.length, maxItems]);
 
     if (!loading && data.length === 0) return null; // Don't show empty sections
 
@@ -27,7 +63,7 @@ export function ResuableSearchSection({ title, type, query, onShowMore }: any) {
     };
 
     return (
-        <section className="mb-10">
+        <section className="mb-10 overflow-y-auto max-h-[calc(100vh-200px)]">
             <div className="flex justify-between items-center mb-6 px-1">
                 <h2 className="text-xl font-bold text-white tracking-wide">{title}</h2>
                 <button
@@ -38,16 +74,16 @@ export function ResuableSearchSection({ title, type, query, onShowMore }: any) {
                 </button>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
-                {data.map((item, idx) => {
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 xl:grid-cols-7 gap-6">
+                {(maxItems != null ? data.slice(0, maxItems) : data).map((item, idx) => {
                     const liked = isFavorite(item.id);
                     const isCurrent = currentSong?.id === item.id;
-
+                    console.log("Rendering item:", item);
                     return (
                         <div
                             key={`${item.id}-${idx}`}
                             onClick={() => handleItemClick(item, idx)}
-                            className="bg-[#1A2340] p-4 rounded-xl hover:bg-[#232F4D] transition cursor-pointer group flex flex-col items-center text-center relative"
+                            className="bg-[#1A2340] rounded-xl hover:bg-[#232F4D] transition cursor-pointer group flex flex-col items-center text-center relative"
                         >
                             {/* Heart Button */}
                             <button
@@ -60,13 +96,14 @@ export function ResuableSearchSection({ title, type, query, onShowMore }: any) {
                                 {liked ? <HeartIconSolid className="w-4 h-4 text-red-500" /> : <HeartIcon className="w-4 h-4" />}
                             </button>
 
-                            <div className={`w-full aspect-square overflow-hidden bg-gray-800 mb-2 relative ${type === 'artist' ? 'rounded-full' : 'rounded-md'}`}>
+                            <div className={`w-full aspect-square overflow-hidden bg-gray-800 mb-2 relative rounded-md`}>
                                 {item.imageUri ? (
                                     <Image
                                         src={item.imageUri}
                                         alt={item.title || "Image"}
                                         width={150}
                                         height={150}
+                                        unoptimized={type === 'artist' ? true : false} // bypass Next.js optimization for remote images that may block
                                         className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-300"
                                     />
                                 ) : <div className="w-full h-full flex items-center justify-center text-2xl">?</div>}
@@ -88,8 +125,10 @@ export function ResuableSearchSection({ title, type, query, onShowMore }: any) {
                                     </div>
                                 )}
                             </div>
-                            <h4 className={`text-sm font-semibold truncate w-full ${isCurrent ? 'text-blue-400' : 'text-white'}`}>{item.title}</h4>
-                            <p className="text-xs text-gray-400 truncate w-full">{item.description}</p>
+                            <div className="px-2 pb-3 w-full">
+                                <h4 className={`text-sm font-semibold truncate w-full ${isCurrent ? 'text-blue-400' : 'text-white'}`}>{item.title}</h4>
+                                <p className="text-xs text-gray-400 truncate w-full">{item.description}</p>
+                            </div>
                         </div>
                     );
                 })}
@@ -102,6 +141,9 @@ export function ResuableSearchSection({ title, type, query, onShowMore }: any) {
                     </div>
                 ))}
             </div>
+
+            {/* Sentinel for infinite scroll (only used when `infinite` is true) */}
+            {infinite && <div ref={sentinelRef} className="h-2" />}
         </section>
     );
 }

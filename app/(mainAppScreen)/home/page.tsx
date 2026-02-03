@@ -4,8 +4,8 @@ import SidebarPlayer from "@/app/ui/components/SidebarPlayer";
 
 export default function HomePage() {
     return (
-        <div className="h-full bg-[#12121F] text-white p-6 overflow-hidden">
-            <div className="flex flex-row gap-6 h-full w-full">
+        <div className="h-full bg-[#12121F] text-white p-2 overflow-hidden">
+            <div className="flex flex-row h-full w-full">
 
                 {/* LEFT CONTENT – 70% */}
                 <div className="flex-1 min-w-0 h-full overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-800 scrollbar-track-transparent">
