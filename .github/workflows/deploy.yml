@@ -13,34 +13,27 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js (with pnpm cache)
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'pnpm'
-          cache-dependency-path: pnpm-lock.yaml
-
-      - name: Enable Corepack and prepare pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@8 --activate
-
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
           version: 8
 
-      - name: Install dependencies (pnpm)
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build (next build)
+      - name: Build (Next.js)
         run: pnpm build
         env:
-          # Provide any build-time secrets via repository secrets if required
           POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
           AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
 
-      - name: Export static site (next export → ./out)
+      - name: Export static site
         run: pnpm exec next export
 
       - name: Deploy to GitHub Pages
