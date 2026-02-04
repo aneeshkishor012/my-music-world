@@ -1,6 +1,6 @@
 "use client";
 
-import { UserIcon, LockClosedIcon, XMarkIcon, ExclamationCircleIcon, EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
+import { LockClosedIcon, XMarkIcon, ExclamationCircleIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import { Button, Input } from "antd";
 import { useSearchParams } from "next/navigation";
@@ -10,18 +10,18 @@ import styles from "./login-form.module.css";
 
 export default function LoginForm() {
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/home";
+  const callbackUrl = searchParams.get("callbackUrl") || "/welcome";
 
   const [errorMessage, formAction, isPending] = useActionState(authenticate, undefined);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[#050B24] text-white px-4">
+    <div className="w-full max-w-xs sm:max-w-sm md:max-w-md text-white">
       {/* Top Title */}
       <h1 className="text-lg sm:text-xl mb-6 text-center">Welcome to My Music World</h1>
 
       {/* Card */}
       <div
-        className="w-full max-w-xs sm:max-w-sm md:max-w-md p-6 sm:p-8 rounded-xl"
+        className="w-full p-6 sm:p-8 rounded-xl"
         style={{ background: "linear-gradient(to bottom, #0B1A33, #3A134F)" }}
       >
         {/* SignIn Title */}

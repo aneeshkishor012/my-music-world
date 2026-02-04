@@ -14,77 +14,134 @@ import { HeartIcon as HeartIconSolid } from "@heroicons/react/24/solid";
 // Import the Search Section Component
 import { ResuableSearchSection } from "../../ui/components/SearchSection";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useSearchContext } from "../../context/SearchContext";
 
 export default function SongCategoryScreen() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const initialQuery = searchParams.get("q") || "";
+    const qParam = searchParams.get("q") ?? "";
+    const restore = searchParams.get("restore") === "1";
+    const initialQuery = qParam;
+    const fromSuggestions = searchParams.get("from") === "suggestions";
 
     const [categories, setCategories] = useState<string[]>([
         "Tamil", "Malayalam", "Kannada", "Relax", "Romance",
         "Sad", "Sleep", "Dance", "Trending", "Party", "Devotional"
     ]);
 
-    // Global Search State
-    const { query, setQuery } = useSearchContext();
-
-    // Initialize state from URL on first load if query is empty
-    useEffect(() => {
-        if (initialQuery && !query) {
-            setQuery(initialQuery);
-        }
-    }, [initialQuery, query, setQuery]);
-
-    const [localQuery, setLocalQuery] = useState(initialQuery || query);
+    const [localQuery, setLocalQuery] = useState(initialQuery);
 
     // Home configuration (code-only): set to a number to limit initial songs,
     // or `null` to enable infinite scroll on Home.
     const HOME_INITIAL_SONG_COUNT: number | null = 14; // <-- change here to configure
 
     // Debounce Search
-    const [debouncedQuery, setDebouncedQuery] = useState(initialQuery || query);
+    const [debouncedQuery, setDebouncedQuery] = useState(initialQuery);
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-    // Sync local query with global if global changes (e.g. navigation back)
+    // Persist last non-empty query (so returning from Suggestions doesn't clear Search)
     useEffect(() => {
-        setLocalQuery(query);
-        setDebouncedQuery(query);
-    }, [query]);
+        const next = debouncedQuery.trim();
+        if (!next) return;
+
+        try {
+            sessionStorage.setItem("lastSearchQuery", next);
+        } catch {
+            // ignore
+        }
+    }, [debouncedQuery]);
+
+    // Restore last query when navigating back to Search without a query
+    useEffect(() => {
+        if (qParam) return; // URL query wins
+        if (searchParams.has("q") && !restore) return; // explicit empty query
+
+        let saved = "";
+        try {
+            saved = sessionStorage.getItem("lastSearchQuery") || "";
+        } catch {
+            saved = "";
+        }
+
+        const params = new URLSearchParams(searchParams.toString());
+        params.delete("restore");
+
+        if (!saved) {
+            if (restore) {
+                const next = params.toString();
+                router.replace(next ? `?${next}` : "/home");
+            }
+            return;
+        }
+
+        params.set("q", saved);
+        router.replace(`?${params.toString()}`);
+    }, [qParam, restore, router, searchParams]);
+
+    // Sync local state from URL (single source of truth)
+    useEffect(() => {
+        setLocalQuery(initialQuery);
+        setDebouncedQuery(initialQuery);
+    }, [initialQuery]);
+
+    const resultsScrollRef = useRef<HTMLDivElement | null>(null);
+
+    // Reset scroll position when navigating from Suggestions -> Search
+    useEffect(() => {
+        if (!fromSuggestions) return;
+        if (!debouncedQuery) return; // wait until results container is mounted
+
+        resultsScrollRef.current?.scrollTo({ top: 0, behavior: "auto" });
+
+        // Remove the marker param so normal in-page searching doesn't keep re-triggering this behavior.
+        const next = new URLSearchParams(searchParams.toString());
+        next.delete("from");
+        router.replace(`?${next.toString()}`);
+    }, [fromSuggestions, debouncedQuery, router, searchParams]);
 
     // no localStorage or UI config — HOME_INITIAL_SONG_COUNT controls behavior
-
-    // Update URL query parameter when debounced query changes
-    useEffect(() => {
-        const params = new URLSearchParams(searchParams.toString());
-        if (debouncedQuery) {
-            params.set("q", debouncedQuery);
-        } else {
-            params.delete("q");
-        }
-
-        // Only push if the query actually changed to avoid redundant history entries
-        const currentQ = searchParams.get("q") || "";
-        if (debouncedQuery !== currentQ) {
-            router.replace(`?${params.toString()}`);
-        }
-    }, [debouncedQuery, router, searchParams]);
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         const val = e.target.value;
         setLocalQuery(val);
 
         if (timeoutRef.current) clearTimeout(timeoutRef.current);
+        if (!val) {
+            setDebouncedQuery("");
+            const params = new URLSearchParams(searchParams.toString());
+            params.delete("restore");
+            params.delete("q");
+            const next = params.toString();
+            try {
+                sessionStorage.removeItem("lastSearchQuery");
+            } catch {
+                // ignore
+            }
+            router.replace(next ? `?${next}` : "/home");
+            return;
+        }
+
         timeoutRef.current = setTimeout(() => {
             setDebouncedQuery(val);
-            setQuery(val); // Persist to Context
+            const params = new URLSearchParams(searchParams.toString());
+            params.delete("restore");
+            params.set("q", val);
+            router.replace(`?${params.toString()}`);
         }, 500);
     };
 
     const clearSearch = () => {
         setLocalQuery("");
         setDebouncedQuery("");
-        setQuery("");
+        const params = new URLSearchParams(searchParams.toString());
+        params.delete("restore");
+        params.delete("q");
+        const next = params.toString();
+        try {
+            sessionStorage.removeItem("lastSearchQuery");
+        } catch {
+            // ignore
+        }
+        router.replace(next ? `?${next}` : "/home");
     };
 
 
@@ -93,13 +150,16 @@ export default function SongCategoryScreen() {
         const newQuery = `${cat}`;
         setLocalQuery(newQuery);
         setDebouncedQuery(newQuery);
-        setQuery(newQuery);
+        const params = new URLSearchParams(searchParams.toString());
+        params.delete("restore");
+        params.set("q", newQuery);
+        router.replace(`?${params.toString()}`);
     };
 
     // Data Hooks
     // Only fetch category songs if we are NOT searching (debouncedQuery is empty)
     // If searching, we show the search results instead
-    const categoryQuery = debouncedQuery ? "" : query || "Trending"; // Fallback to Trending if just browsing chips
+    const categoryQuery = debouncedQuery ? "" : initialQuery || "Trending"; // Fallback to Trending if just browsing chips
     // Actually, if query is empty, we show chips. If query is set (even via chip click), we show SEARCH results? 
     // The user said: "without search what ever i am showin in the rightside layout can you remove and keep the Song suggection chips."
     // BUT "The last Search Results should be Stay...".
@@ -119,7 +179,7 @@ export default function SongCategoryScreen() {
     const { isFavorite, toggleFavorite } = useFavorites();
 
     return (
-        <div className="text-white space-y-6 h-full flex flex-col overflow-hidden">
+        <div className="text-white h-full min-h-0 flex flex-col overflow-hidden space-y-4">
 
             {/* Search Bar */}
             <Input
@@ -154,8 +214,11 @@ export default function SongCategoryScreen() {
             {/* Logic: If No Query -> Show Nothing (or placeholder). If Query -> Show Results. */}
 
             {debouncedQuery ? (
-                <div className="bg-[#0e1730] rounded-xl p-3 h-50">
-                    <div className="flex-1 overflow-y-auto h-[60vh] pr-2 scrollbar-thin scrollbar-thumb-[#343F63] scrollbar-track-transparent animate-fadeIn">
+                <div className="bg-[#0e1730] rounded-xl p-3 flex flex-col flex-1 min-h-0">
+                    <div
+                        ref={resultsScrollRef}
+                        className="flex-1 min-h-0 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-[#343F63] scrollbar-track-transparent animate-fadeIn"
+                    >
                         <div className="space-y-6">
                             <div className="text-gray-400 text-sm mb-2">Results for "{debouncedQuery}"</div>
 
@@ -170,14 +233,14 @@ export default function SongCategoryScreen() {
                                 onShowMore={() => router.push(`/search/songs?q=${debouncedQuery}`)}
                             />
                             <ResuableSearchSection
-                                title="Artists"
-                                type="artist"
+                                title="Playlists"
+                                type="playlist"
                                 query={debouncedQuery}
                                 showPagination={false}
                                 limit={HOME_INITIAL_SONG_COUNT ?? 24}
                                 infinite={HOME_INITIAL_SONG_COUNT === null}
                                 maxItems={HOME_INITIAL_SONG_COUNT}
-                                onShowMore={() => router.push(`/search/artists?q=${debouncedQuery}`)}
+                                onShowMore={() => router.push(`/search/playlists?q=${debouncedQuery}`)}
                             />
                             <ResuableSearchSection
                                 title="Albums"
@@ -190,15 +253,16 @@ export default function SongCategoryScreen() {
                                 onShowMore={() => router.push(`/search/albums?q=${debouncedQuery}`)}
                             />
                             <ResuableSearchSection
-                                title="Playlists"
-                                type="playlist"
+                                title="Artists"
+                                type="artist"
                                 query={debouncedQuery}
                                 showPagination={false}
                                 limit={HOME_INITIAL_SONG_COUNT ?? 24}
                                 infinite={HOME_INITIAL_SONG_COUNT === null}
                                 maxItems={HOME_INITIAL_SONG_COUNT}
-                                onShowMore={() => router.push(`/search/playlists?q=${debouncedQuery}`)}
+                                onShowMore={() => router.push(`/search/artists?q=${debouncedQuery}`)}
                             />
+
                         </div>
                     </div>
                 </div>

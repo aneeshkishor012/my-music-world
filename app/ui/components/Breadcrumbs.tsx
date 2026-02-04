@@ -11,7 +11,7 @@ interface BreadcrumbItem {
 export default function Breadcrumbs({ items }: { items: BreadcrumbItem[] }) {
     return (
         <nav className="flex items-center space-x-2 text-gray-400 text-sm mb-6 overflow-x-auto whitespace-nowrap scrollbar-hide">
-            <Link href="/home" className="hover:text-white transition flex items-center">
+            <Link href="/home/suggestions" className="hover:text-white transition flex items-center">
                 <HomeIcon className="w-4 h-4" />
             </Link>
 

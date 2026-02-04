@@ -109,26 +109,41 @@ export default function SidebarPlayer() {
         const list = activeEntity ? (activeEntity.songs || []) : queue;
         list.forEach((s: any) => {
             if (selectedSongs.has(s.id) && !isFavorite(s.id)) {
-                toggleFavorite(s);
+                toggleFavorite({ ...s, type: "song" });
             }
         });
         setSelectedSongs(new Set());
     };
 
-    const handleDownloadSelected = () => {
-        const list = activeEntity ? (activeEntity.songs || []) : queue;
-        list.forEach((s: any) => {
+    const handleDownloadSelected = async () => {
+        const list = activeEntity ? activeEntity.songs || [] : queue;
+
+        for (const s of list) {
             if (selectedSongs.has(s.id) && s.url) {
-                const link = document.createElement("a");
-                link.href = s.url;
-                link.download = `${s.title}.mp3`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
+                try {
+                    const response = await fetch(s.url);
+                    const blob = await response.blob();
+
+                    const blobUrl = window.URL.createObjectURL(blob);
+                    const link = document.createElement("a");
+
+                    link.href = blobUrl;
+                    link.download = `${s.title || "song"}.mp3`;
+
+                    document.body.appendChild(link);
+                    link.click();
+
+                    document.body.removeChild(link);
+                    window.URL.revokeObjectURL(blobUrl);
+                } catch (err) {
+                    console.error("Download failed:", s.title, err);
+                }
             }
-        });
+        }
+
         setSelectedSongs(new Set());
     };
+
 
     if (!currentSong && queue.length === 0 && !activeEntity) {
         return (
@@ -296,7 +311,7 @@ export default function SidebarPlayer() {
                                     <button
                                         onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                                             e.stopPropagation();
-                                            toggleFavorite(song);
+                                            toggleFavorite({ ...song, type: "song" });
                                         }}
                                         className="p-1 hover:text-red-500 text-gray-500 transition"
                                     >

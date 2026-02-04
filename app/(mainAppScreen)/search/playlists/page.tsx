@@ -9,12 +9,15 @@ import { Suspense } from "react";
 function PlaylistsSearchContent() {
     const searchParams = useSearchParams();
     const q = searchParams?.get("q") || "";
+    const returnUrl = searchParams?.get("return");
+    const backLabel = returnUrl ? "Suggestions" : "Search";
+    const backHref = returnUrl ? returnUrl : `/home?q=${encodeURIComponent(q)}`;
 
     return (
         <div className="flex flex-row gap-6 h-full w-full">
             {/* LEFT CONTENT – 70% */}
             <div className="flex-1 bg-[#0e1730] overflow-hidden p-3 min-w-0 rounded-xl h-full pr-2 scrollbar-thin scrollbar-thumb-gray-800 scrollbar-track-transparent">
-                <Breadcrumbs items={[{ label: 'Search', href: `/home?q=${encodeURIComponent(q)}` }, { label: 'Playlists' }]} />
+                <Breadcrumbs items={[{ label: backLabel, href: backHref }, { label: 'Playlists' }]} />
 
                 <p className="text-sm text-gray-400 mb-6 px-1">Results for "{q}"</p>
 

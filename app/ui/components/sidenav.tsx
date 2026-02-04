@@ -14,9 +14,14 @@ export default function SideNav() {
     <div className="flex flex-col h-full text-white p-3">
       {/* Top Navigation */}
       <div className="flex flex-col items-center gap-6 mt-4">
-        {/* Home */}
-        <Link href="/home">
+        {/* Home Suggestions (Discovery) */}
+        <Link href="/home/suggestions">
           <HomeIcon className="w-8 h-8 text-gray-300 hover:text-white transition" />
+        </Link>
+
+        {/* Search (Explore) */}
+        <Link href="/home?restore=1">
+          <MagnifyingGlassIcon className="w-8 h-8 text-gray-300 hover:text-white transition" />
         </Link>
 
         {/* Favorites */}
