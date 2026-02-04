@@ -9,8 +9,12 @@ export const authConfig = {
             const isLoggedIn = !!auth?.user;
 
             // Public routes (no auth required)
-            const publicRoutes = ["/", "/login", "/signup", "/welcome"];
-            const isPublic = publicRoutes.includes(nextUrl.pathname);
+            const publicRoutes = ["/", "/login", "/signup", "/welcome", "/seed"];
+            const pathname =
+                nextUrl.pathname.endsWith("/") && nextUrl.pathname !== "/"
+                    ? nextUrl.pathname.slice(0, -1)
+                    : nextUrl.pathname;
+            const isPublic = publicRoutes.includes(pathname);
 
             // Protect all other routes
             if (!isLoggedIn && !isPublic) {

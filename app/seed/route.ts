@@ -1,26 +1,54 @@
-import bcrypt from 'bcrypt';
-import postgres from 'postgres';
-import { invoices, customers, revenue, users } from '../lib/placeholder-data';
+import bcrypt from "bcrypt";
+import postgres from "postgres";
+import { randomUUID } from "node:crypto";
+import { invoices, customers, revenue, users } from "../lib/placeholder-data";
 
-const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
+export const dynamic = "force-dynamic";
 
-async function seedUsers() {
-  await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-  await sql`
+const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
+type SqlClient = any;
+
+async function hasColumn(sqlClient: SqlClient, table: string, column: string) {
+  const rows = await sqlClient`
+    SELECT 1
+    FROM information_schema.columns
+    WHERE table_schema = 'public'
+      AND table_name = ${table}
+      AND column_name = ${column}
+    LIMIT 1
+  `;
+
+  return Array.isArray(rows) && rows.length > 0;
+}
+
+async function seedUsers(sqlClient: SqlClient) {
+  await sqlClient`
     CREATE TABLE IF NOT EXISTS users (
-      id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+      id UUID PRIMARY KEY,
       name VARCHAR(255) NOT NULL,
       email TEXT NOT NULL UNIQUE,
-      password TEXT NOT NULL
+      password TEXT NOT NULL,
+      passwordorg TEXT NOT NULL
     );
   `;
 
+  const hasPasswordOrg = await hasColumn(sqlClient, "users", "passwordorg");
+
   const insertedUsers = await Promise.all(
     users.map(async (user) => {
-      const hashedPassword = await bcrypt.hash(user.password, 10);
-      return sql`
-        INSERT INTO users (id, name, email, password)
-        VALUES (${user.id}, ${user.name}, ${user.email}, ${hashedPassword})
+      // IMPORTANT: user.password must be PLAIN TEXT here
+      const plainPassword = user.password;
+      const hashedPassword = await bcrypt.hash(plainPassword, 10);
+
+      return sqlClient`
+        INSERT INTO users (id, name, email, password, passwordorg)
+        VALUES (
+          ${user.id},
+          ${user.name},
+          ${user.email},
+          ${hashedPassword},
+          ${plainPassword}
+        )
         ON CONFLICT (id) DO NOTHING;
       `;
     }),
@@ -29,12 +57,10 @@ async function seedUsers() {
   return insertedUsers;
 }
 
-async function seedInvoices() {
-  await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-
-  await sql`
+async function seedInvoices(sqlClient: SqlClient) {
+  await sqlClient`
     CREATE TABLE IF NOT EXISTS invoices (
-      id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+      id UUID PRIMARY KEY,
       customer_id UUID NOT NULL,
       amount INT NOT NULL,
       status VARCHAR(255) NOT NULL,
@@ -43,24 +69,23 @@ async function seedInvoices() {
   `;
 
   const insertedInvoices = await Promise.all(
-    invoices.map(
-      (invoice) => sql`
-        INSERT INTO invoices (customer_id, amount, status, date)
-        VALUES (${invoice.customer_id}, ${invoice.amount}, ${invoice.status}, ${invoice.date})
+    invoices.map((invoice) => {
+      const id = randomUUID();
+      return sqlClient`
+        INSERT INTO invoices (id, customer_id, amount, status, date)
+        VALUES (${id}, ${invoice.customer_id}, ${invoice.amount}, ${invoice.status}, ${invoice.date})
         ON CONFLICT (id) DO NOTHING;
-      `,
-    ),
+      `;
+    }),
   );
 
   return insertedInvoices;
 }
 
-async function seedCustomers() {
-  await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-
-  await sql`
+async function seedCustomers(sqlClient: SqlClient) {
+  await sqlClient`
     CREATE TABLE IF NOT EXISTS customers (
-      id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+      id UUID PRIMARY KEY,
       name VARCHAR(255) NOT NULL,
       email VARCHAR(255) NOT NULL,
       image_url VARCHAR(255) NOT NULL
@@ -69,7 +94,7 @@ async function seedCustomers() {
 
   const insertedCustomers = await Promise.all(
     customers.map(
-      (customer) => sql`
+      (customer) => sqlClient`
         INSERT INTO customers (id, name, email, image_url)
         VALUES (${customer.id}, ${customer.name}, ${customer.email}, ${customer.image_url})
         ON CONFLICT (id) DO NOTHING;
@@ -80,8 +105,8 @@ async function seedCustomers() {
   return insertedCustomers;
 }
 
-async function seedRevenue() {
-  await sql`
+async function seedRevenue(sqlClient: SqlClient) {
+  await sqlClient`
     CREATE TABLE IF NOT EXISTS revenue (
       month VARCHAR(4) NOT NULL UNIQUE,
       revenue INT NOT NULL
@@ -90,7 +115,7 @@ async function seedRevenue() {
 
   const insertedRevenue = await Promise.all(
     revenue.map(
-      (rev) => sql`
+      (rev) => sqlClient`
         INSERT INTO revenue (month, revenue)
         VALUES (${rev.month}, ${rev.revenue})
         ON CONFLICT (month) DO NOTHING;
@@ -103,15 +128,28 @@ async function seedRevenue() {
 
 export async function GET() {
   try {
-    const result = await sql.begin((sql) => [
-      seedUsers(),
-      seedCustomers(),
-      seedInvoices(),
-      seedRevenue(),
+    await sql.begin((tx) => [
+      seedUsers(tx),
+      seedCustomers(tx),
+      seedInvoices(tx),
+      seedRevenue(tx),
     ]);
 
-    return Response.json({ message: 'Database seeded successfully' });
-  } catch (error) {
-    return Response.json({ error }, { status: 500 });
+    return Response.json(
+      {
+        message: "Database seeded successfully",
+        url: "http://127.0.0.1:3000/seed",
+      },
+      { headers: { "Cache-Control": "no-store" } },
+    );
+  } catch (error: any) {
+    return Response.json(
+      {
+        error: "Failed to seed database",
+        details: String(error?.message || error),
+        url: "http://127.0.0.1:3000/seed",
+      },
+      { status: 500 },
+    );
   }
 }

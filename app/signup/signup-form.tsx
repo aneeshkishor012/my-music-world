@@ -137,10 +137,15 @@ export default function SignUpForm() {
           {/* Submit Button */}
           <Button
             htmlType="submit"
-            style={{ alignSelf: "center", textAlign: "center", width: "100%", background: "white", opacity: 0.1 }}
+            type="primary"
             size="large"
+            className="w-full"
+            style={{
+              // color: "white",
+              border: "none",
+            }}
           >
-            Submit
+            Submit & Login
           </Button>
 
         </Form>

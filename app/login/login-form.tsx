@@ -62,8 +62,8 @@ export default function LoginForm() {
           <Button
             htmlType="submit"
             type="primary"
-            size="large"
             loading={isPending}
+            size="large"
             className="w-full"
             style={{
               // color: "white",
