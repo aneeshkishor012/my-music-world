@@ -237,7 +237,7 @@ function SuggestionsContent() {
             <h2 className="text-lg sm:text-xl font-bold text-white">Home Suggestions</h2>
           </div>
 
-          {/* Filters (chips only; no text input) */}
+        {/* Filters (chips only; no text input) */}
           {/* {canSuggest && (
             <div className="space-y-3">
               {availableLanguages.length > 0 && (

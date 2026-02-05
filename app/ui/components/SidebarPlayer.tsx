@@ -12,6 +12,7 @@ import {
 import { usePlayer } from "@/app/context/PlayerContext";
 import { useFavorites } from "@/app/context/FavoritesContext";
 import PlayerControl from "@/app/ui/components/PlayerControl";
+import BottomNavBar from "@/app/ui/components/BottomNavBar";
 import { Checkbox } from "antd";
 import {
     HeartIcon,
@@ -49,7 +50,8 @@ const PlayModeIcon = ({ mode }: { mode: string | undefined }) => {
     }
 };
 
-export default function SidebarPlayer() {
+
+export default function SidebarPlayer({ onClose }: { onClose?: () => void }) {
     const {
         currentSong,
         isPlaying,
@@ -97,7 +99,7 @@ export default function SidebarPlayer() {
     };
 
     const handleSelectAll = () => {
-        const list = activeEntity ? (activeEntity.songs || []) : queue;
+        const list = queue;
         if (selectedSongs.size === list.length) {
             setSelectedSongs(new Set());
         } else {
@@ -106,7 +108,7 @@ export default function SidebarPlayer() {
     };
 
     const handleBulkFavorite = () => {
-        const list = activeEntity ? (activeEntity.songs || []) : queue;
+        const list = queue;
         list.forEach((s: any) => {
             if (selectedSongs.has(s.id) && !isFavorite(s.id)) {
                 toggleFavorite({ ...s, type: "song" });
@@ -116,7 +118,7 @@ export default function SidebarPlayer() {
     };
 
     const handleDownloadSelected = async () => {
-        const list = activeEntity ? activeEntity.songs || [] : queue;
+        const list = queue;
 
         for (const s of list) {
             if (selectedSongs.has(s.id) && s.url) {
@@ -154,114 +156,69 @@ export default function SidebarPlayer() {
         );
     }
 
-    const displaySongs = activeEntity ? (activeEntity.songs || []) : queue;
+    const displaySongs = queue;
     const title = activeEntity ? activeEntity.name || activeEntity.title : "Now Playing";
     const subTitle = activeEntity ? `${activeEntity.type} • ${displaySongs.length} Songs` : "Queue";
 
     return (
-        <div className="hidden lg:flex flex-col bg-[#0E1730] rounded-xl lg:rounded-2xl h-full border border-white/5 shadow-2xl overflow-hidden relative">
+        <div className="flex flex-col bg-[#0E1730] rounded-xl lg:rounded-2xl h-full border border-white/5 shadow-2xl overflow-hidden relative">
 
-            {/* ACTION BAR (When items selected) */}
-            {selectedSongs.size > 0 && (
-                <div className="absolute top-0 left-0 right-0 z-50 bg-blue-600 p-2 lg:p-3 flex items-center justify-between shadow-xl animate-slideDown">
-                    <div className="flex items-center gap-2 lg:gap-3">
-                        <button onClick={() => setSelectedSongs(new Set())} className="text-white/80 hover:text-white p-1">
-                            <ChevronLeftIcon className="w-4 h-4 lg:w-5 lg:h-5" />
-                        </button>
-                        <span className="text-white font-bold text-sm lg:text-base">{selectedSongs.size} Selected</span>
-                    </div>
-                    <div className="flex items-center gap-2 lg:gap-3">
-                        <button onClick={handleBulkFavorite} title="Add to Favorites" className="p-1 lg:p-2 hover:bg-white/10 rounded-full transition">
-                            <HeartIconSolid className="w-4 h-4 lg:w-5 lg:h-5 text-red-100" />
-                        </button>
-                        <button onClick={handleDownloadSelected} title="Download" className="p-1 lg:p-2 hover:bg-white/10 rounded-full transition">
-                            <ArrowDownTrayIcon className="w-4 h-4 lg:w-5 lg:h-5 text-white" />
-                        </button>
-                    </div>
+            {/* Close icon for mobile (only if onClose is provided) */}
+            {onClose && (
+                <div className="lg:hidden flex justify-end p-2 pb-0">
+                    <button
+                        onClick={onClose}
+                        className="p-2 rounded-full bg-gray-800 hover:bg-blue-600 text-white transition"
+                        title="Close"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
                 </div>
             )}
 
-            {/* HEADER AREA */}
-            <div className="pb-0 p-2 lg:p-3">
-                {activeEntity && (
-                    <button
-                        onClick={() => setActiveEntity(null)}
-                        className="flex items-center gap-1 text-gray-400 hover:text-white mb-3 lg:mb-4 transition text-xs lg:text-base"
-                    >
-                        <ChevronLeftIcon className="w-3 h-3 lg:w-4 lg:h-4" />
-                        <span className="uppercase font-bold tracking-widest">Back to Player</span>
-                    </button>
-                )}
-
-                {!activeEntity ? (
-                    <div className="mb-4 lg:mb-6">
-                        <div
-                            className="relative w-full rounded-lg lg:rounded-xl overflow-hidden shadow-2xl mb-3 lg:mb-4 group"
-                            style={{ height: `${COVER_DIM_PX}px` }}
-                        >
-                            {currentSong?.imageUri ? (
-                                <>
-                                    <Image
-                                        src={currentSong.imageUri.replace("150x150", "500x500")}
-                                        alt={currentSong.title}
-                                        fill
-                                        sizes={`(max-width: 1024px) 100vw, ${COVER_DIM_PX}px`}
-                                        className="object-cover"
-                                    />
-                                </>
-                            ) : (
-                                <div className="w-full h-full bg-gray-800 flex items-center justify-center">
-                                    <Bars3BottomLeftIcon className="w-10 h-10 lg:w-12 lg:h-12 text-gray-700" />
-                                </div>
-                            )}
-                        </div>
-                        <div className="text-center">
-                            <h3 className="text-lg lg:text-xl font-bold text-white truncate px-1">{currentSong?.title || "Not Playing"}</h3>
-                            <p className="text-xs lg:text-sm text-gray-400 truncate mt-1">{currentSong?.description || "Select a song"}</p>
-                            <div className="flex items-center mb-3 lg:mb-4 px-1 justify-between mt-3 lg:mt-4">
-                                <div
-                                    onClick={handleSelectAll}
-                                    className={`w-4 h-4 lg:w-5 lg:h-5 rounded border flex items-center justify-center shrink-0 transition-colors ${displaySongs.length > 0 &&
-                                        selectedSongs.size === displaySongs.length ? 'bg-blue-500 border-blue-500' : 'border-gray-600 group-hover:border-gray-400'}`}
-                                >
-                                    {displaySongs.length > 0 &&
-                                        selectedSongs.size === displaySongs.length && <CheckIcon className="w-3 h-3 text-white" />}
-                                </div>
-                                <PlayerControl isPlaying={isPlaying} togglePlay={togglePlay} playNext={playNext} playPrev={playPrev} />
-                                <PlayModeIcon mode={"order"} />
-                            </div>
-                        </div>
+            {/* ENTITY DETAILS (if any) */}
+            {activeEntity && (
+                <div className="flex flex-col items-center p-3 border-b border-white/10 relative">
+                    <div className={`relative shadow-lg ${activeEntity.type === 'artist' ? 'rounded-full' : 'rounded-lg'} overflow-hidden mb-2`} style={{ width: 64, height: 64 }}>
+                        <Image
+                            src={activeEntity.imageUri || (activeEntity.image?.[2]?.url) || ""}
+                            alt={title}
+                            fill
+                            sizes="64px"
+                            className="object-cover"
+                        />
                     </div>
-                ) : (
-                    <div className="flex p-2 lg:p-4 gap-3 lg:gap-4 mb-4 lg:mb-6">
-                        <div
-                            className={`relative shrink-0 shadow-lg ${activeEntity.type === 'artist' ? 'rounded-full' : 'rounded-lg'} overflow-hidden`}
-                            style={{ width: `${THUMB_SIZE_PX}px`, height: `${THUMB_SIZE_PX}px` }}
-                        >
-                            <Image
-                                src={activeEntity.imageUri || (activeEntity.image?.[2]?.url) || ""}
-                                alt={title}
-                                fill
-                                sizes={`${THUMB_SIZE_PX}px`}
-                                className="object-cover"
-                            />
-                        </div>
-                        <div className="min-w-0 flex flex-col justify-center">
-                            <h2 className="text-base lg:text-lg font-bold text-white leading-tight truncate">{title}</h2>
-                            <p className="text-xs text-gray-500 uppercase tracking-widest mt-1">{subTitle}</p>
-                        </div>
+                    <h2 className="text-lg font-bold text-white leading-tight truncate">{title}</h2>
+                    <p className="text-xs text-gray-400 uppercase tracking-widest mt-1">{subTitle}</p>
+                </div>
+            )}
+            {currentSong && !activeEntity && (
+                <div className="flex flex-col items-center p-3 border-b border-white/10">
+                    <div className={`relative shadow-lg rounded-lg overflow-hidden mb-2`} style={{ width: 64, height: 64 }}>
+                        <Image
+                            src={currentSong.imageUri || ""}
+                            alt={currentSong.title}
+                            fill
+                            sizes="64px"
+                            className="object-cover"
+                        />
                     </div>
-                )}
-            </div>
+                    <h2 className="text-lg font-bold text-white leading-tight truncate">{currentSong.title}</h2>
+                    <p className="text-xs text-gray-400 uppercase tracking-widest mt-1">{currentSong.description}</p>
+                    <PlayerControl isPlaying={isPlaying} togglePlay={togglePlay} playNext={playNext} playPrev={playPrev} />
+                </div>
+            )}
 
-            {/* LIST SECTION (Queue or Entity Songs) */}
+            {/* SONG LIST */}
             <div className="flex-1 min-h-0 flex flex-col p-2 lg:p-3 pt-0">
                 <div
                     ref={queueRef}
                     className="flex-1 overflow-y-auto pr-1 lg:pr-2 space-y-1 lg:space-y-2 scrollbar-thin scrollbar-thumb-gray-800 scrollbar-track-transparent"
                 >
                     {displaySongs.map((song: any, idx: number) => {
-                        const isActive = !activeEntity && idx === currentIndex;
+                        const isActive = idx === currentIndex;
                         const isSelected = selectedSongs.has(song.id);
                         return (
                             <div
@@ -323,6 +280,26 @@ export default function SidebarPlayer() {
                     })}
                 </div>
             </div>
+
+            {/* CURRENT PLAYING SONG DETAILS (always at bottom) */}
+            {currentSong && activeEntity && (
+                <div className="border-t border-white/10 bg-[#10182A] p-3 flex items-center gap-3">
+                    <div className="relative rounded overflow-hidden" style={{ width: 40, height: 40 }}>
+                        <Image
+                            src={currentSong.imageUri || ""}
+                            alt={currentSong.title}
+                            fill
+                            sizes="40px"
+                            className="object-cover"
+                        />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                        <p className="text-sm font-semibold truncate text-white">{currentSong.title}</p>
+                        <p className="text-xs text-gray-400 truncate">{currentSong.description}</p>
+                    </div>
+                    <PlayerControl isPlaying={isPlaying} togglePlay={togglePlay} playNext={playNext} playPrev={playPrev} />
+                </div>
+            )}
         </div>
     );
 }

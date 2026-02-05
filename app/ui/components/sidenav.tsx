@@ -1,5 +1,6 @@
+"use client";
 import Link from "next/link";
-import { signOut } from "@/auth";
+import { signOut } from "next-auth/react";
 import { Button } from "antd";
 
 import {
@@ -34,24 +35,17 @@ export default function SideNav() {
       <div className="flex-grow"></div>
 
       {/* Logout */}
-      <form
-        action={async () => {
-          "use server";
-          await signOut({ redirectTo: "/" });
+      <Button
+        type="text"
+        className="w-full flex items-center justify-center text-red-400 hover:text-red-500"
+        style={{
+          background: "transparent",
+          border: "none",
+          padding: "20px 0",
         }}
-      >
-        <Button
-          htmlType="submit"
-          type="text"
-          className="w-full flex items-center justify-center text-red-400 hover:text-red-500"
-          style={{
-            background: "transparent",
-            border: "none",
-            padding: "20px 0",
-          }}
-          icon={<PowerIcon className="w-7 h-7" />}
-        />
-      </form>
+        icon={<PowerIcon className="w-7 h-7" />}
+        onClick={() => signOut({ callbackUrl: "/" })}
+      />
     </div>
   );
 }

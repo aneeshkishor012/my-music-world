@@ -47,6 +47,7 @@ export function PlayerProvider({ children }: { children?: ReactNode }) {
     const [currentIndex, setCurrentIndex] = useState(-1);
     const [mode, setMode] = useState<PlayerMode>('normal');
     const [activeEntity, setActiveEntity] = useState<any | null>(null);
+    const requestVersionRef = useRef(0);
 
     const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -85,6 +86,8 @@ export function PlayerProvider({ children }: { children?: ReactNode }) {
     };
 
     const play = (song: Song) => {
+        requestVersionRef.current++;
+        setActiveEntity(null);
         setQueue([song]);
         setCurrentIndex(0);
         playSongInternal(song);
@@ -92,6 +95,8 @@ export function PlayerProvider({ children }: { children?: ReactNode }) {
 
     const playList = (songs: Song[], startIndex: number) => {
         if (!songs || songs.length === 0) return;
+        requestVersionRef.current++;
+        setActiveEntity(null);
         const index = Math.max(0, Math.min(startIndex, songs.length - 1));
         setQueue(songs);
         setCurrentIndex(index);
@@ -165,11 +170,14 @@ export function PlayerProvider({ children }: { children?: ReactNode }) {
     }); // Update on every render
 
     const loadEntity = async (id: string, type: string) => {
+        const currentVersion = ++requestVersionRef.current;
         try {
             let data: any = null;
             if (type === "album") data = await getAlbumListWithId(id);
             else if (type === "artist") data = await getArtistListWithId(id);
             else if (type === "playlist") data = await getPlayListWithId(id, 1, 100);
+
+            if (currentVersion !== requestVersionRef.current) return;
 
             if (data?.data) {
                 const songs = (data.data.songs || data.data.topSongs || []).map((song: any) => ({
@@ -181,11 +189,16 @@ export function PlayerProvider({ children }: { children?: ReactNode }) {
                 }));
 
                 setActiveEntity({ ...data.data, type, songs });
-                // Load songs into queue
                 setQueue(songs);
-                setCurrentIndex(-1);
+                if (songs.length > 0) {
+                    setCurrentIndex(0);
+                    playSongInternal(songs[0]);
+                } else {
+                    setCurrentIndex(-1);
+                }
             }
         } catch (err) {
+            if (currentVersion !== requestVersionRef.current) return;
             console.error("Error loading entity:", err);
         }
     };

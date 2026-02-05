@@ -7,12 +7,22 @@ import BottomControlPanel from "./BottomControlPanel";
 import FullMusicPlayerModal from "./FullMusicPlayerModal";
 
 interface MobileUIWrapperProps {
-    children: ReactNode;
+    children?: ReactNode;
 }
 
+
+import { useEffect } from "react";
+
+// Listen for a custom event to open the full player modal
 const MobileUIWrapper: FC<MobileUIWrapperProps> = ({ children }) => {
     const [isPanelExpanded, setIsPanelExpanded] = useState(false);
     const [isFullPlayerOpen, setIsFullPlayerOpen] = useState(false);
+
+    useEffect(() => {
+        const handler = () => setIsFullPlayerOpen(true);
+        window.addEventListener("openFullPlayerModal", handler);
+        return () => window.removeEventListener("openFullPlayerModal", handler);
+    }, []);
 
     return (
         <>

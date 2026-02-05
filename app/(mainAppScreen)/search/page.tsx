@@ -31,7 +31,7 @@ function SearchContent() {
                                 type="text"
                                 placeholder="Search songs, artists, albums, playlists..."
                                 value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
                                 className="w-full bg-[#1A2A4A] text-white placeholder-gray-500 rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
                             />
                         </div>

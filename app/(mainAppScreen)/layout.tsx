@@ -1,9 +1,11 @@
+"use client";
+
 import SideNav from "@/app/ui/components/sidenav";
 import { BellIcon, UserCircleIcon } from "@heroicons/react/24/solid";
 import MobileUIWrapperClient from "@/app/ui/components/MobileUIWrapperClient";
+import { PropsWithChildren } from "react";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
-
+export default function Layout({ children }: PropsWithChildren) {
     return (
         <div className="flex flex-col h-screen bg-[#0f0f1a] overflow-hidden">
 

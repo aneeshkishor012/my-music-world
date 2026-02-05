@@ -60,6 +60,10 @@ export function ResuableSearchSection({ title, type, query, onShowMore, limit = 
         } else {
             // Show details in Sidebar and load songs
             loadEntity(item.id, type);
+            // On mobile, open the full player modal
+            if (window.innerWidth < 1024) {
+                window.dispatchEvent(new Event("openFullPlayerModal"));
+            }
         }
     };
 

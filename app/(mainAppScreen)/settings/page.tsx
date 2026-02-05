@@ -1,4 +1,7 @@
+
 import Breadcrumbs from "@/app/ui/components/Breadcrumbs";
+import SettingsClientSection from "./SettingsClientSection";
+
 
 export default function SettingsPage() {
     return (
@@ -89,9 +92,7 @@ export default function SettingsPage() {
                 </div>
 
                 {/* Logout */}
-                <button className="w-full px-4 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg transition font-semibold">
-                    Logout
-                </button>
+                <SettingsClientSection />
             </div>
         </div>
     );
