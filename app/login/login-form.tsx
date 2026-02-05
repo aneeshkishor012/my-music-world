@@ -17,7 +17,6 @@ export default function LoginForm() {
   return (
     <div className="w-full max-w-xs sm:max-w-sm md:max-w-md text-white">
       {/* Top Title */}
-      <h1 className="text-lg sm:text-xl mb-6 text-center">Welcome to My Music World</h1>
 
       {/* Card */}
       <div
@@ -28,32 +27,32 @@ export default function LoginForm() {
         <h2 className="text-center text-xl sm:text-2xl mb-4">SignIn</h2>
 
         {/* Signature */}
-        <div className="text-center text-3xl sm:text-4xl italic mb-6 font-light">AK</div>
+        <h1 className="text-lg sm:text-xl mb-6 text-center">Welcome to My Music World</h1>
 
         {/* FORM (SERVER ACTIONS WORK HERE) */}
         <form action={formAction} className={`${styles.loginForm} space-y-4`}>
           {/* Username */}
-            <Input
-              prefix={<LockClosedIcon className="w-5 h-5 sm:w-6 sm:h-6 mr-2 ant-input" />}
-              name="email"
-              placeholder="Username or phone......"
-              className="bg-white/10 rounded-lg px-3 py-2 mb-4 text-white border-none shadow-none focus:outline-none"
-              variant="borderless"
-              allowClear={{ clearIcon: <XMarkIcon className="w-4 h-4" /> }}
-              required
-            />
+          <Input
+            prefix={<LockClosedIcon className="w-5 h-5 sm:w-6 sm:h-6 mr-2 ant-input" />}
+            name="email"
+            placeholder="Username or phone......"
+            className="bg-white/10 rounded-lg px-3 py-2 mb-4 text-white border-none shadow-none focus:outline-none"
+            variant="borderless"
+            allowClear={{ clearIcon: <XMarkIcon className="w-4 h-4" /> }}
+            required
+          />
 
           {/* Password */}
-            <Input.Password
-              prefix={<LockClosedIcon className="w-5 h-5 sm:w-6 sm:h-6 mr-2 ant-input" />}
-              name="password"
-              placeholder="Password........"
-              className="bg-white/10 rounded-lg px-3 py-2 mb-4 text-white border-none shadow-none focus:outline-none"
-              variant="borderless"
-              allowClear={{ clearIcon: <XMarkIcon className="w-4 h-4" /> }}
-              required
-              minLength={6}
-            />
+          <Input.Password
+            prefix={<LockClosedIcon className="w-5 h-5 sm:w-6 sm:h-6 mr-2 ant-input" />}
+            name="password"
+            placeholder="Password........"
+            className="bg-white/10 rounded-lg px-3 py-2 mb-4 text-white border-none shadow-none focus:outline-none"
+            variant="borderless"
+            allowClear={{ clearIcon: <XMarkIcon className="w-4 h-4" /> }}
+            required
+            minLength={6}
+          />
 
           {/* Hidden RedirectTo Field */}
           <input type="hidden" name="redirectTo" value={callbackUrl} />

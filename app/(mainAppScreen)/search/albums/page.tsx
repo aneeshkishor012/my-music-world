@@ -14,18 +14,18 @@ function AlbumsSearchContent() {
     const backHref = returnUrl ? returnUrl : `/home?q=${encodeURIComponent(q)}`;
 
     return (
-        <div className="flex flex-row gap-6 h-full w-full">
-            {/* LEFT CONTENT – 70% */}
-            <div className="flex-1 bg-[#0e1730] overflow-hidden p-3 min-w-0 rounded-xl h-full pr-2 scrollbar-thin scrollbar-thumb-gray-800 scrollbar-track-transparent">
+        <div className="flex flex-col lg:flex-row gap-1 sm:gap-2 h-full w-full">
+            {/* LEFT CONTENT – Full width on mobile, 70% on desktop */}
+            <div className="flex-1 bg-[#0e1730] overflow-hidden p-2 sm:p-3 min-w-0 rounded-lg sm:rounded-xl h-full pr-1 sm:pr-2 scrollbar-thin scrollbar-thumb-gray-800 scrollbar-track-transparent">
                 <Breadcrumbs items={[{ label: backLabel, href: backHref }, { label: 'Albums' }]} />
 
-                <p className="text-sm text-gray-400 mb-6 px-1">Results for "{q}"</p>
+                <p className="text-xs sm:text-sm text-gray-400 mb-3 md:mb-6 px-1 sm:px-2">Results for "{q}"</p>
 
                 <ResuableSearchSection title="Albums" type="album" query={q} limit={24} showPagination={false} infinite={true} />
             </div>
 
-            {/* RIGHT SIDEBAR – 30% */}
-            <div className="w-[350px] shrink-0 h-full">
+            {/* RIGHT SIDEBAR – Hidden on mobile, 30% on desktop */}
+            <div className="hidden lg:flex lg:w-[350px] xl:w-[400px] 2xl:w-[450px] h-full flex-shrink-0">
                 <SidebarPlayer />
             </div>
         </div>
@@ -34,7 +34,7 @@ function AlbumsSearchContent() {
 
 export default function AlbumsSearchPage() {
     return (
-        <div className="h-full text-white pl-3  pb-2">
+        <div className="h-full text-white p-1 sm:p-2 pb-2">
             <Suspense fallback={<div className="h-full w-full flex items-center justify-center">Loading albums...</div>}>
                 <AlbumsSearchContent />
             </Suspense>

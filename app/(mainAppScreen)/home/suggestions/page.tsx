@@ -370,7 +370,7 @@ function SuggestionsContent() {
       </div>
 
       {/* RIGHT SIDEBAR */}
-      <div className="w-[350px] shrink-0 h-full">
+      <div className="hidden lg:block lg:w-[350px] xl:w-[400px] 2xl:w-[450px] shrink-0 h-full">
         <SidebarPlayer />
       </div>
     </div>

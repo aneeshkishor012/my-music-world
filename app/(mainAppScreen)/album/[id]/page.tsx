@@ -32,7 +32,7 @@ export default function AlbumDetailPage() {
     };
 
     return (
-        <div className="p-4 md:px-10 h-full overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700 text-white">
+        <div className="p-2 sm:p-3 md:p-4 lg:px-10 h-full overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700 text-white">
 
             <Breadcrumbs items={[
                 { label: "Home", href: "/home" },
@@ -41,20 +41,20 @@ export default function AlbumDetailPage() {
             ]} />
 
             {/* Header */}
-            <div className="flex flex-col md:flex-row gap-8 items-center md:items-end mb-10">
-                <div className="relative w-64 h-64 shrink-0 shadow-2xl rounded-lg overflow-hidden">
+            <div className="flex flex-col md:flex-row gap-4 md:gap-8 items-center md:items-end mb-6 md:mb-10">
+                <div className="relative w-40 h-40 sm:w-48 sm:h-48 md:w-64 md:h-64 shrink-0 shadow-2xl rounded-lg overflow-hidden">
                     <Image
                         src={albumImage || ""}
                         alt={albumData.name}
                         fill
-                        sizes="(max-width: 768px) 100vw, 256px"
+                        sizes="(max-width: 640px) 50vw, (max-width: 768px) 40vw, 256px"
                         className="object-cover"
                     />
                 </div>
                 <div className="flex-1 text-center md:text-left">
-                    <p className="text-sm font-bold uppercase tracking-widest text-gray-400 mb-2">Album</p>
-                    <h1 className="text-4xl md:text-6xl font-bold mb-4">{albumData.name}</h1>
-                    <div className="flex flex-wrap items-center gap-2 text-sm text-gray-300 justify-center md:justify-start">
+                    <p className="text-xs sm:text-sm font-bold uppercase tracking-widest text-gray-400 mb-1 sm:mb-2">Album</p>
+                    <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-bold mb-2 md:mb-4">{albumData.name}</h1>
+                    <div className="flex flex-wrap items-center gap-1 sm:gap-2 text-xs sm:text-sm text-gray-300 justify-center md:justify-start">
                         <span className="font-bold text-white">{albumData.artists?.primary?.[0]?.name}</span>
                         <span>•</span>
                         <span>{albumData.year}</span>
@@ -62,26 +62,26 @@ export default function AlbumDetailPage() {
                         <span>{songs.length} songs</span>
                     </div>
 
-                    <div className="mt-8 flex items-center gap-4 justify-center md:justify-start">
+                    <div className="mt-4 md:mt-8 flex items-center gap-2 md:gap-4 justify-center md:justify-start">
                         <button
                             onClick={playAll}
-                            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full font-bold flex items-center gap-2 transform transition hover:scale-105 active:scale-95 shadow-lg"
+                            className="bg-blue-600 hover:bg-blue-700 text-white px-4 sm:px-6 md:px-8 py-2 md:py-3 rounded-full font-bold flex items-center gap-2 transform transition hover:scale-105 active:scale-95 shadow-lg text-sm md:text-base"
                         >
-                            <PlayIcon className="w-5 h-5" /> Play
+                            <PlayIcon className="w-4 h-4 md:w-5 md:h-5" /> Play
                         </button>
                         <button
                             onClick={() => toggleFavorite({ ...albumData, type: 'album', title: albumData.name, imageUri: albumImage })}
-                            className={`p-3 rounded-full border border-gray-600 hover:border-white transition ${liked ? 'text-red-500' : 'text-gray-400'}`}
+                            className={`p-2 md:p-3 rounded-full border border-gray-600 hover:border-white transition ${liked ? 'text-red-500' : 'text-gray-400'}`}
                         >
-                            {liked ? <HeartIcon className="w-6 h-6" /> : <HeartIconOutline className="w-6 h-6" />}
+                            {liked ? <HeartIcon className="w-5 h-5 md:w-6 md:h-6" /> : <HeartIconOutline className="w-5 h-5 md:w-6 md:h-6" />}
                         </button>
                     </div>
                 </div>
             </div>
 
             {/* Song List */}
-            <div className="bg-black/20 rounded-xl p-4 md:p-6 mb-20">
-                <div className="grid grid-cols-[50px_1fr_100px] gap-4 px-4 py-2 border-b border-gray-800 text-gray-400 text-sm font-bold mb-4">
+            <div className="bg-black/20 rounded-lg md:rounded-xl p-2 md:p-4 lg:p-6 mb-20">
+                <div className="hidden md:grid grid-cols-[50px_1fr_100px] gap-4 px-4 py-2 border-b border-gray-800 text-gray-400 text-xs md:text-sm font-bold mb-4">
                     <span>#</span>
                     <span>TITLE</span>
                     <span className="text-right">DURATION</span>
@@ -95,9 +95,9 @@ export default function AlbumDetailPage() {
                         <div
                             key={song.id}
                             onClick={() => playList(songs, index)}
-                            className={`grid grid-cols-[50px_1fr_100px] gap-4 px-4 py-3 rounded-md hover:bg-white/5 transition items-center cursor-pointer group ${isCurrent ? 'bg-white/10' : ''}`}
+                            className={`flex md:grid md:grid-cols-[50px_1fr_100px] gap-2 md:gap-4 px-2 md:px-4 py-2 md:py-3 rounded-md hover:bg-white/5 transition items-center cursor-pointer group ${isCurrent ? 'bg-white/10' : ''}`}
                         >
-                            <span className="text-gray-500 group-hover:text-white">
+                            <span className="text-gray-500 group-hover:text-white text-xs md:text-base hidden md:inline">
                                 {isCurrent && isPlaying ? (
                                     <div className="h-4 w-4 flex gap-1 justify-center items-center">
                                         <div className="w-1 h-3 bg-blue-500 animate-bounce"></div>
@@ -106,11 +106,11 @@ export default function AlbumDetailPage() {
                                     </div>
                                 ) : index + 1}
                             </span>
-                            <div className="flex flex-col min-w-0">
-                                <span className={`font-semibold truncate ${isCurrent ? 'text-blue-400' : 'text-white'}`}>{song.name}</span>
-                                <span className="text-sm text-gray-400 truncate">{song.artists?.primary?.[0]?.name}</span>
+                            <div className="flex flex-col min-w-0 flex-1">
+                                <span className={`font-semibold truncate text-xs sm:text-sm md:text-base ${isCurrent ? 'text-blue-400' : 'text-white'}`}>{song.name}</span>
+                                <span className="text-xs text-gray-400 truncate">{song.artists?.primary?.[0]?.name}</span>
                             </div>
-                            <div className="flex items-center justify-end gap-4">
+                            <div className="flex items-center justify-end gap-2 md:gap-4">
                                 <button
                                     onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                                         e.stopPropagation();
@@ -118,9 +118,9 @@ export default function AlbumDetailPage() {
                                     }}
                                     className={`opacity-0 group-hover:opacity-100 transition ${songLiked ? 'opacity-100 text-red-500' : 'text-gray-400 hover:text-white'}`}
                                 >
-                                    {songLiked ? <HeartIcon className="w-4 h-4" /> : <HeartIconOutline className="w-4 h-4" />}
+                                    {songLiked ? <HeartIcon className="w-3 h-3 md:w-4 md:h-4" /> : <HeartIconOutline className="w-3 h-3 md:w-4 md:h-4" />}
                                 </button>
-                                <span className="text-gray-400 text-sm hidden sm:inline">{song.duration}</span>
+                                <span className="text-gray-400 text-xs md:text-sm hidden sm:inline">{song.duration}</span>
                             </div>
                         </div>
                     );

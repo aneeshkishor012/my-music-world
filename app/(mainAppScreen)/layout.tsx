@@ -1,40 +1,44 @@
 import SideNav from "@/app/ui/components/sidenav";
 import { BellIcon, UserCircleIcon } from "@heroicons/react/24/solid";
+import MobileUIWrapperClient from "@/app/ui/components/MobileUIWrapperClient";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-    return (
-        <div className="flex flex-col h-screen bg-[#0f0f1a]">
 
-            {/* Top Navbar */}
-            <nav className="bg-[#0B1A33] text-white p-4 shadow-lg flex items-center justify-between m-2 rounded-xl">
-                <h1 className="text-xl font-semibold">Good Morning</h1>
-                <div className="flex items-center gap-6">
-                    <button className="hover:text-purple-300">
-                        <BellIcon className="w-7 h-7" />
+    return (
+        <div className="flex flex-col h-screen bg-[#0f0f1a] overflow-hidden">
+
+            {/* Top Navbar - Responsive */}
+            <nav className="bg-[#0B1A33] text-white px-2 sm:px-3 md:px-4 py-2 sm:py-3 md:py-4 shadow-lg flex items-center justify-between m-1 sm:m-2 rounded-lg sm:rounded-xl flex-shrink-0">
+                <h1 className="text-base sm:text-lg md:text-xl font-semibold truncate">Good Morning</h1>
+                <div className="flex items-center gap-3 sm:gap-4 md:gap-6">
+                    <button className="hover:text-purple-300 transition p-1">
+                        <BellIcon className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" />
                     </button>
 
-                    <button className="hover:text-purple-300">
-                        <UserCircleIcon className="w-8 h-8" />
+                    <button className="hover:text-purple-300 transition p-1">
+                        <UserCircleIcon className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8" />
                     </button>
                 </div>
             </nav>
 
             {/* Main Wrapper */}
-            <div className="flex flex-1 md:overflow-hidden">
+            <div className="flex flex-1 overflow-hidden relative">
 
-                {/* Left SideBar */}
-                <div className="w-full flex-none md:w-16 bg-[#0b1a33] text-white border-r border-white/10 rounded-xl ml-2 mb-2">
+                {/* Desktop SideBar */}
+                <div className="hidden md:flex md:w-16 md:flex-none bg-[#0b1a33] text-white border-r border-white/10 rounded-xl md:m-1 md:mb-1">
                     <SideNav />
                 </div>
 
                 {/* Page Content */}
-                <main className="flex-grow">
-                    {children}
+                <main className="flex-grow overflow-auto w-full md:pr-2 md:pb-2 pb-20 md:pb-0 relative">
+                    <MobileUIWrapperClient>
+                        {children}
+                    </MobileUIWrapperClient>
                 </main>
             </div>
 
-            {/* Footer */}
-            <footer className="w-full bg-[#0B1A33] text-gray-300 text-center py-3 mt-auto">
+            {/* Footer - Responsive */}
+            <footer className="w-full bg-[#0B1A33] text-gray-300 text-center py-2 sm:py-3 text-xs sm:text-sm mt-auto flex-shrink-0">
                 © {new Date().getFullYear()} My Music App — All Rights Reserved.
             </footer>
         </div>

@@ -147,9 +147,9 @@ export default function SidebarPlayer() {
 
     if (!currentSong && queue.length === 0 && !activeEntity) {
         return (
-            <div className="hidden lg:flex flex-col items-center justify-center bg-[#0E1730] rounded-2xl p-6 h-full border border-white/5 text-gray-500">
-                <Bars3BottomLeftIcon className="w-12 h-12 mb-4 opacity-20" />
-                <p className="text-center text-sm">No music in queue</p>
+            <div className="hidden lg:flex flex-col items-center justify-center bg-[#0E1730] rounded-xl lg:rounded-2xl p-4 lg:p-6 h-full border border-white/5 text-gray-500">
+                <Bars3BottomLeftIcon className="w-10 h-10 lg:w-12 lg:h-12 mb-4 opacity-20" />
+                <p className="text-center text-xs lg:text-sm">No music in queue</p>
             </div>
         );
     }
@@ -159,44 +159,44 @@ export default function SidebarPlayer() {
     const subTitle = activeEntity ? `${activeEntity.type} • ${displaySongs.length} Songs` : "Queue";
 
     return (
-        <div className="hidden lg:flex flex-col bg-[#0E1730] rounded-2xl h-full border border-white/5 shadow-2xl overflow-hidden relative">
+        <div className="hidden lg:flex flex-col bg-[#0E1730] rounded-xl lg:rounded-2xl h-full border border-white/5 shadow-2xl overflow-hidden relative">
 
             {/* ACTION BAR (When items selected) */}
             {selectedSongs.size > 0 && (
-                <div className="absolute top-0 left-0 right-0 z-50 bg-blue-600 p-3 flex items-center justify-between shadow-xl animate-slideDown">
-                    <div className="flex items-center gap-3">
-                        <button onClick={() => setSelectedSongs(new Set())} className="text-white/80 hover:text-white">
-                            <ChevronLeftIcon className="w-5 h-5" />
+                <div className="absolute top-0 left-0 right-0 z-50 bg-blue-600 p-2 lg:p-3 flex items-center justify-between shadow-xl animate-slideDown">
+                    <div className="flex items-center gap-2 lg:gap-3">
+                        <button onClick={() => setSelectedSongs(new Set())} className="text-white/80 hover:text-white p-1">
+                            <ChevronLeftIcon className="w-4 h-4 lg:w-5 lg:h-5" />
                         </button>
-                        <span className="text-white font-bold">{selectedSongs.size} Selected</span>
+                        <span className="text-white font-bold text-sm lg:text-base">{selectedSongs.size} Selected</span>
                     </div>
-                    <div className="flex items-center gap-3">
-                        <button onClick={handleBulkFavorite} title="Add to Favorites" className="p-2 hover:bg-white/10 rounded-full transition">
-                            <HeartIconSolid className="w-5 h-5 text-red-100" />
+                    <div className="flex items-center gap-2 lg:gap-3">
+                        <button onClick={handleBulkFavorite} title="Add to Favorites" className="p-1 lg:p-2 hover:bg-white/10 rounded-full transition">
+                            <HeartIconSolid className="w-4 h-4 lg:w-5 lg:h-5 text-red-100" />
                         </button>
-                        <button onClick={handleDownloadSelected} title="Download" className="p-2 hover:bg-white/10 rounded-full transition">
-                            <ArrowDownTrayIcon className="w-5 h-5 text-white" />
+                        <button onClick={handleDownloadSelected} title="Download" className="p-1 lg:p-2 hover:bg-white/10 rounded-full transition">
+                            <ArrowDownTrayIcon className="w-4 h-4 lg:w-5 lg:h-5 text-white" />
                         </button>
                     </div>
                 </div>
             )}
 
             {/* HEADER AREA */}
-            <div className="pb-0 p-3">
+            <div className="pb-0 p-2 lg:p-3">
                 {activeEntity && (
                     <button
                         onClick={() => setActiveEntity(null)}
-                        className="flex items-center gap-1 text-gray-400 hover:text-white mb-4 transition"
+                        className="flex items-center gap-1 text-gray-400 hover:text-white mb-3 lg:mb-4 transition text-xs lg:text-base"
                     >
-                        <ChevronLeftIcon className="w-4 h-4" />
-                        <span className="text-xs uppercase font-bold tracking-widest">Back to Player</span>
+                        <ChevronLeftIcon className="w-3 h-3 lg:w-4 lg:h-4" />
+                        <span className="uppercase font-bold tracking-widest">Back to Player</span>
                     </button>
                 )}
 
                 {!activeEntity ? (
-                    <div className="mb-6">
+                    <div className="mb-4 lg:mb-6">
                         <div
-                            className="relative w-full rounded-xl overflow-hidden shadow-2xl mb-4 group"
+                            className="relative w-full rounded-lg lg:rounded-xl overflow-hidden shadow-2xl mb-3 lg:mb-4 group"
                             style={{ height: `${COVER_DIM_PX}px` }}
                         >
                             {currentSong?.imageUri ? (
@@ -211,17 +211,17 @@ export default function SidebarPlayer() {
                                 </>
                             ) : (
                                 <div className="w-full h-full bg-gray-800 flex items-center justify-center">
-                                    <Bars3BottomLeftIcon className="w-12 h-12 text-gray-700" />
+                                    <Bars3BottomLeftIcon className="w-10 h-10 lg:w-12 lg:h-12 text-gray-700" />
                                 </div>
                             )}
                         </div>
                         <div className="text-center">
-                            <h3 className="text-xl font-bold text-white truncate px-1">{currentSong?.title || "Not Playing"}</h3>
-                            <p className="text-sm text-gray-400 truncate mt-1">{currentSong?.description || "Select a song"}</p>
-                            <div className="flex items-center mb-4 px-1 justify-between mt-4">
+                            <h3 className="text-lg lg:text-xl font-bold text-white truncate px-1">{currentSong?.title || "Not Playing"}</h3>
+                            <p className="text-xs lg:text-sm text-gray-400 truncate mt-1">{currentSong?.description || "Select a song"}</p>
+                            <div className="flex items-center mb-3 lg:mb-4 px-1 justify-between mt-3 lg:mt-4">
                                 <div
                                     onClick={handleSelectAll}
-                                    className={`w-5 h-5 rounded border flex items-center justify-center shrink-0 transition-colors ${displaySongs.length > 0 &&
+                                    className={`w-4 h-4 lg:w-5 lg:h-5 rounded border flex items-center justify-center shrink-0 transition-colors ${displaySongs.length > 0 &&
                                         selectedSongs.size === displaySongs.length ? 'bg-blue-500 border-blue-500' : 'border-gray-600 group-hover:border-gray-400'}`}
                                 >
                                     {displaySongs.length > 0 &&
@@ -233,7 +233,7 @@ export default function SidebarPlayer() {
                         </div>
                     </div>
                 ) : (
-                    <div className="flex p-4 gap-4 mb-6">
+                    <div className="flex p-2 lg:p-4 gap-3 lg:gap-4 mb-4 lg:mb-6">
                         <div
                             className={`relative shrink-0 shadow-lg ${activeEntity.type === 'artist' ? 'rounded-full' : 'rounded-lg'} overflow-hidden`}
                             style={{ width: `${THUMB_SIZE_PX}px`, height: `${THUMB_SIZE_PX}px` }}
@@ -247,7 +247,7 @@ export default function SidebarPlayer() {
                             />
                         </div>
                         <div className="min-w-0 flex flex-col justify-center">
-                            <h2 className="text-lg font-bold text-white leading-tight truncate">{title}</h2>
+                            <h2 className="text-base lg:text-lg font-bold text-white leading-tight truncate">{title}</h2>
                             <p className="text-xs text-gray-500 uppercase tracking-widest mt-1">{subTitle}</p>
                         </div>
                     </div>
@@ -255,10 +255,10 @@ export default function SidebarPlayer() {
             </div>
 
             {/* LIST SECTION (Queue or Entity Songs) */}
-            <div className="flex-1 min-h-0 flex flex-col p-3 pt-0">
+            <div className="flex-1 min-h-0 flex flex-col p-2 lg:p-3 pt-0">
                 <div
                     ref={queueRef}
-                    className="flex-1 overflow-y-auto pr-2 space-y-2 scrollbar-thin scrollbar-thumb-gray-800 scrollbar-track-transparent"
+                    className="flex-1 overflow-y-auto pr-1 lg:pr-2 space-y-1 lg:space-y-2 scrollbar-thin scrollbar-thumb-gray-800 scrollbar-track-transparent"
                 >
                     {displaySongs.map((song: any, idx: number) => {
                         const isActive = !activeEntity && idx === currentIndex;
@@ -268,12 +268,12 @@ export default function SidebarPlayer() {
                                 key={`${song.id}-${idx}`}
                                 ref={isActive ? activeItemRef : null}
                                 onClick={() => playList(displaySongs, idx)}
-                                className={`flex items-center gap-3 p-1 rounded-lg transition overflow-hidden cursor-pointer group relative ${isActive ? 'bg-blue-600/20 border border-blue-500/30' : 'hover:bg-white/5 border border-transparent'}`}
+                                className={`flex items-center gap-2 lg:gap-3 p-1 rounded-lg transition overflow-hidden cursor-pointer group relative ${isActive ? 'bg-blue-600/20 border border-blue-500/30' : 'hover:bg-white/5 border border-transparent'}`}
                             >
                                 {/* Selection Indicator */}
                                 <div
                                     onClick={(e: React.MouseEvent) => handleToggleSelect(song.id, e)}
-                                    className={`w-5 h-5 rounded border flex items-center justify-center shrink-0 transition-colors ${isSelected ? 'bg-blue-500 border-blue-500' : 'border-gray-600 group-hover:border-gray-400'}`}
+                                    className={`w-4 h-4 lg:w-5 lg:h-5 rounded border flex items-center justify-center shrink-0 transition-colors ${isSelected ? 'bg-blue-500 border-blue-500' : 'border-gray-600 group-hover:border-gray-400'}`}
                                 >
                                     {isSelected && <CheckIcon className="w-3 h-3 text-white" />}
                                 </div>
@@ -300,7 +300,7 @@ export default function SidebarPlayer() {
                                     )}
                                 </div>
                                 <div className="min-w-0 flex-1">
-                                    <p className={`text-sm font-semibold truncate ${isActive ? 'text-blue-400' : 'text-white group-hover:text-blue-400'}`}>
+                                    <p className={`text-xs lg:text-sm font-semibold truncate ${isActive ? 'text-blue-400' : 'text-white group-hover:text-blue-400'}`}>
                                         {song.title}
                                     </p>
                                     <p className="text-xs text-gray-500 truncate">
@@ -315,7 +315,7 @@ export default function SidebarPlayer() {
                                         }}
                                         className="p-1 hover:text-red-500 text-gray-500 transition"
                                     >
-                                        {isFavorite(song.id) ? <HeartIconSolid className="w-4 h-4 text-red-500" /> : <HeartIcon className="w-4 h-4" />}
+                                        {isFavorite(song.id) ? <HeartIconSolid className="w-3 h-3 lg:w-4 lg:h-4 text-red-500" /> : <HeartIcon className="w-3 h-3 lg:w-4 lg:h-4" />}
                                     </button>
                                 </div>
                             </div>

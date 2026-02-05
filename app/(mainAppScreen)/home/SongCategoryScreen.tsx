@@ -183,24 +183,23 @@ export default function SongCategoryScreen() {
 
             {/* Search Bar */}
             <Input
-                prefix={<MagnifyingGlassIcon className="w-6 h-6 text-gray-400 mr-3" />}
+                prefix={<MagnifyingGlassIcon className="w-5 h-5 sm:w-6 sm:h-6 text-gray-400 mr-2 sm:mr-3" />}
                 placeholder={debouncedQuery ? "Searching..." : "Search for songs, artists, playlists..."}
-                className="bg-[#1A203A] p-4 rounded-xl text-white border-none  placeholder-gray-500  shadow-lg border"
+                className="bg-[#1A203A] p-2 sm:p-3 md:p-4 rounded-lg sm:rounded-xl text-xs sm:text-base text-white border-none placeholder-gray-500 shadow-lg border"
                 value={localQuery}
                 onChange={handleSearch}
                 variant="borderless"
-                allowClear={{ clearIcon: <XMarkIcon className="w-6 h-4 text-gray-400" /> }}
+                allowClear={{ clearIcon: <XMarkIcon className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-4 text-gray-400" /> }}
             />
 
-            {/* Category Chips - Always visible? Or only when no search? User said "keep the Song suggection chips". */}
-            {/* If I keep them always visible, it's easy to switch context. */}
-            <div className="flex flex-wrap gap-2 justify-evenly">
+            {/* Category Chips - Responsive Grid */}
+            <div className="flex flex-wrap gap-1 sm:gap-2 justify-start sm:justify-evenly overflow-x-auto pb-1 sm:pb-0">
                 {categories.map((cat, index) => (
                     <div
                         key={index}
                         onClick={() => handleChipClick(cat)}
                         className={`
-                            px-4 py-1 rounded-md text-sm cursor-pointer transition-all border
+                            px-2 sm:px-3 md:px-4 py-1 rounded-md text-xs sm:text-sm cursor-pointer transition-all border whitespace-nowrap
                             bg-[#1A203A] border-transparent text-gray-300 hover:bg-[#232F4D] hover:border-gray-600
                         `}
                     >

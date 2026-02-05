@@ -64,7 +64,7 @@ export function ResuableSearchSection({ title, type, query, onShowMore, limit = 
     };
 
     return (
-        <section className="mb-10 overflow-y-auto max-h-[calc(100vh-200px)]">
+        <section className="mb-10">
             <div className="flex justify-between items-center mb-6 px-1">
                 <h2 className="text-xl font-bold text-white tracking-wide">{title}</h2>
                 <button
@@ -75,7 +75,7 @@ export function ResuableSearchSection({ title, type, query, onShowMore, limit = 
                 </button>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 xl:grid-cols-7 gap-6">
+            <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 xl:grid-cols-7 gap-6">
                 {(maxItems != null ? data.slice(0, maxItems) : data).map((item, idx) => {
                     const liked = isFavorite(item.id);
                     const isCurrent = currentSong?.id === item.id;
