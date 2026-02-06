@@ -15,6 +15,8 @@ export type Song = {
     url?: string; // Audio URL
     duration?: string;
     type?: string;
+    name?: string;
+    label?: string;
 };
 
 type PlayerMode = 'normal' | 'shuffle' | 'repeat_one';

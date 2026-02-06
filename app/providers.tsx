@@ -9,7 +9,7 @@ interface ProvidersProps {
 
 // Using React.FC specifically handles the children prop expectation
 const Providers: React.FC<ProvidersProps> = ({ children }) => {
-  return <SessionProvider>{children}</SessionProvider>;
+  return <SessionProvider children={children} />;
 };
 
 export default Providers;

@@ -177,7 +177,6 @@ export default function SidebarPlayer({ onClose }: { onClose?: () => void }) {
     const displaySongs = queue;
     const title = activeEntity ? activeEntity.name || activeEntity.title : "Now Playing";
     const subTitle = activeEntity ? `${activeEntity.type} • ${displaySongs.length} Songs` : "Queue";
-    console.log("currentSong ::", currentSong)
     return (
         <div className="flex flex-col rounded-xl lg:rounded-2xl h-full w-full  shadow-2xl overflow-hidden relative">
 
@@ -243,12 +242,12 @@ export default function SidebarPlayer({ onClose }: { onClose?: () => void }) {
 
                     {/* Title */}
                     <h2 className="text-lg font-bold text-white leading-tight truncate">
-                        {currentSong.title || currentSong.name}
+                        {currentSong.title || currentSong?.name}
                     </h2>
 
                     {/* Subtitle */}
                     <p className="text-xs text-gray-400 uppercase tracking-widest mt-1 mb-2">
-                        {currentSong.description || currentSong.label}
+                        {currentSong.description || currentSong?.label}
                     </p>
 
                     {/* Controls Row */}
@@ -278,10 +277,11 @@ export default function SidebarPlayer({ onClose }: { onClose?: () => void }) {
                         {/* Favorite */}
                         <div className="opacity-100 transition-opacity">
                             <button
-                                onClick={(e) => {
+                                onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                                     e.stopPropagation();
                                     toggleFavorite({ ...currentSong, type: "song" });
                                 }}
+
                                 className="p-1 hover:text-red-500 text-gray-500 transition"
                             >
                                 {isFavorite(currentSong.id) ? (

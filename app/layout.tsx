@@ -22,9 +22,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <PlayerProvider>
             <FavoritesProvider>
               <SearchProvider>
-                <Providers>
-                  {children}
-                </Providers>
+                <Providers children={children} />
                 <BottomPlayer />
               </SearchProvider>
             </FavoritesProvider>
