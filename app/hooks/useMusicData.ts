@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
-import { getSongListOnSearch } from "./jiosaavn/jiosaavn";
+import { getAlbumListWithId, getArtistListWithId, getPlayListWithId, getSongListOnSearch } from "./jiosaavn/jiosaavn";
+import { title } from "process";
 
-export function useInfiniteMusic(query: string) {
+export function useInfiniteMusic(query: string, type: string, id: string) {
     const [data, setData] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<any>(null);
@@ -23,28 +24,61 @@ export function useInfiniteMusic(query: string) {
 
     const loadMusic = async (pageNum: number, searchQuery: string) => {
         if (!searchQuery) return;
-        
+
         setLoading(true);
         setError(null);
-        
-        try {
-            const response = await getSongListOnSearch(searchQuery, pageNum, LIMIT);
-            
-            // Map the response to a cleaner format if needed, similar to mapSong in jiosaavn.js
-            // Adapted from useGetSongListOnSearch logic
-            const mappedResults = (response.data.results ?? []).map((song: any) => ({
-                ...song,
-                description: song?.artists?.primary?.[0]?.name,
-                imageUri: song?.image?.[2]?.url,
-                url: song?.downloadUrl?.[4]?.url,
-                duration: (song?.duration / 60).toFixed(2),
-            }));
 
-            if (mappedResults.length === 0 || mappedResults.length < LIMIT) {
-                setHasMore(false);
+        try {
+            let response = []
+            if (type === "artist") {
+                response = await getArtistListWithId(id);
+                // response.data.topSongs
+            } else if (type === "album") {
+                response = await getAlbumListWithId(id);
+            } else if (type === "playlist") {
+                response = await getPlayListWithId(id, pageNum, LIMIT);
+            } else {
+                response = await getSongListOnSearch(searchQuery, pageNum, LIMIT);
             }
 
-            setData(prev => pageNum === 1 ? mappedResults : [...prev, ...mappedResults]);
+
+
+            if (type === "artist") {
+                const mappedResults = (response.data.topSongs ?? []).map((song: any) => ({
+                    ...song,
+                    description: song?.artists?.primary?.[0]?.name,
+                    imageUri: song?.image?.[2]?.url,
+                    url: song?.downloadUrl?.[4]?.url,
+                    duration: (song?.duration / 60).toFixed(2),
+                }));
+                setData(mappedResults);
+            } else if (type === "playlist" || type === "album") {
+                const mappedResults = (response.data.songs ?? []).map((song: any) => ({
+                    ...song,
+                    title: song?.name,
+                    imageUri: song?.image?.[2]?.url,
+                    url: song?.downloadUrl?.[4]?.url,
+                    duration: (song?.duration / 60).toFixed(2),
+                }));
+                if (mappedResults.length === 0 || mappedResults.length < LIMIT) {
+                    setHasMore(false);
+                }
+
+                setData(prev => pageNum === 1 ? mappedResults : [...prev, ...mappedResults]);
+            } else {
+                const mappedResults = (response.data.results ?? []).map((song: any) => ({
+                    ...song,
+                    description: song?.artists?.primary?.[0]?.name,
+                    imageUri: song?.image?.[2]?.url,
+                    url: song?.downloadUrl?.[4]?.url,
+                    duration: (song?.duration / 60).toFixed(2),
+                }));
+                if (mappedResults.length === 0 || mappedResults.length < LIMIT) {
+                    setHasMore(false);
+                }
+
+                setData(prev => pageNum === 1 ? mappedResults : [...prev, ...mappedResults]);
+            }
         } catch (err) {
             setError(err);
         } finally {

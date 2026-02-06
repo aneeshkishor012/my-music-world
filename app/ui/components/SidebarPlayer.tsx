@@ -7,13 +7,15 @@ import {
     ChevronLeftIcon,
     CheckIcon,
     ArrowDownTrayIcon,
-    HeartIcon as HeartIconSolid
+    HeartIcon as HeartIconSolid,
+    ArrowLeftCircleIcon,
+    ArrowLeftIcon
 } from "@heroicons/react/24/solid";
 import { usePlayer } from "@/app/context/PlayerContext";
 import { useFavorites } from "@/app/context/FavoritesContext";
 import PlayerControl from "@/app/ui/components/PlayerControl";
 import BottomNavBar from "@/app/ui/components/BottomNavBar";
-import { Checkbox } from "antd";
+import { Button, Checkbox } from "antd";
 import {
     HeartIcon,
     QueueListIcon,
@@ -149,7 +151,7 @@ export default function SidebarPlayer({ onClose }: { onClose?: () => void }) {
 
     if (!currentSong && queue.length === 0 && !activeEntity) {
         return (
-            <div className="hidden lg:flex flex-col items-center justify-center bg-[#0E1730] rounded-xl lg:rounded-2xl p-4 lg:p-6 h-full border border-white/5 text-gray-500">
+            <div className="hidden lg:flex w-full flex-col items-center justify-center bg-[#0E1730] rounded-xl lg:rounded-2xl p-4 lg:p-6 h-full border border-white/5 text-gray-500">
                 <Bars3BottomLeftIcon className="w-10 h-10 lg:w-12 lg:h-12 mb-4 opacity-20" />
                 <p className="text-center text-xs lg:text-sm">No music in queue</p>
             </div>
@@ -161,22 +163,20 @@ export default function SidebarPlayer({ onClose }: { onClose?: () => void }) {
     const subTitle = activeEntity ? `${activeEntity.type} • ${displaySongs.length} Songs` : "Queue";
 
     return (
-        <div className="flex flex-col bg-[#0E1730] rounded-xl lg:rounded-2xl h-full border border-white/5 shadow-2xl overflow-hidden relative">
+        <div className="flex flex-col bg-[#0E1730] rounded-xl lg:rounded-2xl h-full w-full border border-white/5 shadow-2xl overflow-hidden relative">
 
             {/* Close icon for mobile (only if onClose is provided) */}
             {onClose && (
-                <div className="lg:hidden flex justify-end p-2 pb-0">
-                    <button
+                <div className="lg:hidden fixed top-4 left-4 z-50">
+                    <Button
+                        icon={<ChevronLeftIcon className="w-6 h-6 mt-1" />}
                         onClick={onClose}
-                        className="p-2 rounded-full bg-gray-800 hover:bg-blue-600 text-white transition"
-                        title="Close"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
+                        variant="text"
+                        className="border-none rounded-lg !bg-blue-600 hover:!bg-blue-700 !text-white flex items-center justify-center"
+                    />
                 </div>
             )}
+
 
             {/* ENTITY DETAILS (if any) */}
             {activeEntity && (

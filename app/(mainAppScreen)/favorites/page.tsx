@@ -7,19 +7,28 @@ import { usePlayer } from "../../context/PlayerContext";
 import { PlayIcon } from "@heroicons/react/24/solid";
 
 import SidebarPlayer from "@/app/ui/components/SidebarPlayer";
+import { useRouter } from "next/navigation";
 
 export default function FavoritesPage() {
+    const router = useRouter();
     const { favorites } = useFavorites();
-    const { play, currentSong, isPlaying, loadEntity } = usePlayer();
+    const { play, playList, currentSong, isPlaying } = usePlayer();
     const [filter, setFilter] = useState<"all" | "song" | "artist" | "album" | "playlist">("all");
 
     const filtered = filter === "all" ? favorites : favorites.filter(f => f.type === filter);
 
     const handleItemClick = (item: any) => {
         if (item.type === 'song') {
-            if (item.url) play(item as any);
+            // Filter only songs from the current view to create the queue
+            const songList = filtered.filter(f => f.type === 'song');
+            // if (item.url) play(item as any, songList);
+            if (item.url) {
+                const index = songList.findIndex(s => s.id === item.id);
+                playList(songList, index !== -1 ? index : 0);
+            }
         } else {
-            loadEntity(item.id, item.type);
+            // Navigate to the details page (e.g. /favorites/playlist/123 or /favorites/album/456)
+            router.push(`/favorites/${item.type}/${item.id}`);
         }
     };
 
@@ -29,20 +38,29 @@ export default function FavoritesPage() {
 
                 {/* LEFT CONTENT – Full width on mobile, 70% on desktop */}
                 <div className="flex-1 min-w-0 h-1/2 lg:h-full overflow-y-auto pr-1 sm:pr-2 scrollbar-thin scrollbar-thumb-gray-800 scrollbar-track-transparent">
-                    <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-3 md:mb-6 px-1 sm:px-2">Your Favorites</h1>
+                    <div className="flex flex-row items-center gap-4 pb-3">
 
-                    {/* Filter Tabs - Responsive */}
-                    <div className="flex gap-2 sm:gap-3 md:gap-4 mb-4 md:mb-8 border-b border-gray-700 pb-2 px-1 sm:px-2 overflow-x-auto">
-                        {["all", "song", "artist", "album", "playlist"].map(tab => (
-                            <button
-                                key={tab}
-                                onClick={() => setFilter(tab as any)}
-                                className={`capitalize pb-2 border-b-2 transition text-xs sm:text-sm whitespace-nowrap ${filter === tab ? "border-blue-500 text-white" : "border-transparent text-gray-400 hover:text-white"}`}
-                            >
-                                {tab === "all" ? "All" : tab + "s"}
-                            </button>
-                        ))}
+                        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold px-1 sm:px-2 whitespace-nowrap shrink-0">
+                            Favorites
+                        </h1>
+
+                        <div className="flex flex-1 gap-2 sm:gap-3 md:gap-4 border-gray-700 px-1 sm:px-2 overflow-x-auto">
+                            {["all", "song", "artist", "album", "playlist"].map(tab => (
+                                <button
+                                    key={tab}
+                                    onClick={() => setFilter(tab as any)}
+                                    className={`capitalize transition text-xs sm:text-sm whitespace-nowrap ${filter === tab
+                                            ? "text-blue-500"
+                                            : "text-gray-400"
+                                        }`}
+                                >
+                                    {tab === "all" ? "All" : tab + "s"}
+                                </button>
+                            ))}
+                        </div>
+
                     </div>
+
 
                     {filtered.length === 0 ? (
                         <div className="text-center text-gray-500 mt-10 md:mt-20">

@@ -83,7 +83,6 @@ export function ResuableSearchSection({ title, type, query, onShowMore, limit = 
                 {(maxItems != null ? data.slice(0, maxItems) : data).map((item, idx) => {
                     const liked = isFavorite(item.id);
                     const isCurrent = currentSong?.id === item.id;
-                    console.log("Rendering item:", item);
                     return (
                         <div
                             key={`${item.id}-${idx}`}

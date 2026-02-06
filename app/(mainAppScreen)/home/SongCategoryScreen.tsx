@@ -1,15 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Input } from "antd";
 import { XMarkIcon, MagnifyingGlassIcon } from "@heroicons/react/24/solid";
-import Image from "next/image";
-import { useInfiniteMusic } from "../../hooks/useMusicData";
-import { usePlayer } from "../../context/PlayerContext";
-import { PlayIcon } from "@heroicons/react/24/solid";
-import { useFavorites } from "../../context/FavoritesContext";
-import { HeartIcon } from "@heroicons/react/24/outline";
-import { HeartIcon as HeartIconSolid } from "@heroicons/react/24/solid";
 
 // Import the Search Section Component
 import { ResuableSearchSection } from "../../ui/components/SearchSection";
@@ -155,28 +148,6 @@ export default function SongCategoryScreen() {
         params.set("q", newQuery);
         router.replace(`?${params.toString()}`);
     };
-
-    // Data Hooks
-    // Only fetch category songs if we are NOT searching (debouncedQuery is empty)
-    // If searching, we show the search results instead
-    const categoryQuery = debouncedQuery ? "" : initialQuery || "Trending"; // Fallback to Trending if just browsing chips
-    // Actually, if query is empty, we show chips. If query is set (even via chip click), we show SEARCH results? 
-    // The user said: "without search what ever i am showin in the rightside layout can you remove and keep the Song suggection chips."
-    // BUT "The last Search Results should be Stay...".
-    // AND "Clicking a chip will trigger a search and show results."
-    // So if I click "Romance", it searches "Romance". Query becomes "Romance".
-    // So actually:
-    // 1. Query Empty? Show Chips.
-    // 2. Query Set? Show Search Results.
-    // BUT what about the "Category Songs" list? The user said "remove [it]". 
-    // So we don't need `useInfiniteMusic` for the category list anymore?
-    // "remove and keep the Song suggection chips. rest of the search functionality will be same".
-    // Wait, if I remove the song list, then clicking a chip MUST search.
-    // So I don't need `useInfiniteMusic` here at all anymore? Because searching uses `ReusableSearchSection` which uses `useGenericData`.
-    // Let's assume yes.
-
-    const { play, currentSong, isPlaying } = usePlayer();
-    const { isFavorite, toggleFavorite } = useFavorites();
 
     return (
         <div className="text-white h-full min-h-0 flex flex-col overflow-hidden space-y-4">

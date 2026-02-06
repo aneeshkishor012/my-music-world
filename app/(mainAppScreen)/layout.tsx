@@ -32,7 +32,7 @@ export default function Layout({ children }: PropsWithChildren) {
                 </div>
 
                 {/* Page Content */}
-                <main className="flex-grow overflow-auto w-full md:pr-2 md:pb-2 pb-20 md:pb-0 relative">
+                <main className="flex-grow overflow-auto w-full md:pr-2 md:pb-2 pb-0 md:pb-0 relative">
                     <MobileUIWrapperClient>
                         {children}
                     </MobileUIWrapperClient>

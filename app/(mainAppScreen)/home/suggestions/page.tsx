@@ -238,8 +238,8 @@ function SuggestionsContent() {
           </div>
 
         {/* Filters (chips only; no text input) */}
-          {/* {canSuggest && (
-            <div className="space-y-3">
+          {canSuggest && (
+            <div className="space-y-3 hidden md:block space-y-3">
               {availableLanguages.length > 0 && (
                 <div>
                   <div className="text-xs uppercase tracking-widest text-gray-500 mb-2">Language</div>
@@ -283,7 +283,7 @@ function SuggestionsContent() {
                 </div>
               )}
             </div>
-          )} */}
+          )}
         </div>
 
         {!canSuggest && (
