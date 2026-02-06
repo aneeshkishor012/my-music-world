@@ -10,7 +10,7 @@ import { usePlayer } from "@/app/context/PlayerContext";
 import { useFavorites } from "@/app/context/FavoritesContext";
 import { useRef, useEffect } from "react";
 
-export function ResuableSearchSection({ title, type, query, onShowMore, limit = 5, showPagination = false, infinite = false, maxItems = null }: any) {
+export function ResuableSearchSection({ title, type, query, handleItemClick, onShowMore, limit = 5, infinite = false, maxItems = null, }: any) {
     const router = useRouter();
     const { data, loading, hasMore, loadMore, total, page, loadPage } = useGenericData(query, type, limit); // Fetch configurable number
     const { play, playList, currentSong, isPlaying, loadEntity } = usePlayer();
@@ -53,18 +53,8 @@ export function ResuableSearchSection({ title, type, query, onShowMore, limit = 
 
     if (!loading && data.length === 0) return null; // Don't show empty sections
 
-    const handleItemClick = (item: any, index: number) => {
-        if (type === "song") {
-            // Queue the entire list
-            playList(data, index);
-        } else {
-            // Show details in Sidebar and load songs
-            loadEntity(item.id, type);
-            // On mobile, open the full player modal
-            if (window.innerWidth < 1024) {
-                window.dispatchEvent(new Event("openFullPlayerModal"));
-            }
-        }
+    const handleItemClickLcl = (data: [], item: any, index: any) => {
+        handleItemClick(data, item, index);
     };
 
     return (
@@ -79,14 +69,14 @@ export function ResuableSearchSection({ title, type, query, onShowMore, limit = 
                 </button>
             </div>
 
-            <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 xl:grid-cols-7 gap-6">
+            <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 xl:grid-cols-7 gap-6 max-h-[70vh] overflow-y-auto pr-2">
                 {(maxItems != null ? data.slice(0, maxItems) : data).map((item, idx) => {
                     const liked = isFavorite(item.id);
                     const isCurrent = currentSong?.id === item.id;
                     return (
                         <div
                             key={`${item.id}-${idx}`}
-                            onClick={() => handleItemClick(item, idx)}
+                            onClick={() => handleItemClickLcl(data as any, item, idx)}
                             className="bg-[#1A2340] rounded-xl hover:bg-[#232F4D] transition cursor-pointer group flex flex-col items-center text-center relative"
                         >
                             {/* Heart Button */}

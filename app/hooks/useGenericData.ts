@@ -126,6 +126,7 @@ function normalizeItem(item: any, type: SearchType) {
         imageUri: image,
         url,
         type,
+        duration: (item.duration / 60).toFixed(2),
         raw: item,
     };
 }

@@ -1,28 +1,22 @@
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
-import { useFavorites } from "../../../../context/FavoritesContext";
-import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import SidebarPlayer from "@/app/ui/components/SidebarPlayer";
-import { BackwardIcon, ChevronLeftIcon, InformationCircleIcon, PlayIcon } from "@heroicons/react/24/solid";
-import { usePlayer } from "../../../../context/PlayerContext";
-import { useInfiniteMusic } from "../../../../hooks/useMusicData";
+import { ChevronLeftIcon, InformationCircleIcon, PlayIcon } from "@heroicons/react/24/solid";
+import { usePlayer } from "@/app/context/PlayerContext";
+import { useInfiniteMusic } from "@/app/hooks/useMusicData";
 
 export default function FavoriteDetailsPage() {
-    const params = useParams();
     const router = useRouter();
+    const params = useSearchParams();
 
-    // params.type and params.id can be string or array. Ensure they are strings.
-    const type = Array.isArray(params.type) ? params.type[0] : params.type;
-    const id = Array.isArray(params.id) ? params.id[0] : params.id;
+    const itemParam = params.get("item");
 
-    const { favorites } = useFavorites();
-    const { play, playList, currentSong, isPlaying } = usePlayer();
+    const item = itemParam ? JSON.parse(itemParam) : null;
 
-    // Find the item (Playlist, Album, Artist) in the favorites list
-    // Using String() ensures we match even if one is a number and the other is a string
-    const item = favorites.find(f => String(f.id) === String(id) && f.type === type);
+
+    const { playList, currentSong, isPlaying } = usePlayer();
 
     // Use the item title to fetch songs. 
     const query = item?.title || "";

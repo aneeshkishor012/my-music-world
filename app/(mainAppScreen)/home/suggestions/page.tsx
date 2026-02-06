@@ -6,6 +6,7 @@ import SidebarPlayer from "@/app/ui/components/SidebarPlayer";
 import Breadcrumbs from "@/app/ui/components/Breadcrumbs";
 import { ResuableSearchSection } from "@/app/ui/components/SearchSection";
 import { useGenericData } from "@/app/hooks/useGenericData";
+import { usePlayer } from "@/app/context/PlayerContext";
 
 type Preferences = {
   languages?: string[];
@@ -87,7 +88,7 @@ function Chip({
 function SuggestionsContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-
+  const { playList } = usePlayer();
   const [prefs, setPrefs] = useState<Preferences | null>(null);
   const [prefsLoaded, setPrefsLoaded] = useState(false);
 
@@ -226,6 +227,19 @@ function SuggestionsContent() {
     peekAlbums.data.length === 0 &&
     peekPlaylists.data.length === 0;
 
+  const handleItemClick = (data: [], item: any, index: number) => {
+    if (item?.type === "song") {
+      // Queue the entire list
+      playList(data, index);
+    } else {
+      router.push(
+        `/home/suggestions/${item.type}/${item.id}?item=${encodeURIComponent(
+          JSON.stringify(item)
+        )}`
+      );
+    }
+  };
+
   return (
     <div className="flex flex-row gap-6 h-full w-full">
       {/* LEFT CONTENT */}
@@ -237,7 +251,7 @@ function SuggestionsContent() {
             <h2 className="text-lg sm:text-xl font-bold text-white">Home Suggestions</h2>
           </div>
 
-        {/* Filters (chips only; no text input) */}
+          {/* Filters (chips only; no text input) */}
           {canSuggest && (
             <div className="space-y-3 hidden md:block space-y-3">
               {availableLanguages.length > 0 && (
@@ -305,8 +319,8 @@ function SuggestionsContent() {
               type="song"
               query={songQuery}
               limit={14}
-              showPagination={false}
               infinite={false}
+              handleItemClick={handleItemClick}
               onShowMore={() =>
                 router.push(
                   `/search/songs?q=${encodeURIComponent(songQuery)}&return=${encodeURIComponent(returnUrl)}`,
@@ -319,8 +333,8 @@ function SuggestionsContent() {
               type="playlist"
               query={playlistQuery}
               limit={14}
-              showPagination={false}
               infinite={false}
+              handleItemClick={handleItemClick}
               onShowMore={() =>
                 router.push(
                   `/search/playlists?q=${encodeURIComponent(playlistQuery)}&return=${encodeURIComponent(returnUrl)}`,
@@ -333,8 +347,8 @@ function SuggestionsContent() {
               type="album"
               query={albumQuery}
               limit={14}
-              showPagination={false}
               infinite={false}
+              handleItemClick={handleItemClick}
               onShowMore={() =>
                 router.push(
                   `/search/albums?q=${encodeURIComponent(albumQuery)}&return=${encodeURIComponent(returnUrl)}`,
@@ -347,8 +361,8 @@ function SuggestionsContent() {
               type="artist"
               query={artistQuery}
               limit={14}
-              showPagination={false}
               infinite={false}
+              handleItemClick={handleItemClick}
               onShowMore={() =>
                 router.push(
                   `/search/artists?q=${encodeURIComponent(artistQuery)}&return=${encodeURIComponent(returnUrl)}`,
@@ -356,8 +370,8 @@ function SuggestionsContent() {
                 )
               }
             />
-            
-            
+
+
 
             {showEmptyState && (
               <div className="flex flex-col items-center justify-center text-gray-500 opacity-80 py-16">

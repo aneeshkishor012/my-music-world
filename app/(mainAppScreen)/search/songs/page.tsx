@@ -1,17 +1,33 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import SidebarPlayer from "@/app/ui/components/SidebarPlayer";
 import Breadcrumbs from "@/app/ui/components/Breadcrumbs";
 import { ResuableSearchSection } from "@/app/ui/components/SearchSection";
 import { Suspense } from "react";
+import { usePlayer } from "@/app/context/PlayerContext";
 
 function SongsSearchContent() {
     const searchParams = useSearchParams();
+    const router = useRouter();
+    const { playList } = usePlayer();
     const q = searchParams?.get("q") || "";
     const returnUrl = searchParams?.get("return");
     const backLabel = returnUrl ? "Suggestions" : "Search";
     const backHref = returnUrl ? returnUrl : `/home?q=${encodeURIComponent(q)}`;
+
+    const handleItemClick = (data: [], item: any, index: number) => {
+        if (item?.type === "song") {
+            // Queue the entire list
+            playList(data, index);
+        } else {
+            router.push(
+                `/home/${item.type}/${item.id}?item=${encodeURIComponent(
+                    JSON.stringify(item)
+                )}`
+            );
+        }
+    };
 
     return (
         <div className="flex flex-col lg:flex-row gap-1 sm:gap-2 h-full w-full">
@@ -21,7 +37,16 @@ function SongsSearchContent() {
 
                 <p className="text-xs sm:text-sm text-gray-400 mb-3 md:mb-6 px-1 sm:px-2">Results for "{q}"</p>
 
-                <ResuableSearchSection title="Songs" type="song" query={q} limit={24} showPagination={false} infinite={true} />
+                <ResuableSearchSection
+                    title="Songs"
+                    type="song"
+                    query={q}
+                    limit={24}
+                    showPagination={false}
+                    infinite={true}
+                    maxItems={24}
+                    handleItemClick={handleItemClick}
+                />
             </div>
 
             {/* RIGHT SIDEBAR – Hidden on mobile, 30% on desktop */}

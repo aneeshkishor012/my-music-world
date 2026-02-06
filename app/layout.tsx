@@ -12,6 +12,7 @@ export const metadata = {
 import { SearchProvider } from "./context/SearchContext";
 import { FavoritesProvider } from "./context/FavoritesContext";
 import BottomPlayer from "./ui/BottomPlayer";
+import Providers from './providers';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -21,7 +22,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <PlayerProvider>
             <FavoritesProvider>
               <SearchProvider>
-                {children}
+                <Providers>
+                  {children}
+                </Providers>
                 <BottomPlayer />
               </SearchProvider>
             </FavoritesProvider>

@@ -19,22 +19,20 @@ export default function BottomNavBar() {
     ];
 
     return (
-        <nav className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-[#0B1A33] border-t border-white/10 px-3 py-3 flex items-center justify-around">
+        <nav className="fixed bottom-10 left-1/2 -translate-x-1/2 w-[90%] z-40 md:hidden flex items-center justify-around px-4 py-3 rounded-2xl  bg-blue/10 backdrop-blur-xl border border-blue-950  shadow-[0_8px_30px_rgba(0,0,0,0.4)] ">
             {navItems.map((item) => {
                 const Icon = item.icon;
-                // Special handling for Search icon which should only match exactly /home
-                const active = item.href === "/home" 
-                    ? pathname === "/home"
-                    : (item.href === pathname || pathname.startsWith(item.href + "/"));
+
+                const active =
+                    item.href === "/home"
+                        ? pathname === "/home"
+                        : item.href === pathname || pathname.startsWith(item.href + "/");
+
                 return (
                     <Link
                         key={item.href}
                         href={item.href}
-                        className={`p-3 rounded-lg transition-all duration-300 ${
-                            active
-                                ? "text-blue-400 shadow-[0_0_10px_rgba(96,165,250,0.6)]"
-                                : "text-gray-400 hover:text-white"
-                        }`}
+                        className={` p-3 rounded-xl transition-all duration-300  ${active ? "text-blue-500 bg-blue/10 shadow-[0_0_10px_rgba(96,165,250,0.6)]" : "text-gray-300 hover:text-white"} `}
                         title={item.label}
                     >
                         <Icon className="w-6 h-6" />
@@ -42,5 +40,6 @@ export default function BottomNavBar() {
                 );
             })}
         </nav>
+
     );
 }

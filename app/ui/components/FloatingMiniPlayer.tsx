@@ -58,21 +58,6 @@ export default function FloatingMiniPlayer({ onExpand }: { onExpand: () => void 
                         }}
                     />
                 )}
-
-                {/* Playing Indicator */}
-                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center">
-                    <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center shadow-lg">
-                        {isPlaying ? (
-                            <div className="flex gap-1 items-end h-3">
-                                <div className="w-0.5 bg-white animate-bounce h-2"></div>
-                                <div className="w-0.5 bg-white animate-bounce h-3 delay-75"></div>
-                                <div className="w-0.5 bg-white animate-bounce h-1.5 delay-150"></div>
-                            </div>
-                        ) : (
-                            <div className="text-white text-2xl flex items-center justify-center">▶</div>
-                        )}
-                    </div>
-                </div>
             </button>
         </div>
     );

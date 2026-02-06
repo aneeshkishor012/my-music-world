@@ -7,10 +7,12 @@ import { XMarkIcon, MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 // Import the Search Section Component
 import { ResuableSearchSection } from "../../ui/components/SearchSection";
 import { useRouter, useSearchParams } from "next/navigation";
+import { usePlayer } from "@/app/context/PlayerContext";
 
 export default function SongCategoryScreen() {
     const router = useRouter();
     const searchParams = useSearchParams();
+    const { playList } = usePlayer();
     const qParam = searchParams.get("q") ?? "";
     const restore = searchParams.get("restore") === "1";
     const initialQuery = qParam;
@@ -122,23 +124,6 @@ export default function SongCategoryScreen() {
         }, 500);
     };
 
-    const clearSearch = () => {
-        setLocalQuery("");
-        setDebouncedQuery("");
-        const params = new URLSearchParams(searchParams.toString());
-        params.delete("restore");
-        params.delete("q");
-        const next = params.toString();
-        try {
-            sessionStorage.removeItem("lastSearchQuery");
-        } catch {
-            // ignore
-        }
-        router.replace(next ? `?${next}` : "/home");
-    };
-
-
-
     const handleChipClick = (cat: string) => {
         const newQuery = `${cat}`;
         setLocalQuery(newQuery);
@@ -147,6 +132,19 @@ export default function SongCategoryScreen() {
         params.delete("restore");
         params.set("q", newQuery);
         router.replace(`?${params.toString()}`);
+    };
+
+    const handleItemClick = (data: [], item: any, index: number) => {
+        if (item?.type === "song") {
+            // Queue the entire list
+            playList(data, index);
+        } else {
+            router.push(
+                `/home/${item.type}/${item.id}?item=${encodeURIComponent(
+                    JSON.stringify(item)
+                )}`
+            );
+        }
     };
 
     return (
@@ -200,6 +198,7 @@ export default function SongCategoryScreen() {
                                 limit={HOME_INITIAL_SONG_COUNT ?? 24}
                                 infinite={HOME_INITIAL_SONG_COUNT === null}
                                 maxItems={HOME_INITIAL_SONG_COUNT}
+                                handleItemClick={handleItemClick}
                                 onShowMore={() => router.push(`/search/songs?q=${debouncedQuery}`)}
                             />
                             <ResuableSearchSection
@@ -210,6 +209,7 @@ export default function SongCategoryScreen() {
                                 limit={HOME_INITIAL_SONG_COUNT ?? 24}
                                 infinite={HOME_INITIAL_SONG_COUNT === null}
                                 maxItems={HOME_INITIAL_SONG_COUNT}
+                                handleItemClick={handleItemClick}
                                 onShowMore={() => router.push(`/search/playlists?q=${debouncedQuery}`)}
                             />
                             <ResuableSearchSection
@@ -220,6 +220,7 @@ export default function SongCategoryScreen() {
                                 limit={HOME_INITIAL_SONG_COUNT ?? 24}
                                 infinite={HOME_INITIAL_SONG_COUNT === null}
                                 maxItems={HOME_INITIAL_SONG_COUNT}
+                                handleItemClick={handleItemClick}
                                 onShowMore={() => router.push(`/search/albums?q=${debouncedQuery}`)}
                             />
                             <ResuableSearchSection
@@ -230,6 +231,7 @@ export default function SongCategoryScreen() {
                                 limit={HOME_INITIAL_SONG_COUNT ?? 24}
                                 infinite={HOME_INITIAL_SONG_COUNT === null}
                                 maxItems={HOME_INITIAL_SONG_COUNT}
+                                handleItemClick={handleItemClick}
                                 onShowMore={() => router.push(`/search/artists?q=${debouncedQuery}`)}
                             />
 
@@ -240,7 +242,13 @@ export default function SongCategoryScreen() {
                 /* Clean UI when no search */
                 <div className="flex-1 flex flex-col items-center justify-center text-gray-500 opacity-60">
                     <MagnifyingGlassIcon className="w-16 h-16 mb-4" />
-                    <p>Select a tag or search to start listening</p>
+                    <p className="text-center text-xs lg:text-xl font-bold italic">
+                        Your music starts here
+                    </p>
+                    <p className="text-center text-ls text-gray-500">
+                        Select a tag or search for something you love
+                    </p>
+
                 </div>
             )}
         </div>
