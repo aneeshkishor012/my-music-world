@@ -124,7 +124,7 @@ export default function FavoriteDetailsPage() {
                                                 {song.imageUri && <Image src={song.imageUri} alt={song.title} fill className="object-cover" />}
                                             </div>
                                             <div className="flex-1 min-w-0">
-                                                <h4 className={`font-medium truncate ${isCurrent ? 'text-blue-400' : 'text-white'}`}>{song.title || song.name}</h4>
+                                                <h1 className={`font-medium truncate ${isCurrent ? 'text-blue-400' : 'text-white'}`}>{song.title || song.name}</h1>
                                                 <p className="text-xs text-gray-400 truncate">{song.description || song.label}</p>
                                             </div>
                                             <div className="text-sm text-gray-500 ml-4">

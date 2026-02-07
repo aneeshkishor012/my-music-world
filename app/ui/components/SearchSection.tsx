@@ -16,19 +16,6 @@ export function ResuableSearchSection({ title, type, query, handleItemClick, onS
     const sentinelRef = useRef<HTMLDivElement | null>(null);
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
-    // Helper: find nearest scrollable ancestor
-    // Also treat elements as scrollable when their scrollHeight exceeds clientHeight
-    const findScrollParent = (el: HTMLElement | null): HTMLElement | null => {
-        while (el) {
-            const style = getComputedStyle(el);
-            const overflowY = style.overflowY;
-            const isOverflowing = el.scrollHeight > el.clientHeight;
-            if (overflowY === 'auto' || overflowY === 'scroll' || overflowY === 'overlay' || isOverflowing) return el;
-            el = el.parentElement;
-        }
-        return null;
-    };
-
     // Keep track of latest state to avoid re-creating the observer on every state change
     const stateRef = useRef({ loading, hasMore, dataLength: data?.length || 0, maxItems });
     useEffect(() => {
@@ -87,7 +74,7 @@ export function ResuableSearchSection({ title, type, query, handleItemClick, onS
 
             <div
                 ref={scrollContainerRef}
-                className={`grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 xl:grid-cols-7 gap-6 ${infinite ? "max-h-[70vh] overflow-y-auto pr-2" : ""}`}
+                className={`grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 xl:grid-cols-7 gap-3 ${infinite ? "max-h-[70vh] overflow-y-auto pr-2" : ""}`}
             >
                 {(maxItems != null ? data.slice(0, maxItems) : data).map((item, idx) => {
                     const liked = isFavorite(item.id);
@@ -139,7 +126,7 @@ export function ResuableSearchSection({ title, type, query, handleItemClick, onS
                                 )}
                             </div>
                             <div className="px-2 pb-3 w-full">
-                                <h4 className={`text-sm font-semibold truncate w-full ${isCurrent ? 'text-blue-400' : 'text-white'}`}>{item.title}</h4>
+                                <h1 className={`text-xs font-semibold truncate w-full ${isCurrent ? 'text-blue-400' : 'text-white'}`}>{item.title}</h1>
                                 <p className="text-xs text-gray-400 truncate w-full">{item.description}</p>
                             </div>
                         </div>
