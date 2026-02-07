@@ -82,7 +82,7 @@ export default function FavoriteDetailsPage() {
                                 )}
                             </div>
                             <div className="flex flex-col justify-end items-center text-center md:items-start md:text-left">
-                                <h1 className="text-3xl md:text-5xl font-bold mb-3">{item.title}</h1>
+                                <h1 className="text-2xl md:text-xl font-bold mb-3">{item.title}</h1>
 
                                 <p className="text-gray-400 max-w-xl">
                                     {item.description}

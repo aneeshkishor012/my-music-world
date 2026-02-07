@@ -56,8 +56,8 @@ export function ResuableSearchSection({ title, type, query, handleItemClick, onS
             },
             {
                 root,              // ✅ correct scroll container
-                rootMargin: "0px", // ✅ no early triggering
-                threshold: 1.0,    // ✅ only when sentinel is fully visible
+                rootMargin: "100px", // ✅ Pre-fetch before hitting bottom
+                threshold: 0.1,    // ✅ Trigger when any part is visible
             }
         );
 
@@ -87,7 +87,7 @@ export function ResuableSearchSection({ title, type, query, handleItemClick, onS
 
             <div
                 ref={scrollContainerRef}
-                className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 xl:grid-cols-7 gap-6 max-h-[70vh] overflow-y-auto pr-2"
+                className={`grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 xl:grid-cols-7 gap-6 ${infinite ? "max-h-[70vh] overflow-y-auto pr-2" : ""}`}
             >
                 {(maxItems != null ? data.slice(0, maxItems) : data).map((item, idx) => {
                     const liked = isFavorite(item.id);
@@ -104,7 +104,7 @@ export function ResuableSearchSection({ title, type, query, handleItemClick, onS
                                     e.stopPropagation();
                                     toggleFavorite({ ...item, type });
                                 }}
-                                className={`absolute top-2 right-2 z-20 p-1.5 rounded-full bg-black/50 hover:bg-black/70 text-white transition ${liked ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
+                                className={`absolute top-0.5 right-0.5 z-20 p-1.5 rounded-full bg-black/50 hover:bg-black/70 text-white transition opacity-100`}
                             >
                                 {liked ? <HeartIconSolid className="w-4 h-4 text-red-500" /> : <HeartIcon className="w-4 h-4" />}
                             </button>

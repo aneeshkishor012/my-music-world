@@ -162,7 +162,7 @@ export default function SongCategoryScreen() {
             />
 
             {/* Category Chips - Responsive Grid */}
-            <div className="flex flex-wrap gap-1 sm:gap-2 justify-start sm:justify-evenly overflow-x-auto pb-1 sm:pb-0">
+            <div className="hidden sm:flex flex-wrap gap-1 sm:gap-2 justify-start sm:justify-evenly overflow-x-auto pb-1 sm:pb-0">
                 {categories.map((cat, index) => (
                     <div
                         key={index}
@@ -240,15 +240,46 @@ export default function SongCategoryScreen() {
                 </div>
             ) : (
                 /* Clean UI when no search */
-                <div className="flex-1 flex flex-col items-center justify-center text-gray-500 opacity-60">
-                    <MagnifyingGlassIcon className="w-16 h-16 mb-4" />
-                    <p className="text-center text-xs lg:text-xl font-bold italic">
-                        Your music starts here
-                    </p>
-                    <p className="text-center text-ls text-gray-500">
-                        Select a tag or search for something you love
-                    </p>
+                <div className="flex-1 flex flex-col min-h-0">
+                    {/* Mobile: Categories List as Suggestions */}
+                    <div className="sm:hidden flex-1 overflow-y-auto px-2 pb-20 scrollbar-thin scrollbar-thumb-[#343F63] scrollbar-track-transparent">
+                        <div className="grid grid-cols-3 gap-3">
+                            {categories.map((cat, index) => {
+                                const colors = [
+                                    "bg-red-500/20 border-red-500/20", "bg-orange-500/20 border-orange-500/20",
+                                    "bg-amber-500/20 border-amber-500/20", "bg-yellow-500/20 border-yellow-500/20",
+                                    "bg-lime-500/20 border-lime-500/20", "bg-green-500/20 border-green-500/20",
+                                    "bg-emerald-500/20 border-emerald-500/20", "bg-teal-500/20 border-teal-500/20",
+                                    "bg-cyan-500/20 border-cyan-500/20", "bg-sky-500/20 border-sky-500/20",
+                                    "bg-blue-500/20 border-blue-500/20", "bg-indigo-500/20 border-indigo-500/20",
+                                    "bg-violet-500/20 border-violet-500/20", "bg-purple-500/20 border-purple-500/20",
+                                    "bg-fuchsia-500/20 border-fuchsia-500/20", "bg-pink-500/20 border-pink-500/20",
+                                    "bg-rose-500/20 border-rose-500/20"
+                                ];
+                                const colorClass = colors[index % colors.length];
+                                return (
+                                    <div
+                                        key={index}
+                                        onClick={() => handleChipClick(cat)}
+                                        className={`${colorClass} border aspect-square flex items-center justify-center p-2 rounded-xl active:scale-95 transition-all cursor-pointer`}
+                                    >
+                                        <span className="text-white text-xs font-bold text-center break-words leading-tight">{cat}</span>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
 
+                    {/* Desktop: Placeholder */}
+                    <div className="hidden sm:flex flex-col items-center justify-center flex-1 text-gray-500 opacity-60">
+                        <MagnifyingGlassIcon className="w-16 h-16 mb-4" />
+                        <p className="text-center text-xs lg:text-xl font-bold italic">
+                            Your music starts here
+                        </p>
+                        <p className="text-center text-ls text-gray-500">
+                            Select a tag or search for something you love
+                        </p>
+                    </div>
                 </div>
             )}
         </div>
