@@ -199,7 +199,7 @@ export default function SongCategoryScreen() {
                                 infinite={HOME_INITIAL_SONG_COUNT === null}
                                 maxItems={HOME_INITIAL_SONG_COUNT}
                                 handleItemClick={handleItemClick}
-                                onShowMore={() => router.push(`/search/songs?q=${debouncedQuery}`)}
+                                onShowMore={() => router.push(`/home/songs?q=${debouncedQuery}`)}
                             />
                             <ResuableSearchSection
                                 title="Playlists"
@@ -210,7 +210,7 @@ export default function SongCategoryScreen() {
                                 infinite={HOME_INITIAL_SONG_COUNT === null}
                                 maxItems={HOME_INITIAL_SONG_COUNT}
                                 handleItemClick={handleItemClick}
-                                onShowMore={() => router.push(`/search/playlists?q=${debouncedQuery}`)}
+                                onShowMore={() => router.push(`/home/playlists?q=${debouncedQuery}`)}
                             />
                             <ResuableSearchSection
                                 title="Albums"
@@ -221,7 +221,7 @@ export default function SongCategoryScreen() {
                                 infinite={HOME_INITIAL_SONG_COUNT === null}
                                 maxItems={HOME_INITIAL_SONG_COUNT}
                                 handleItemClick={handleItemClick}
-                                onShowMore={() => router.push(`/search/albums?q=${debouncedQuery}`)}
+                                onShowMore={() => router.push(`/home/albums?q=${debouncedQuery}`)}
                             />
                             <ResuableSearchSection
                                 title="Artists"
@@ -232,7 +232,7 @@ export default function SongCategoryScreen() {
                                 infinite={HOME_INITIAL_SONG_COUNT === null}
                                 maxItems={HOME_INITIAL_SONG_COUNT}
                                 handleItemClick={handleItemClick}
-                                onShowMore={() => router.push(`/search/artists?q=${debouncedQuery}`)}
+                                onShowMore={() => router.push(`/home/artists?q=${debouncedQuery}`)}
                             />
 
                         </div>

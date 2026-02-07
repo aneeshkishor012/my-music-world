@@ -33,17 +33,20 @@ export default function BottomControlPanel({
     };
 
     return (
-        <div className="fixed bottom-20 left-0 right-0 z-30 md:hidden bg-[#0E1730] border-t border-gray-700 rounded-t-2xl shadow-2xl animate-slideUp">
+        <div className="fixed bottom-28 left-0 right-0 z-30 md:hidden bg-[#0E1730] border-t border-gray-700 rounded-t-2xl shadow-2xl animate-slideUp">
             {/* Handle Bar */}
             <div className="flex justify-center pt-3 pb-2">
-                <div
+                 <button
                     onClick={onCollapse}
-                    className="w-12 h-1 bg-gray-600 rounded-full hover:bg-gray-400 cursor-pointer transition"
-                />
+                    className="text-gray-400 hover:text-white transition"
+                    title="Collapse"
+                >
+                    <ChevronDownIcon className="w-6 h-6" />
+                </button>
             </div>
 
             {/* Content */}
-            <div className="p-4 space-y-4 pb-6">
+            <div className="p-4 pt-0 space-y-4 pb-6">
                 {/* Song Image with Rotate */}
                 <div className="flex justify-center">
                     <button
@@ -72,7 +75,21 @@ export default function BottomControlPanel({
                 </div>
 
                 {/* Controls */}
-                <div className="flex items-center justify-center gap-6">
+                <div className="flex items-center justify-evenly gap-6">
+                    {/* Favorite */}
+                    <button
+                        onClick={() => toggleFavorite({ ...currentSong, type: "song" })}
+                        className={`transition ${isFavorite(currentSong.id)
+                            ? "text-red-500"
+                            : "text-gray-400 hover:text-white"
+                            }`}
+                    >
+                        {isFavorite(currentSong.id) ? (
+                            <HeartIconSolid className="w-6 h-6" />
+                        ) : (
+                            <HeartIcon className="w-6 h-6" />
+                        )}
+                    </button>
                     {/* Prev */}
                     <button onClick={playPrev} className="text-gray-400 hover:text-white transition">
                         <BackwardIcon className="w-6 h-6" />
@@ -94,26 +111,6 @@ export default function BottomControlPanel({
                     <button onClick={playNext} className="text-gray-400 hover:text-white transition">
                         <ForwardIcon className="w-6 h-6" />
                     </button>
-                </div>
-
-                {/* Bottom Actions */}
-                <div className="flex items-center justify-center gap-6 pt-2">
-                    {/* Favorite */}
-                    <button
-                        onClick={() => toggleFavorite({ ...currentSong, type: "song" })}
-                        className={`transition ${
-                            isFavorite(currentSong.id)
-                                ? "text-red-500"
-                                : "text-gray-400 hover:text-white"
-                        }`}
-                    >
-                        {isFavorite(currentSong.id) ? (
-                            <HeartIconSolid className="w-6 h-6" />
-                        ) : (
-                            <HeartIcon className="w-6 h-6" />
-                        )}
-                    </button>
-
                     {/* List/Full Player */}
                     <button
                         onClick={onOpenFullPlayer}
@@ -121,15 +118,6 @@ export default function BottomControlPanel({
                         title="Show full queue"
                     >
                         <Bars3BottomLeftIcon className="w-6 h-6" />
-                    </button>
-
-                    {/* Collapse */}
-                    <button
-                        onClick={onCollapse}
-                        className="text-gray-400 hover:text-white transition"
-                        title="Collapse"
-                    >
-                        <ChevronDownIcon className="w-6 h-6" />
                     </button>
                 </div>
             </div>

@@ -29,6 +29,15 @@ export default function ThemeProvider({ children }: ThemeProviderProps) {
           Button: {
             colorPrimary: theme.Button.colorPrimary,
           },
+          Dropdown: {
+            colorBgElevated: "#0B1A33",
+            colorText: "#ffffff",
+          },
+          Menu: {
+            colorItemBgHover: "rgba(255,255,255,0.08)",
+            colorItemText: "#ffffff",
+            colorItemTextHover: "#ffffff"
+          },
         },
       }}
     >

@@ -1,6 +1,5 @@
 "use client";
 
-import { XMarkIcon } from "@heroicons/react/24/solid";
 import SidebarPlayer from "./SidebarPlayer";
 
 export default function FullMusicPlayerModal({ onClose }: { onClose: () => void }) {

@@ -42,7 +42,7 @@ export default function FavoriteDetailsPage() {
         return (
             <div className="h-full bg-[#12121F] text-white p-4 flex items-center justify-center">
                 <div className="text-center">
-                    <p className="mb-4">Item not found in favorites.</p>
+                    <p className="mb-4">Item not found in suggection.</p>
                     <button onClick={() => router.push('/favorites')} className="text-blue-400 hover:underline">
                         Go to Favorites
                     </button>

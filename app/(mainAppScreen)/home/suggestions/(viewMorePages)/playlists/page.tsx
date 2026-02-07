@@ -1,27 +1,51 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import SidebarPlayer from "@/app/ui/components/SidebarPlayer";
 import Breadcrumbs from "@/app/ui/components/Breadcrumbs";
 import { ResuableSearchSection } from "@/app/ui/components/SearchSection";
 import { Suspense } from "react";
+import { usePlayer } from "@/app/context/PlayerContext";
 
-function ArtistsSearchContent() {
+function PlaylistsSearchContent() {
+    const { playList } = usePlayer();
+    const router = useRouter();
     const searchParams = useSearchParams();
     const q = searchParams?.get("q") || "";
     const returnUrl = searchParams?.get("return");
     const backLabel = returnUrl ? "Suggestions" : "Search";
     const backHref = returnUrl ? returnUrl : `/home?q=${encodeURIComponent(q)}`;
 
+    const handleItemClick = (data: [], item: any, index: number) => {
+        if (item?.type === "song") {
+            // Queue the entire list
+            playList(data, index);
+        } else {
+            router.push(
+                `/home/${item.type}/${item.id}?item=${encodeURIComponent(
+                    JSON.stringify(item)
+                )}`
+            );
+        }
+    };
+
     return (
         <div className="flex flex-col lg:flex-row gap-1 sm:gap-2 h-full w-full">
             {/* LEFT CONTENT – Full width on mobile, 70% on desktop */}
             <div className="flex-1 bg-[#0e1730] overflow-hidden p-2 sm:p-3 min-w-0 rounded-lg sm:rounded-xl h-full pr-1 sm:pr-2 scrollbar-thin scrollbar-thumb-gray-800 scrollbar-track-transparent">
-                <Breadcrumbs items={[{ label: backLabel, href: backHref }, { label: 'Artists' }]} />
+                <Breadcrumbs items={[{ label: backLabel, href: backHref }, { label: 'Playlists' }]} />
 
                 <p className="text-xs sm:text-sm text-gray-400 mb-3 md:mb-6 px-1 sm:px-2">Results for "{q}"</p>
 
-                <ResuableSearchSection title="Artists" type="artist" query={q} limit={24} showPagination={false} infinite={true} />
+                <ResuableSearchSection
+                    title="Playlists"
+                    type="playlist"
+                    query={q}
+                    limit={24}
+                    showPagination={false}
+                    infinite={true}
+                    handleItemClick={handleItemClick}
+                />
             </div>
 
             {/* RIGHT SIDEBAR – Hidden on mobile, 30% on desktop */}
@@ -32,11 +56,11 @@ function ArtistsSearchContent() {
     );
 }
 
-export default function ArtistsSearchPage() {
+export default function PlaylistsSearchPage() {
     return (
         <div className="h-full text-white p-1 sm:p-2 pb-2">
-            <Suspense fallback={<div className="h-full w-full flex items-center justify-center">Loading artists...</div>}>
-                <ArtistsSearchContent />
+            <Suspense fallback={<div className="h-full w-full flex items-center justify-center">Loading playlists...</div>}>
+                <PlaylistsSearchContent />
             </Suspense>
         </div>
     );

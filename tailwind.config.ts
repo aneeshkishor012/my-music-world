@@ -8,6 +8,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      animateSpinSlow: {
+        'spin-slow': 'spin 6s linear infinite',
+      },
       screens: {
         'xs': '320px',
         'sm': '640px',
@@ -39,6 +42,10 @@ const config: Config = {
         '100%': {
           transform: 'translateX(100%)',
         },
+      },
+      spin: {
+        '0%': { transform: 'rotate(0deg)' },
+        '100%': { transform: 'rotate(360deg)' },
       },
     },
   },

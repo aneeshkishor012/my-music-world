@@ -34,7 +34,7 @@ export default function FloatingMiniPlayer({ onExpand }: { onExpand: () => void 
 
     return (
         <div
-            className="fixed bottom-20 left-4 z-30 md:hidden"
+            className="fixed bottom-32 left-4 z-30 md:hidden"
             style={{
                 transform: `translate(${position.x}px, ${position.y}px)`,
             }}
@@ -52,10 +52,13 @@ export default function FloatingMiniPlayer({ onExpand }: { onExpand: () => void 
                         src={currentSong.imageUri}
                         alt={currentSong.title}
                         fill
-                        className={`object-cover ${isPlaying ? "animate-spin-slow" : ""}`}
+                        // className={`object-cover ${isPlaying ? "animateSpinSlow" : ""}`}
+                        className="animate-spin"
                         style={{
+                            animationDuration: "6s",
                             animationPlayState: isPlaying ? "running" : "paused",
                         }}
+
                     />
                 )}
             </button>

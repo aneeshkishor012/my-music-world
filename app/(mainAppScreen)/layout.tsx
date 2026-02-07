@@ -1,14 +1,41 @@
 "use client";
 
 import SideNav from "@/app/ui/components/sidenav";
-import { BellIcon, UserCircleIcon } from "@heroicons/react/24/solid";
+import { ArrowLeftEndOnRectangleIcon, BellIcon, Cog6ToothIcon, UserCircleIcon } from "@heroicons/react/24/solid";
 import MobileUIWrapperClient from "@/app/ui/components/MobileUIWrapperClient";
 import { PropsWithChildren, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
+import { Dropdown } from "antd";
+import type { MenuProps } from "antd";
+import { signOut } from "next-auth/react";
+import Link from "next/link";
 
 export default function Layout({ children }: PropsWithChildren) {
     const { data: session } = useSession();
     const [greeting, setGreeting] = useState("Greetings");
+
+    const userMenuItems: MenuProps["items"] = [
+        {
+            key: "settings",
+            icon: <Cog6ToothIcon />,
+            label: (
+                <Link href="/settings" className="flex items-center gap-2">
+                    Settings
+                </Link>
+            ),
+        },
+        {
+            type: "divider",
+        },
+        {
+            key: "logout",
+            icon: <ArrowLeftEndOnRectangleIcon />,
+            label: "Logout",
+            danger: true,
+            onClick: () => signOut(),
+        },
+    ];
+
 
     useEffect(() => {
         const hour = new Date().getHours();
@@ -35,7 +62,15 @@ export default function Layout({ children }: PropsWithChildren) {
                     </button>
 
                     <button className="hover:text-purple-300 transition p-1">
-                        <UserCircleIcon className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8" />
+                        <Dropdown
+                            menu={{ items: userMenuItems }}
+                            trigger={["click"]}
+                            placement="bottomRight"
+                        >
+                            <button className="hover:text-purple-300 transition p-1">
+                                <UserCircleIcon className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8" />
+                            </button>
+                        </Dropdown>
                     </button>
                 </div>
             </nav>

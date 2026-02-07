@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import Image from "next/image";
 import type React from 'react';
 import { PlayIcon, HeartIcon } from "@heroicons/react/24/outline";
@@ -11,11 +10,11 @@ import { useFavorites } from "@/app/context/FavoritesContext";
 import { useRef, useEffect } from "react";
 
 export function ResuableSearchSection({ title, type, query, handleItemClick, onShowMore, limit = 5, infinite = false, maxItems = null, }: any) {
-    const router = useRouter();
-    const { data, loading, hasMore, loadMore, total, page, loadPage } = useGenericData(query, type, limit); // Fetch configurable number
-    const { play, playList, currentSong, isPlaying, loadEntity } = usePlayer();
+    const { data, loading, hasMore, loadMore } = useGenericData(query, type, limit); // Fetch configurable number
+    const { currentSong, isPlaying } = usePlayer();
     const { isFavorite, toggleFavorite } = useFavorites();
     const sentinelRef = useRef<HTMLDivElement | null>(null);
+    const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
     // Helper: find nearest scrollable ancestor
     // Also treat elements as scrollable when their scrollHeight exceeds clientHeight
@@ -30,26 +29,43 @@ export function ResuableSearchSection({ title, type, query, handleItemClick, onS
         return null;
     };
 
+    // Keep track of latest state to avoid re-creating the observer on every state change
+    const stateRef = useRef({ loading, hasMore, dataLength: data?.length || 0, maxItems });
     useEffect(() => {
-        if (!infinite) return; // only observe when infinite scrolling enabled
-        const sentinel = sentinelRef.current;
-        if (!sentinel) return;
+        stateRef.current = { loading, hasMore, dataLength: data?.length || 0, maxItems };
+    }, [loading, hasMore, data, maxItems]);
 
-        const root = findScrollParent(sentinel.parentElement) || null;
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    // If a maximum item limit is set, prevent loading beyond it
-                    if (maxItems != null && data.length >= maxItems) return;
-                    if (hasMore && !loading) loadMore();
-                }
-            });
-        }, { root, rootMargin: '200px' });
+    useEffect(() => {
+        if (!infinite) return;
+
+        const sentinel = sentinelRef.current;
+        const root = scrollContainerRef.current;
+        if (!sentinel || !root) return;
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (!entry.isIntersecting) return;
+
+                const { loading, hasMore, dataLength, maxItems } = stateRef.current;
+
+                if (loading) return;
+                if (!hasMore) return;
+                if (maxItems != null && dataLength >= maxItems) return;
+
+                loadMore();
+            },
+            {
+                root,              // ✅ correct scroll container
+                rootMargin: "0px", // ✅ no early triggering
+                threshold: 1.0,    // ✅ only when sentinel is fully visible
+            }
+        );
 
         observer.observe(sentinel);
 
         return () => observer.disconnect();
-    }, [infinite, hasMore, loading, loadMore, data.length, maxItems]);
+    }, [infinite, loadMore]);
+
 
     if (!loading && data.length === 0) return null; // Don't show empty sections
 
@@ -69,7 +85,10 @@ export function ResuableSearchSection({ title, type, query, handleItemClick, onS
                 </button>
             </div>
 
-            <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 xl:grid-cols-7 gap-6 max-h-[70vh] overflow-y-auto pr-2">
+            <div
+                ref={scrollContainerRef}
+                className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 xl:grid-cols-7 gap-6 max-h-[70vh] overflow-y-auto pr-2"
+            >
                 {(maxItems != null ? data.slice(0, maxItems) : data).map((item, idx) => {
                     const liked = isFavorite(item.id);
                     const isCurrent = currentSong?.id === item.id;
@@ -91,7 +110,7 @@ export function ResuableSearchSection({ title, type, query, handleItemClick, onS
                             </button>
 
                             <div className={`w-full aspect-square overflow-hidden bg-gray-800 mb-2 relative rounded-md`}>
-                                {item.imageUri ? (
+                                {(item.imageUri && (item.imageUri.startsWith('/') || item.imageUri.startsWith('http'))) ? (
                                     <Image
                                         src={item.imageUri}
                                         alt={item.title || "Image"}
@@ -134,10 +153,10 @@ export function ResuableSearchSection({ title, type, query, handleItemClick, onS
                         <div className="bg-gray-800 h-3 w-1/2"></div>
                     </div>
                 ))}
-            </div>
 
-            {/* Sentinel for infinite scroll (only used when `infinite` is true) */}
-            {infinite && <div ref={sentinelRef} className="h-2" />}
+                {/* Sentinel for infinite scroll (only used when `infinite` is true) */}
+                {infinite && <div ref={sentinelRef} className="h-2 col-span-full" />}
+            </div>
         </section>
     );
 }

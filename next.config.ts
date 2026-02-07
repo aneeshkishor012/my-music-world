@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'www.jiosaavn.com' },
       { protocol: 'https', hostname: 'static.saavncdn.com' },
       { protocol: 'https', hostname: 'pli.saavncdn.com' },
+      { protocol: "https", hostname: "r4.wallpaperflare.com" },
     ],
   },
 };

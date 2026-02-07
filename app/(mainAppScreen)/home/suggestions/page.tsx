@@ -323,7 +323,7 @@ function SuggestionsContent() {
               handleItemClick={handleItemClick}
               onShowMore={() =>
                 router.push(
-                  `/search/songs?q=${encodeURIComponent(songQuery)}&return=${encodeURIComponent(returnUrl)}`,
+                  `/home/suggestions/songs?q=${encodeURIComponent(songQuery)}&return=${encodeURIComponent(returnUrl)}`,
                   { scroll: true }
                 )
               }
@@ -337,7 +337,7 @@ function SuggestionsContent() {
               handleItemClick={handleItemClick}
               onShowMore={() =>
                 router.push(
-                  `/search/playlists?q=${encodeURIComponent(playlistQuery)}&return=${encodeURIComponent(returnUrl)}`,
+                  `/home/suggestions/playlists?q=${encodeURIComponent(playlistQuery)}&return=${encodeURIComponent(returnUrl)}`,
                   { scroll: true }
                 )
               }
@@ -351,7 +351,7 @@ function SuggestionsContent() {
               handleItemClick={handleItemClick}
               onShowMore={() =>
                 router.push(
-                  `/search/albums?q=${encodeURIComponent(albumQuery)}&return=${encodeURIComponent(returnUrl)}`,
+                  `/home/suggestions/albums?q=${encodeURIComponent(albumQuery)}&return=${encodeURIComponent(returnUrl)}`,
                   { scroll: true }
                 )
               }
@@ -365,7 +365,7 @@ function SuggestionsContent() {
               handleItemClick={handleItemClick}
               onShowMore={() =>
                 router.push(
-                  `/search/artists?q=${encodeURIComponent(artistQuery)}&return=${encodeURIComponent(returnUrl)}`,
+                  `/home/suggestions/artists?q=${encodeURIComponent(artistQuery)}&return=${encodeURIComponent(returnUrl)}`,
                   { scroll: true }
                 )
               }

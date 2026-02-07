@@ -3,20 +3,20 @@
 import { MusicalNoteIcon, ArrowRightIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import { Button } from "antd";
+import Image from "next/image";
 
 export default function WelcomePage() {
   return (
     <div className="App">
-      <div
-        className="min-h-screen flex flex-col items-center justify-center text-white px-4 relative"
-        style={{
-          backgroundImage:
-            "url('https://r4.wallpaperflare.com/wallpaper/612/19/690/geometry-cyberspace-digital-art-lines-wallpaper-1970aeaa9c72e63a307f8535d917da7b.jpg')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-        }}
-      >
+      <div className="min-h-screen relative flex items-center justify-center text-white px-4">
+        {/* Background Image */}
+        <Image
+          src="https://r4.wallpaperflare.com/wallpaper/612/19/690/geometry-cyberspace-digital-art-lines-wallpaper-1970aeaa9c72e63a307f8535d917da7b.jpg"
+          alt="Background"
+          fill
+          priority
+          className="object-cover"
+        />
         {/* Dark overlay */}
         <div className="absolute inset-0 bg-black/50"></div>
 
