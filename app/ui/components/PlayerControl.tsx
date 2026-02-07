@@ -1,8 +1,7 @@
-import { BackwardIcon } from '@heroicons/react/24/outline'
-import { ForwardIcon, PauseIcon, PlayIcon } from '@heroicons/react/24/solid'
+import { ForwardIcon, BackwardIcon, PauseIcon, PlayIcon } from '@heroicons/react/24/solid'
 import React from 'react'
 
-export default function playerControl(props:any) {
+export default function playerControl(props: any) {
     const { isPlaying, togglePlay, playNext, playPrev } = props;
     return (
         <div className="flex items-center justify-center gap-6">
