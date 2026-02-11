@@ -68,8 +68,8 @@ export default function FavoriteDetailsPage() {
                             </button>
                         </div>
 
-                        <div className="flex flex-col md:flex-row items-center gap-6 mb-8 px-2">
-                            <div className="w-48 h-48 relative shrink-0 bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+                        <div className="flex flex-col md:flex-row items-center gap-6 mb-4 px-2">
+                            <div className="w-32 h-32 relative shrink-0 bg-gray-800 rounded-lg shadow-lg overflow-hidden">
                                 {item.imageUri ? (
                                     <Image
                                         src={item.imageUri}
@@ -82,7 +82,7 @@ export default function FavoriteDetailsPage() {
                                 )}
                             </div>
                             <div className="flex flex-col justify-end items-center text-center md:items-start md:text-left">
-                                <h1 className="text-2xl md:text-xl font-bold mb-3">{item.title}</h1>
+                                <h1 className="text-xl md:text-xl font-bold mb-3">{item.title}</h1>
 
                                 <p className="text-gray-400 max-w-xl">
                                     {item.description}
@@ -124,7 +124,7 @@ export default function FavoriteDetailsPage() {
                                                 {song.imageUri && <Image src={song.imageUri} alt={song.title} fill className="object-cover" />}
                                             </div>
                                             <div className="flex-1 min-w-0">
-                                                <h1 className={`font-medium truncate ${isCurrent ? 'text-blue-400' : 'text-white'}`}>{song.title || song.name}</h1>
+                                                <h1 className={`text-sm truncate ${isCurrent ? 'text-blue-400' : 'text-white'}`}>{song.title || song.name}</h1>
                                                 <p className="text-xs text-gray-400 truncate">{song.description || song.label}</p>
                                             </div>
                                             <div className="text-sm text-gray-500 ml-4">
