@@ -72,34 +72,68 @@ export default function SidebarPlayer({ onClose }: { onClose?: () => void }) {
         setSelectedSongs(new Set());
     };
 
+    // const handleDownloadSelected = async () => {
+    //     const list = queue;
+
+    //     for (const s of list) {
+    //         if (selectedSongs.has(s.id) && s.url) {
+    //             try {
+    //                 const response = await fetch(s.url);
+    //                 const blob = await response.blob();
+
+    //                 const blobUrl = window.URL.createObjectURL(blob);
+    //                 const link = document.createElement("a");
+
+    //                 link.href = blobUrl;
+    //                 link.download = `${s.title || "song"}.mp3`;
+
+    //                 document.body.appendChild(link);
+    //                 link.click();
+
+    //                 document.body.removeChild(link);
+    //                 window.URL.revokeObjectURL(blobUrl);
+    //             } catch (err) {
+    //                 console.error("Download failed:", s.title, err);
+    //             }
+    //         }
+    //     }
+
+    //     setSelectedSongs(new Set());
+    // };
     const handleDownloadSelected = async () => {
         const list = queue;
 
         for (const s of list) {
             if (selectedSongs.has(s.id) && s.url) {
-                try {
+
+                if ((window as any).ReactNativeWebView) {
+                    // Running inside React Native WebView
+                    (window as any).ReactNativeWebView.postMessage(
+                        JSON.stringify({
+                            type: "download",
+                            url: s.url,
+                            filename: `${s.title || "song"}.mp3`
+                        })
+                    );
+                } else {
+                    // Normal browser download
                     const response = await fetch(s.url);
                     const blob = await response.blob();
-
                     const blobUrl = window.URL.createObjectURL(blob);
                     const link = document.createElement("a");
-
                     link.href = blobUrl;
                     link.download = `${s.title || "song"}.mp3`;
-
                     document.body.appendChild(link);
                     link.click();
-
                     document.body.removeChild(link);
                     window.URL.revokeObjectURL(blobUrl);
-                } catch (err) {
-                    console.error("Download failed:", s.title, err);
                 }
             }
         }
 
         setSelectedSongs(new Set());
     };
+
 
     const emptyQuotes = [
         "Silence is waiting for your first song.",
