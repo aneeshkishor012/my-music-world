@@ -58,7 +58,7 @@ export default function FloatingMiniPlayer({ onExpand }: { onExpand: () => void 
                             animationDuration: "6s",
                             animationPlayState: isPlaying ? "running" : "paused",
                         }}
-
+                        unoptimized
                     />
                 )}
             </button>

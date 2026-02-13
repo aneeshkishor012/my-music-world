@@ -202,6 +202,7 @@ export default function SidebarPlayer({ onClose }: { onClose?: () => void }) {
                             fill
                             sizes="64px"
                             className="object-cover"
+                            unoptimized
                         />
                     </div>
                     <h2 className="text-lg font-bold text-white leading-tight truncate">{title}</h2>
@@ -237,6 +238,7 @@ export default function SidebarPlayer({ onClose }: { onClose?: () => void }) {
                             fill
                             sizes="64px"
                             className="object-cover"
+                            unoptimized
                         />
                     </div>
 
@@ -333,6 +335,7 @@ export default function SidebarPlayer({ onClose }: { onClose?: () => void }) {
                                         fill
                                         sizes={`${THUMB_SIZE_PX}px`}
                                         className="object-cover"
+                                        unoptimized
                                     />
                                     {isActive && isPlaying && (
                                         <div className="absolute inset-0 bg-blue-600/40 flex items-center justify-center">
@@ -383,6 +386,7 @@ export default function SidebarPlayer({ onClose }: { onClose?: () => void }) {
                             fill
                             sizes="40px"
                             className="object-cover"
+                            unoptimized
                         />
                     </div>
                     <div className="min-w-0 flex-1">

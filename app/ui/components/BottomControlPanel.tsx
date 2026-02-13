@@ -63,6 +63,7 @@ export default function BottomControlPanel({
                                     transform: `rotate(${imageRotate}deg)`,
                                     transition: "transform 0.3s ease",
                                 }}
+                                unoptimized
                             />
                         )}
                     </button>

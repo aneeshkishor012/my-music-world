@@ -84,6 +84,7 @@ export default function FavoritesPage() {
                                                     alt={item.title || "Image"}
                                                     width={200}
                                                     height={200}
+                                                    unoptimized
                                                     className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-300"
                                                 />
                                             ) : <div className="w-full h-full flex items-center justify-center text-xl md:text-2xl">?</div>}

@@ -45,6 +45,7 @@ export default function ArtistDetailPage() {
                         fill
                         sizes="(max-width: 640px) 50vw, (max-width: 768px) 40vw, 256px"
                         className="object-cover"
+                        unoptimized
                     />
                 </div>
                 <div className="flex-1 text-center md:text-left">
@@ -97,7 +98,13 @@ export default function ArtistDetailPage() {
                                 ) : index + 1}
                             </span>
                             <div className="w-10 h-10 md:w-12 md:h-12 relative rounded overflow-hidden shrink-0">
-                                <Image src={song.imageUri || song.image?.[2]?.url || ""} alt={song.name || song.title} fill sizes="48px" className="object-cover" />
+                                <Image
+                                    src={song.imageUri || song.image?.[2]?.url || ""}
+                                    alt={song.name || song.title}
+                                    fill
+                                    sizes="48px"
+                                    className="object-cover"
+                                    unoptimized />
                             </div>
                             <div className="flex-1 min-w-0">
                                 <h4 className={`font-semibold truncate text-xs sm:text-sm md:text-base ${isCurrent ? 'text-blue-400' : 'text-white'}`}>{song.name || song.title}</h4>
@@ -132,7 +139,13 @@ export default function ArtistDetailPage() {
                                 className="bg-[#1A2340] p-2 md:p-4 rounded-lg md:rounded-xl hover:bg-[#232F4D] transition cursor-pointer group"
                             >
                                 <div className="w-full aspect-square relative rounded-md md:rounded-lg overflow-hidden mb-2 md:mb-3 shadow-lg">
-                                    <Image src={album.imageUri || album.image?.[2]?.url || ""} alt={album.name || album.title} fill sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 200px" className="object-cover group-hover:scale-110 transition duration-300" />
+                                    <Image
+                                        src={album.imageUri || album.image?.[2]?.url || ""}
+                                        alt={album.name || album.title}
+                                        fill
+                                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 200px"
+                                        className="object-cover group-hover:scale-110 transition duration-300"
+                                        unoptimized />
                                 </div>
                                 <h4 className="font-semibold truncate text-xs md:text-sm">{album.name || album.title}</h4>
                                 <p className="text-xs text-gray-400">{album.year}</p>

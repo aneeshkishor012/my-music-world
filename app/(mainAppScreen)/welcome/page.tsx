@@ -206,7 +206,14 @@ export default function PreferencesPage() {
                                 <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 bg-gray-600">
                                     {/* Some API results might not have images, handling gracefully */}
                                     {(artist.imageUri || artist.image) ? (
-                                        <Image src={artist.imageUri || artist.image} alt={artist.name} width={40} height={40} className="object-cover w-full h-full" />
+                                        <Image
+                                            src={artist.imageUri || artist.image}
+                                            alt={artist.name}
+                                            width={40}
+                                            height={40}
+                                            className="object-cover w-full h-full"
+                                            unoptimized
+                                        />
                                     ) : <div className="w-full h-full flex items-center justify-center text-xs">?</div>}
                                 </div>
                                 <div className="flex-1">
@@ -265,6 +272,7 @@ export default function PreferencesPage() {
                                                                     width={40}
                                                                     height={40}
                                                                     className="object-cover w-full h-full"
+                                                                    unoptimized
                                                                 />
                                                             ) : (
                                                                 <div className="w-full h-full flex items-center justify-center text-xs">?</div>

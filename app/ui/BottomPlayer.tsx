@@ -42,6 +42,7 @@ export default function BottomPlayer() {
                         height={40}
                         className="rounded-md object-cover animate-spin-slow flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12"
                         style={{ animationPlayState: isPlaying ? 'running' : 'paused' }}
+                        unoptimized
                     />
                 )}
                 <div className="truncate min-w-0">

@@ -103,7 +103,7 @@ export function ResuableSearchSection({ title, type, query, handleItemClick, onS
                                         alt={item.title || "Image"}
                                         width={150}
                                         height={150}
-                                        unoptimized={type === 'artist' ? true : false} // bypass Next.js optimization for remote images that may block
+                                        unoptimized
                                         className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-300"
                                     />
                                 ) : <div className="w-full h-full flex items-center justify-center text-2xl">?</div>}

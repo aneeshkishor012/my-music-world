@@ -82,6 +82,7 @@ export default function FavoriteDetailsPage() {
                                         alt={item.title || "Cover"}
                                         fill
                                         className="object-cover"
+                                        unoptimized
                                     />
                                 ) : (
                                     <div className="w-full h-full flex items-center justify-center text-4xl text-gray-600">?</div>
@@ -127,7 +128,13 @@ export default function FavoriteDetailsPage() {
                                                 <span >{idx + 1}</span>
                                             </div>
                                             <div className="w-10 h-10 relative mr-4 bg-gray-800 rounded overflow-hidden shrink-0">
-                                                {song.imageUri && <Image src={song.imageUri} alt={song.title} fill className="object-cover" />}
+                                                {song.imageUri && <Image
+                                                    src={song.imageUri}
+                                                    alt={song.title}
+                                                    fill
+                                                    className="object-cover"
+                                                    unoptimized
+                                                />}
                                             </div>
                                             <div className="flex-1 min-w-0">
                                                 <p className={`text-xs truncate ${isCurrent ? 'text-blue-400' : 'text-white'}`}>{song.title || song.name}</p>
