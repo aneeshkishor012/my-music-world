@@ -52,7 +52,7 @@ export default function Layout({ children }: PropsWithChildren) {
         <div className="flex flex-col h-screen bg-[#0f0f1a] overflow-hidden">
 
             {/* Top Navbar - Responsive */}
-            <nav className="bg-[#0B1A33] text-white px-2 sm:px-3 md:px-4 py-2 sm:py-3 md:py-4 shadow-lg flex items-center justify-between m-1 sm:m-2 rounded-lg sm:rounded-xl flex-shrink-0">
+            <nav className="bg-[#0B1A33] text-white px-2 sm:px-3 md:px-4 py-2 sm:py-3 md:py-4 shadow-lg flex items-center justify-between m-2 mb-0 sm:m-2 rounded-lg sm:rounded-xl flex-shrink-0">
                 <h1 className="text-base sm:text-lg md:text-xl font-semibold truncate">
                     {greeting}, {userName}
                 </h1>

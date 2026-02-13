@@ -12,7 +12,7 @@ import {
 
 export default function SideNav() {
   return (
-    <div className="flex flex-col h-full text-white p-3">
+    <div className="flex w-full flex-col h-full text-white p-3">
       {/* Top Navigation */}
       <div className="flex flex-col items-center gap-6 mt-4">
         {/* Home Suggestions (Discovery) */}
@@ -33,19 +33,6 @@ export default function SideNav() {
 
       {/* Spacer to push logout to bottom */}
       <div className="flex-grow"></div>
-
-      {/* Logout */}
-      <Button
-        type="text"
-        className="w-full flex items-center justify-center text-red-400 hover:text-red-500"
-        style={{
-          background: "transparent",
-          border: "none",
-          padding: "20px 0",
-        }}
-        icon={<PowerIcon className="w-7 h-7" />}
-        onClick={() => signOut({ callbackUrl: "/" })}
-      />
     </div>
   );
 }

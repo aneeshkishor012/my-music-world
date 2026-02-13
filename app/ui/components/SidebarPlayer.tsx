@@ -8,65 +8,17 @@ import {
     ChevronLeftIcon,
     CheckIcon,
     ArrowDownTrayIcon,
-    HeartIcon as HeartIconSolid,
-    ArrowLeftCircleIcon,
-    ArrowLeftIcon
+    HeartIcon as HeartIconSolid
 } from "@heroicons/react/24/solid";
 import { usePlayer } from "@/app/context/PlayerContext";
 import { useFavorites } from "@/app/context/FavoritesContext";
 import PlayerControl from "@/app/ui/components/PlayerControl";
-import BottomNavBar from "@/app/ui/components/BottomNavBar";
-import { Button, Checkbox } from "antd";
-import {
-    HeartIcon,
-    QueueListIcon,
-    ArrowsRightLeftIcon,
-    ArrowPathRoundedSquareIcon,
-} from "@heroicons/react/24/outline";
-
-const PlayModeIcon = ({ mode }: { mode: string | undefined }) => {
-    switch (mode) {
-        case "shuffle":
-            return (
-                <ArrowsRightLeftIcon
-                    className="w-4 h-4 text-gray-400"
-                    title="Shuffle"
-                />
-            );
-
-        case "repeatOne":
-            return (
-                <ArrowPathRoundedSquareIcon
-                    className="w-4 h-4 text-gray-400"
-                    title="Repeat One"
-                />
-            );
-
-        case "order":
-        default:
-            return (
-                <QueueListIcon
-                    className="w-4 h-4 text-gray-400"
-                    title="Play in Order"
-                />
-            );
-    }
-};
-
+import { Button } from "antd";
+import { HeartIcon } from "@heroicons/react/24/outline";
+import SongSlider from "./SongsProgressBar";
 
 export default function SidebarPlayer({ onClose }: { onClose?: () => void }) {
-    const {
-        currentSong,
-        isPlaying,
-        togglePlay,
-        playNext,
-        playPrev,
-        queue,
-        currentIndex,
-        playList,
-        activeEntity,
-        setActiveEntity
-    } = usePlayer();
+    const { currentSong, isPlaying, togglePlay, playNext, playPrev, queue, currentIndex, playList, activeEntity } = usePlayer();
 
     const { toggleFavorite, isFavorite } = useFavorites();
 
@@ -251,6 +203,7 @@ export default function SidebarPlayer({ onClose }: { onClose?: () => void }) {
                     <p className="text-xs text-gray-400 uppercase tracking-widest mt-1 mb-2">
                         {currentSong.description || currentSong?.label}
                     </p>
+                    <SongSlider />
 
                     {/* Controls Row */}
                     <div className="flex items-center gap-2 pl-2 pr-2 justify-between w-full">
@@ -267,7 +220,6 @@ export default function SidebarPlayer({ onClose }: { onClose?: () => void }) {
                                 <CheckIcon className="w-3 h-3 text-white" />
                             )}
                         </div>
-
                         {/* Player controls */}
                         <PlayerControl
                             isPlaying={isPlaying}

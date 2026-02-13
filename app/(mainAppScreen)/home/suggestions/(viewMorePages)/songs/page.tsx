@@ -32,7 +32,7 @@ function SongsSearchContent() {
     return (
         <div className="flex flex-col lg:flex-row gap-1 sm:gap-2 h-full w-full">
             {/* LEFT CONTENT – Full width on mobile, 70% on desktop */}
-            <div className="flex-1 bg-[#0e1730] overflow-hidden p-2 sm:p-3 min-w-0 rounded-lg sm:rounded-xl h-full pr-1 sm:pr-2 scrollbar-thin scrollbar-thumb-gray-800 scrollbar-track-transparent">
+            <div className="flex-1 bg-[#0e1730] overflow-hidden p-2 sm:p-3 min-w-0 rounded-lg sm:rounded-xl h-full pr-1 m-1 sm:pr-2 scrollbar-thin scrollbar-thumb-gray-800 scrollbar-track-transparent">
                 <Breadcrumbs items={[{ label: backLabel, href: backHref }, { label: 'Songs' }]} />
 
                 <p className="text-xs sm:text-sm text-gray-400 mb-3 md:mb-6 px-1 sm:px-2">Results for "{q}"</p>

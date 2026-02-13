@@ -7,6 +7,7 @@ import Breadcrumbs from "@/app/ui/components/Breadcrumbs";
 import { ResuableSearchSection } from "@/app/ui/components/SearchSection";
 import { useGenericData } from "@/app/hooks/useGenericData";
 import { usePlayer } from "@/app/context/PlayerContext";
+import { AdjustmentsHorizontalIcon, XMarkIcon } from "@heroicons/react/24/solid";
 
 type Preferences = {
   languages?: string[];
@@ -91,6 +92,7 @@ function SuggestionsContent() {
   const { playList } = usePlayer();
   const [prefs, setPrefs] = useState<Preferences | null>(null);
   const [prefsLoaded, setPrefsLoaded] = useState(false);
+  const [showFilterModal, setShowFilterModal] = useState(false);
 
   useEffect(() => {
     const stored = localStorage.getItem("userPreferences");
@@ -247,57 +249,18 @@ function SuggestionsContent() {
         {/* <Breadcrumbs items={[{ label: "Home", href: "/home/suggestions" }, { label: "Suggestions" }]} /> */}
 
         <div className="flex flex-col gap-3 px-1">
-          <div>
+          <div className="flex items-center justify-between">
             <h2 className="text-lg sm:text-xl font-bold text-white">Home Suggestions</h2>
+            {canSuggest && (
+              <button
+                onClick={() => setShowFilterModal(true)}
+                className="p-2 text-gray-300 hover:text-white bg-[#1A203A] hover:bg-[#232F4D] rounded-lg transition"
+                title="Filter Suggestions"
+              >
+                <AdjustmentsHorizontalIcon className="w-5 h-5" />
+              </button>
+            )}
           </div>
-
-          {/* Filters (chips only; no text input) */}
-          {canSuggest && (
-            <div className="space-y-3 hidden md:block space-y-3">
-              {availableLanguages.length > 0 && (
-                <div>
-                  <div className="text-xs uppercase tracking-widest text-gray-500 mb-2">Language</div>
-                  <div className="flex flex-wrap gap-2">
-                    {availableLanguages.map((lang) => (
-                      <div key={lang} className="contents">
-                        <Chip label={lang} active={lang === activeLanguage} onClick={() => setParam("lang", lang)} />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {availableArtists.length > 0 && (
-                <div>
-                  <div className="text-xs uppercase tracking-widest text-gray-500 mb-2">Artist</div>
-                  <div className="flex flex-wrap gap-2 max-h-[72px] overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-gray-800 scrollbar-track-transparent">
-                    {availableArtists.map((a) => (
-                      <div key={a.id} className="contents">
-                        <Chip
-                          label={a.name}
-                          active={a.id === (activeArtist?.id || "")}
-                          onClick={() => setParam("artistId", a.id)}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {availableMoods.length > 0 && (
-                <div>
-                  <div className="text-xs uppercase tracking-widest text-gray-500 mb-2">Music Type</div>
-                  <div className="flex flex-wrap gap-2">
-                    {availableMoods.map((m) => (
-                      <div key={m} className="contents">
-                        <Chip label={m} active={m === activeMood} onClick={() => setParam("mood", m)} />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
         </div>
 
         {!canSuggest && (
@@ -387,13 +350,81 @@ function SuggestionsContent() {
       <div className="hidden lg:block lg:w-[350px] xl:w-[400px] 2xl:w-[450px] shrink-0 h-full">
         <SidebarPlayer />
       </div>
+
+      {/* Filter Modal */}
+      {showFilterModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fadeIn">
+          <div className="bg-[#0e1730] border border-white/10 rounded-2xl shadow-2xl w-full max-w-lg max-h-[80vh] flex flex-col overflow-hidden">
+            <div className="flex items-center justify-between p-4">
+              <h3 className="text-lg font-bold text-white">Filter Suggestions</h3>
+              <button onClick={() => setShowFilterModal(false)} className="text-gray-400 hover:text-white">
+                <XMarkIcon className="w-6 h-6" />
+              </button>
+            </div>
+
+            <div className="p-4 overflow-y-auto space-y-6 scrollbar-thin scrollbar-thumb-gray-800 scrollbar-track-transparent">
+              {availableLanguages.length > 0 && (
+                <div>
+                  <div className="text-xs uppercase tracking-widest text-gray-500 mb-2">Language</div>
+                  <div className="flex flex-wrap gap-2">
+                    {availableLanguages.map((lang) => (
+                      <div key={lang} className="contents">
+                        <Chip label={lang} active={lang === activeLanguage} onClick={() => setParam("lang", lang)} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {availableArtists.length > 0 && (
+                <div>
+                  <div className="text-xs uppercase tracking-widest text-gray-500 mb-2">Artist</div>
+                  <div className="flex flex-wrap gap-2 max-h-[150px] overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-gray-800 scrollbar-track-transparent">
+                    {availableArtists.map((a) => (
+                      <div key={a.id} className="contents">
+                        <Chip
+                          label={a.name}
+                          active={a.id === (activeArtist?.id || "")}
+                          onClick={() => setParam("artistId", a.id)}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {availableMoods.length > 0 && (
+                <div>
+                  <div className="text-xs uppercase tracking-widest text-gray-500 mb-2">Music Type</div>
+                  <div className="flex flex-wrap gap-2">
+                    {availableMoods.map((m) => (
+                      <div key={m} className="contents">
+                        <Chip label={m} active={m === activeMood} onClick={() => setParam("mood", m)} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="p-4 flex justify-end">
+              <button
+                onClick={() => setShowFilterModal(false)}
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-sm"
+              >
+                Done
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
 export default function HomeSuggestionsPage() {
   return (
-    <div className="h-full text-white pl-3 pb-2">
+    <div className="h-full text-white p-2">
       <Suspense fallback={<div className="h-full w-full flex items-center justify-center">Loading suggestions...</div>}>
         <SuggestionsContent />
       </Suspense>

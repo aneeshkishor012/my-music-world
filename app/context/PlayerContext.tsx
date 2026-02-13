@@ -38,6 +38,9 @@ type PlayerContextType = {
     activeEntity: any | null;
     setActiveEntity: (entity: any | null) => void;
     loadEntity: (id: string, type: string) => Promise<void>;
+    currentTime: number;
+    duration: number;
+    seek: (time: number) => void;
 };
 
 const PlayerContext = createContext<PlayerContextType | undefined>(undefined);
@@ -49,6 +52,8 @@ export function PlayerProvider({ children }: { children?: ReactNode }) {
     const [currentIndex, setCurrentIndex] = useState(-1);
     const [mode, setMode] = useState<PlayerMode>('normal');
     const [activeEntity, setActiveEntity] = useState<any | null>(null);
+    const [currentTime, setCurrentTime] = useState(0);
+    const [duration, setDuration] = useState(0);
     const requestVersionRef = useRef(0);
 
     const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -61,10 +66,26 @@ export function PlayerProvider({ children }: { children?: ReactNode }) {
             playNextRef.current();
         };
 
+        const handleTimeUpdate = () => {
+            if (audioRef.current) {
+                setCurrentTime(audioRef.current.currentTime);
+            }
+        };
+
+        const handleLoadedMetadata = () => {
+            if (audioRef.current) {
+                setDuration(audioRef.current.duration);
+            }
+        };
+
         audioRef.current.addEventListener("ended", handleEnded);
+        audioRef.current.addEventListener("timeupdate", handleTimeUpdate);
+        audioRef.current.addEventListener("loadedmetadata", handleLoadedMetadata);
 
         return () => {
             audioRef.current?.removeEventListener("ended", handleEnded);
+            audioRef.current?.removeEventListener("timeupdate", handleTimeUpdate);
+            audioRef.current?.removeEventListener("loadedmetadata", handleLoadedMetadata);
             audioRef.current?.pause();
             audioRef.current = null;
         };
@@ -82,6 +103,7 @@ export function PlayerProvider({ children }: { children?: ReactNode }) {
         }
 
         audioRef.current.src = song.url;
+        setCurrentTime(0);
         audioRef.current.play().catch(e => console.error("Playback error", e));
         setCurrentSong(song);
         setIsPlaying(true);
@@ -166,6 +188,13 @@ export function PlayerProvider({ children }: { children?: ReactNode }) {
         });
     };
 
+    const seek = (time: number) => {
+        if (audioRef.current) {
+            audioRef.current.currentTime = time;
+            setCurrentTime(time);
+        }
+    };
+
     // Update ref
     useEffect(() => {
         playNextRef.current = playNext;
@@ -222,7 +251,10 @@ export function PlayerProvider({ children }: { children?: ReactNode }) {
             currentIndex,
             activeEntity,
             setActiveEntity,
-            loadEntity
+            loadEntity,
+            currentTime,
+            duration,
+            seek
         }}>
             {/* Bottom Player logic shouldn't be here in context file usually, but keeping it simple as per previous structure. 
                  Actually better to move UI to a separate component. I will remove the UI part from here and let the user put it in layout/page.
