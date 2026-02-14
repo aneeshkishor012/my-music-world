@@ -33,13 +33,8 @@ export default function LoginPage() {
                                 width={400}
                                 height={400}
                                 priority
-                                className="
-                                    w-[160px]       /* smaller on phone */
-                                    sm:w-[200px]    /* tablet */
-                                    md:w-[300px]    /* desktop */
-                                    object-contain
-                                    drop-shadow-[0_0_60px_rgba(139,92,246,0.4)]
-                                    "
+                                unoptimized
+                                className="w-[160px]  sm:w-[200px]  md:w-[300px]  object-contain  drop-shadow-[0_0_60px_rgba(139,92,246,0.4)] "
                             />
 
                         </div>

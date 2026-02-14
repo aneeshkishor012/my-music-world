@@ -33,6 +33,7 @@ export default function SignUpPage() {
                 width={400}
                 height={400}
                 priority
+                unoptimized
                 className="
                   w-[160px]        /* phone */
                   sm:w-[200px]     /* tablet */
