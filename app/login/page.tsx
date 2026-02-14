@@ -4,25 +4,61 @@ import { Suspense } from "react";
 
 export default function LoginPage() {
     return (
-        <main className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-[#050B24]">
-            {/* Left: Background image */}
-            <div className="hidden md:flex items-center justify-center p-10">
-                <Image
-                    src="/images/Boombox-bro.png"
-                    alt="Login background"
-                    width={900}
-                    height={900}
-                    priority
-                    className="max-h-[80vh] w-auto max-w-full object-contain"
-                    unoptimized
-                />
-            </div>
+        <main className="relative min-h-screen flex items-center justify-center overflow-hidden px-4 sm:px-6 lg:px-8">
 
-            {/* Right: Login form */}
-            <div className="flex items-center justify-center bg-[#050B24] px-4 py-10">
-                <Suspense>
-                    <LoginForm />
-                </Suspense>
+            {/* Premium Gradient Background */}
+            <div className="absolute inset-0 bg-gradient-to-br from-[rgb(30,27,75)] via-[rgb(5,11,36)] to-black" />
+
+            {/* Main Glass Card */}
+            <div className="relative z-20 w-full max-w-5xl">
+
+                <div className="
+          backdrop-blur-2xl
+          bg-[#0b1120]/85
+          border border-white/10
+          rounded-3xl
+          shadow-[0_8px_40px_rgba(0,0,0,0.8)]
+          overflow-hidden
+        ">
+
+                    {/* Responsive Layout */}
+                    <div className="flex flex-col md:flex-row items-center">
+
+                        {/* Image Section */}
+                        <div className="w-full md:w-1/2 flex items-center justify-center pt-6 pb-2 md:p-10">
+
+                            <Image
+                                src="/images/Boombox-pana.png"
+                                alt="Music Illustration"
+                                width={400}
+                                height={400}
+                                priority
+                                className="
+                                    w-[160px]       /* smaller on phone */
+                                    sm:w-[200px]    /* tablet */
+                                    md:w-[300px]    /* desktop */
+                                    object-contain
+                                    drop-shadow-[0_0_60px_rgba(139,92,246,0.4)]
+                                    "
+                            />
+
+                        </div>
+
+
+                        {/* Divider for Desktop */}
+                        <div className="hidden md:block w-px h-[70%] bg-white/10" />
+
+                        {/* Form Section */}
+                        <div className="w-full md:w-1/2 p-6 sm:p-8 md:p-12">
+
+                            <Suspense>
+                                <LoginForm />
+                            </Suspense>
+
+                        </div>
+
+                    </div>
+                </div>
             </div>
         </main>
     );
