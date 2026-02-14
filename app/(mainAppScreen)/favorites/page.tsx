@@ -49,7 +49,7 @@ export default function FavoritesPage() {
                                 <button
                                     key={tab}
                                     onClick={() => setFilter(tab as any)}
-                                    className={`capitalize transition text-xs sm:text-sm whitespace-nowrap ${filter === tab
+                                    className={`capitalize transition text-md sm:text-sm whitespace-nowrap ${filter === tab
                                             ? "text-blue-500"
                                             : "text-gray-400"
                                         }`}

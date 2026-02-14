@@ -8,20 +8,27 @@ import {
     ChevronLeftIcon,
     CheckIcon,
     ArrowDownTrayIcon,
-    HeartIcon as HeartIconSolid
+    HeartIcon as HeartIconSolid,
+    HomeIcon,
+    MusicalNoteIcon
 } from "@heroicons/react/24/solid";
 import { usePlayer } from "@/app/context/PlayerContext";
 import { useFavorites } from "@/app/context/FavoritesContext";
 import PlayerControl from "@/app/ui/components/PlayerControl";
-import { Button } from "antd";
+import { Button, FloatButton } from "antd";
 import { HeartIcon } from "@heroicons/react/24/outline";
 import SongSlider from "./SongsProgressBar";
+// import type { FloatButtonProps } from "antd";
+// import { PropsWithChildren } from "react";
+
+const MyGroup = FloatButton.Group;
 
 export default function SidebarPlayer({ onClose }: { onClose?: () => void }) {
     const { currentSong, isPlaying, togglePlay, playNext, playPrev, queue, currentIndex, playList, activeEntity } = usePlayer();
 
-    const { toggleFavorite, isFavorite } = useFavorites();
 
+    const { toggleFavorite, isFavorite } = useFavorites();
+    // const { Group } = FloatButton;
     // --- Size configuration (edit these values to change player image sizes) ---
     // Change `COVER_DIM_PX` to adjust the main cover image height/width (px).
     // Change `THUMB_SIZE_PX` to adjust small thumbnail width/height in the queue (px).
@@ -72,34 +79,6 @@ export default function SidebarPlayer({ onClose }: { onClose?: () => void }) {
         setSelectedSongs(new Set());
     };
 
-    // const handleDownloadSelected = async () => {
-    //     const list = queue;
-
-    //     for (const s of list) {
-    //         if (selectedSongs.has(s.id) && s.url) {
-    //             try {
-    //                 const response = await fetch(s.url);
-    //                 const blob = await response.blob();
-
-    //                 const blobUrl = window.URL.createObjectURL(blob);
-    //                 const link = document.createElement("a");
-
-    //                 link.href = blobUrl;
-    //                 link.download = `${s.title || "song"}.mp3`;
-
-    //                 document.body.appendChild(link);
-    //                 link.click();
-
-    //                 document.body.removeChild(link);
-    //                 window.URL.revokeObjectURL(blobUrl);
-    //             } catch (err) {
-    //                 console.error("Download failed:", s.title, err);
-    //             }
-    //         }
-    //     }
-
-    //     setSelectedSongs(new Set());
-    // };
     const handleDownloadSelected = async () => {
         const list = queue;
 
@@ -160,6 +139,33 @@ export default function SidebarPlayer({ onClose }: { onClose?: () => void }) {
         );
     }
 
+    const renderFloatButtons = () => {
+        if (selectedSongs.size === 0) return null;
+
+        return (
+            <MyGroup
+                trigger="click"
+                type="primary"
+                style={{ right: 50 }}
+                placement="top"
+                icon={<MusicalNoteIcon />}
+                children={[
+                    <FloatButton
+                        key="download"
+                        icon={<ArrowDownTrayIcon />}
+                        onClick={handleDownloadSelected}
+                    />,
+                    <FloatButton
+                        key="fav"
+                        icon={<HeartIconSolid />}
+                        onClick={handleBulkFavorite}
+                    />,
+                ]}
+            />
+        );
+    };
+
+
     const displaySongs = queue;
     const title = activeEntity ? activeEntity.name || activeEntity.title : "Now Playing";
     const subTitle = activeEntity ? `${activeEntity.type} • ${displaySongs.length} Songs` : "Queue";
@@ -200,22 +206,16 @@ export default function SidebarPlayer({ onClose }: { onClose?: () => void }) {
 
                     {/* Floating Selected Songs Header */}
                     <div
-                        className={`absolute top-0 left-0 right-0 z-20  bg-blue-500/10 backdrop-blur-md border-b border-blue-500/20 flex items-center justify-between px-3 py-2 transition-transform duration-300 ease-in-out ${selectedSongs.size > 0 ? "translate-y-0" : "-translate-y-full"}`}
+                        className={`absolute top-0 left-0 right-0 z-20  bg-blue-500/10 backdrop-blur-md border-b border-blue-500/20 flex items-center justify-center px-3 py-2 transition-transform duration-300 ease-in-out ${selectedSongs.size > 0 ? "translate-y-0" : "-translate-y-full"}`}
                     >
                         <h1 className="text-xs font-semibold text-blue-300">
                             Selected {selectedSongs.size} Songs
                         </h1>
-
-                        <Button
-                            onClick={handleDownloadSelected}
-                            className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 text-xs rounded-md"
-                            icon={<ArrowDownTrayIcon className="w-4 h-4" />}
-                        />
                     </div>
 
                     {/* Cover */}
                     <div
-                        className="relative shadow-lg rounded-lg overflow-hidden mb-2"
+                        className="relative shadow-lg rounded-lg overflow-hidden mb-2 mt-20"
                         style={{ width: 100, height: 100 }}
                     >
                         <Image
@@ -245,7 +245,7 @@ export default function SidebarPlayer({ onClose }: { onClose?: () => void }) {
                         {/* Select all */}
                         <div
                             onClick={() => handleSelectAll()}
-                            className={`w-4 h-4 lg:w-5 lg:h-5 rounded border flex items-center justify-center shrink-0 transition-colors ${selectedSongs.size === queue.length
+                            className={`w-5 h-5 lg:w-7 lg:h-7 rounded border flex items-center justify-center shrink-0 transition-colors ${selectedSongs.size === queue.length
                                 ? "bg-blue-500 border-blue-500"
                                 : "border-gray-600"
                                 }`}
@@ -382,6 +382,8 @@ export default function SidebarPlayer({ onClose }: { onClose?: () => void }) {
                     <PlayerControl isPlaying={isPlaying} togglePlay={togglePlay} playNext={playNext} playPrev={playPrev} />
                 </div>
             )}
+
+            {renderFloatButtons()}
         </div>
     );
 }

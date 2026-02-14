@@ -35,7 +35,7 @@ export default function BottomControlPanel({
     };
 
     return (
-        <div className="fixed bottom-8 left-0 right-0 z-30 h-[65%] md:hidden bg-[#0E1730] border-t border-gray-700 rounded-t-2xl shadow-2xl animate-slideUp">
+        <div className="fixed bottom-8 left-0 right-0 z-30 h-[60%] md:hidden bg-[#0E1730] border-t border-gray-700 rounded-t-2xl shadow-2xl animate-slideUp">
             {/* Handle Bar */}
             <div className="flex justify-center pt-3 pb-2">
                 <button
