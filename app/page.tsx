@@ -7,43 +7,40 @@ import Image from "next/image";
 
 export default function WelcomePage() {
   return (
-    <div className="min-h-screen relative flex items-center justify-center text-white px-4 overflow-hidden">
+    <main className="relative min-h-screen flex items-center justify-center overflow-hidden px-4 sm:px-6 lg:px-8 text-white">
 
-      {/* Background Image */}
+      {/* Cinematic Gradient Base */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[rgb(30,27,75)] via-[rgb(5,11,36)] to-black" />
+
+      {/* Blurred Background Illustration */}
       <Image
         src="/images/Boombox-pana.png"
         alt="Background"
         fill
         priority
         unoptimized
-        className="object-cover scale-105"
+        className="object-contain scale-110 blur-2xl opacity-30"
       />
 
-      {/* Cinematic Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#1e1b4b]/70 via-[#050b24]/75 to-black"></div>
-      
+      {/* Main Glass Card Container */}
+      <div className="relative z-20 w-full max-w-lg">
 
-      {/* Content */}
-      <div className="relative z-10 w-full max-w-lg">
-
-        {/* Glass Container */}
         <div
           className="
-                bg-transparent
-                backdrop-blur-xl
-                border border-white/10
-                rounded-2xl
-                p-8
-                // shadow-[0_20px_60px_-15px_rgba(139,92,246,0.25)]
-                text-center
-                transition-all duration-500
-              "
+            backdrop-blur-2xl
+            bg-[#0b1120]/85
+            border border-white/10
+            rounded-3xl
+            shadow-[0_8px_40px_rgba(0,0,0,0.8)]
+            p-10
+            text-center
+            transition-all duration-500
+          "
         >
-
 
           {/* Icon */}
           <div className="flex justify-center mb-6">
-            <MusicalNoteIcon className="w-14 h-14 text-purple-400 drop-shadow-lg" />
+            <MusicalNoteIcon className="w-14 h-14 text-purple-400 drop-shadow-[0_0_30px_rgba(139,92,246,0.4)]" />
           </div>
 
           {/* Title */}
@@ -60,7 +57,7 @@ export default function WelcomePage() {
           {/* Buttons */}
           <div className="flex flex-col sm:flex-row gap-4">
 
-            {/* Login Button – Primary Gradient */}
+            {/* Primary CTA */}
             <Link href="/login" className="w-full">
               <Button
                 className="
@@ -79,7 +76,7 @@ export default function WelcomePage() {
               </Button>
             </Link>
 
-            {/* Signup Button – Glass Style */}
+            {/* Secondary Glass Button */}
             <Link href="/signup" className="w-full">
               <Button
                 className="
@@ -108,6 +105,6 @@ export default function WelcomePage() {
 
         </div>
       </div>
-    </div>
+    </main>
   );
 }
