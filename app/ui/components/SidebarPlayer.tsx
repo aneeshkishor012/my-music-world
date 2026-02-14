@@ -132,7 +132,7 @@ export default function SidebarPlayer({ onClose }: { onClose?: () => void }) {
 
     if (!currentSong && queue.length === 0 && !activeEntity) {
         return (
-            <div className="hidden lg:flex w-full flex-col items-center justify-center bg-[#0E1730] rounded-xl lg:rounded-2xl p-4 lg:p-6 h-full border border-white/5 text-gray-500">
+            <div className="hidden lg:flex w-full flex-col items-center justify-center  rounded-xl lg:rounded-2xl p-4 lg:p-6 h-full border border-white/5 text-gray-500">
                 <Bars3BottomLeftIcon className="w-10 h-10 lg:w-12 lg:h-12 mb-4 opacity-20" />
                 <h1 className="text-center text-xs lg:text-xl font-bold italic">{randomQuote}</h1>
             </div>
@@ -170,24 +170,39 @@ export default function SidebarPlayer({ onClose }: { onClose?: () => void }) {
     const title = activeEntity ? activeEntity.name || activeEntity.title : "Now Playing";
     const subTitle = activeEntity ? `${activeEntity.type} • ${displaySongs.length} Songs` : "Queue";
     return (
-        <div className="flex flex-col rounded-xl lg:rounded-2xl h-full w-full  shadow-2xl overflow-hidden relative">
-
+        <div className="flex flex-col rounded-xl lg:rounded-2xl h-full w-full border border-white/10 shadow-2xl overflow-hidden relative bg-[rgb(12,20,55)] lg:bg-transparent backdrop-blur-2xl">
             {/* Close icon for mobile (only if onClose is provided) */}
-            {onClose && (
-                <div className="lg:hidden fixed top-4 left-4 z-50">
+            {/* Floating Selected Songs Header */}
+            <div className={`absolute top-0 left-0 right-0 z-30 flex items-center justify-between px-4 h-12 transition-all duration-300 ${selectedSongs.size > 0 ? "backdrop-blur-xl " : "backdrop-blur-none"}`}>
+
+                {/* Left Side - Back Button (Always Visible) */}
+                {onClose ? (
                     <Button
-                        icon={<ChevronLeftIcon className="w-6 h-6 mt-1" />}
+                        icon={<ChevronLeftIcon className="w-5 h-5" />}
                         onClick={onClose}
                         variant="text"
-                        className="border-none rounded-lg !bg-blue-600 hover:!bg-blue-700 !text-white flex items-center justify-center"
+                        className="border-none rounded-lg hover:!bg-white/10 bg-transparent text-white flex items-center justify-center transition-all duration-300"
                     />
-                </div>
-            )}
+                ) : (
+                    <div className="w-10" />
+                )}
+
+                {/* Center Text (Only When Selected) */}
+                <h1 className={`text-sm font-semibold transition-opacity duration-300 ${selectedSongs.size > 0 ? "opacity-100 text-purple-300" : "opacity-0"}`}>
+                    Selected {selectedSongs.size} Songs
+                </h1>
+
+                {/* Right Spacer (Keeps Center Alignment Perfect) */}
+                <div className="w-10" />
+
+            </div>
+
+
 
             {/* ENTITY DETAILS (if any) */}
             {activeEntity && (
-                <div className="flex bg-[#0E1730]  flex-col items-center p-3 border-b border-white/10 relative">
-                    <div className={`relative shadow-lg ${activeEntity.type === 'artist' ? 'rounded-full' : 'rounded-lg'} overflow-hidden mb-2`} style={{ width: 64, height: 64 }}>
+                <div className="flex flex-col items-center p-3 border-b border-white/10 relative">
+                    <div className={`relative shadow-lg ${activeEntity.type === 'artist' ? 'rounded-full' : 'rounded-lg'} overflow-hidden mb-2`} style={{ width: 100, height: 100 }}>
                         <Image
                             src={activeEntity.imageUri || (activeEntity.image?.[2]?.url) || ""}
                             alt={title}
@@ -202,21 +217,11 @@ export default function SidebarPlayer({ onClose }: { onClose?: () => void }) {
                 </div>
             )}
             {currentSong && !activeEntity && (
-                <div className="relative flex flex-col bg-[#0E1730] rounded-xl lg:rounded-2xl items-center p-3 border-b border-white/10 overflow-hidden">
-
-                    {/* Floating Selected Songs Header */}
-                    <div
-                        className={`absolute top-0 left-0 right-0 z-20  bg-blue-500/10 backdrop-blur-md border-b border-blue-500/20 flex items-center justify-center px-3 py-2 transition-transform duration-300 ease-in-out ${selectedSongs.size > 0 ? "translate-y-0" : "-translate-y-full"}`}
-                    >
-                        <h1 className="text-xs font-semibold text-blue-300">
-                            Selected {selectedSongs.size} Songs
-                        </h1>
-                    </div>
-
+                <div className="relative flex flex-col  rounded-xl lg:rounded-2xl items-center p-3 border-b border-white/10 overflow-hidden">
                     {/* Cover */}
                     <div
-                        className="relative shadow-lg rounded-lg overflow-hidden mb-2 mt-20"
-                        style={{ width: 100, height: 100 }}
+                        className="relative shadow-lg rounded-lg overflow-hidden mb-2 lg:mt-0 mt-2"
+                        style={{ width: 200, height: 200 }}
                     >
                         <Image
                             src={currentSong.imageUri || ""}
@@ -286,7 +291,7 @@ export default function SidebarPlayer({ onClose }: { onClose?: () => void }) {
 
 
             {/* SONG LIST */}
-            <div className="flex-1 bg-[#0E1730] rounded-xl lg:rounded-2xl mt-2 min-h-0 flex flex-col p-2 lg:p-3 pt-0">
+            <div className="flex-1  rounded-xl lg:rounded-2xl mt-2 min-h-0 flex flex-col p-2 lg:p-3 pt-0">
                 <div
                     ref={queueRef}
                     className="flex-1 overflow-y-auto pr-1 lg:pr-2 space-y-1 lg:space-y-2 scrollbar-thin scrollbar-thumb-gray-800 scrollbar-track-transparent"
@@ -299,7 +304,7 @@ export default function SidebarPlayer({ onClose }: { onClose?: () => void }) {
                                 key={`${song.id}-${idx}`}
                                 ref={isActive ? activeItemRef : null}
                                 onClick={() => playList(displaySongs, idx)}
-                                className={`flex items-center gap-2 lg:gap-3 pl-2 pr-2 pt-3 pb-3 bg-blue-500/10 rounded-lg transition overflow-hidden cursor-pointer group relative ${isActive ? 'bg-blue-600/20 border border-blue-500/30' : 'hover:bg-white/5 border border-transparent'}`}
+                                className={`flex items-center gap-2 lg:gap-3 pl-2 pr-2 pt-3 pb-3  rounded-lg transition overflow-hidden cursor-pointer group relative ${isActive ? 'bg-blue-600/20 border border-blue-500/30' : 'hover:bg-white/5 border border-transparent'}`}
                             >
                                 {/* Selection Indicator */}
                                 <div

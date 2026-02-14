@@ -33,7 +33,7 @@ export default function FavoritesPage() {
     };
 
     return (
-        <div className="h-full bg-[#12121F] text-white p-1 sm:p-2 overflow-hidden">
+        <div className="h-full  text-white p-1 sm:p-2 overflow-hidden">
             <div className="flex flex-col lg:flex-row gap-1 sm:gap-2 h-full w-full">
 
                 {/* LEFT CONTENT – Full width on mobile, 70% on desktop */}
@@ -77,7 +77,7 @@ export default function FavoritesPage() {
                                         className={`bg-[#1A2340] p-2 sm:p-3 md:p-4 rounded-lg md:rounded-xl hover:bg-[#232F4D] transition cursor-pointer group flex flex-col items-center text-center ${isCurrent ? 'border border-blue-500' : ''}`}
                                         onClick={() => handleItemClick(item)}
                                     >
-                                        <div className={`w-full aspect-square overflow-hidden bg-gray-800 mb-2 sm:mb-3 shadow-lg relative ${item.type === 'artist' ? 'rounded-full' : 'rounded-lg'}`}>
+                                        <div className={`w-full aspect-square overflow-hidden  mb-2 sm:mb-3 shadow-lg relative ${item.type === 'artist' ? 'rounded-full' : 'rounded-lg'}`}>
                                             {item.imageUri ? (
                                                 <Image
                                                     src={item.imageUri}

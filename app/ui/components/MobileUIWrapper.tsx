@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, ReactNode, FC } from "react";
+import { useState, ReactNode, FC, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import BottomNavBar from "./BottomNavBar";
 import FloatingMiniPlayer from "./FloatingMiniPlayer";
 import BottomControlPanel from "./BottomControlPanel";
@@ -10,13 +11,11 @@ interface MobileUIWrapperProps {
     children?: ReactNode;
 }
 
-
-import { useEffect } from "react";
-
 // Listen for a custom event to open the full player modal
 const MobileUIWrapper: FC<MobileUIWrapperProps> = ({ children }) => {
     const [isPanelExpanded, setIsPanelExpanded] = useState(false);
     const [isFullPlayerOpen, setIsFullPlayerOpen] = useState(false);
+    const pathname = usePathname();
 
     useEffect(() => {
         const handler = () => setIsFullPlayerOpen(true);
@@ -48,7 +47,7 @@ const MobileUIWrapper: FC<MobileUIWrapperProps> = ({ children }) => {
                 )}
 
                 {/* Bottom Navigation Bar */}
-                <BottomNavBar />
+                {pathname !== "/welcome" && <BottomNavBar />}
             </div>
         </>
     );

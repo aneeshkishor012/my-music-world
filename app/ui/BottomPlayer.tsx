@@ -30,7 +30,7 @@ export default function BottomPlayer() {
     };
 
     return (
-        <div className="fixed bottom-0 left-0 right-0 bg-[#0E1730] border-t border-gray-800 p-1.5 sm:p-2 md:p-3 z-50 hidden md:flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-3 md:gap-4 px-2 sm:px-4 md:px-10 animate-slideUp shadow-2xl">
+        <div className="fixed bottom-0 left-0 right-0  border-t border-gray-800 p-1.5 sm:p-2 md:p-3 z-50 hidden md:flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-3 md:gap-4 px-2 sm:px-4 md:px-10 animate-slideUp shadow-2xl">
 
             {/* Song Info */}
             <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-1/3 truncate">

@@ -13,7 +13,7 @@ export default function SettingsPage() {
             {/* Settings Sections */}
             <div className="space-y-6 max-w-2xl">
                 {/* Account Section */}
-                <div className="bg-[#0E1730] rounded-lg p-4 md:p-6 border border-white/10">
+                <div className=" rounded-lg p-4 md:p-6 border border-white/10">
                     <h2 className="text-lg font-bold mb-4">Account</h2>
                     <div className="space-y-3">
                         <div className="flex justify-between items-center pb-3 border-b border-white/5">
@@ -31,7 +31,7 @@ export default function SettingsPage() {
                 </div>
 
                 {/* Preferences Section */}
-                <div className="bg-[#0E1730] rounded-lg p-4 md:p-6 border border-white/10">
+                <div className=" rounded-lg p-4 md:p-6 border border-white/10">
                     <h2 className="text-lg font-bold mb-4">Preferences</h2>
                     <div className="space-y-4">
                         <div className="flex justify-between items-center">
@@ -50,7 +50,7 @@ export default function SettingsPage() {
                 </div>
 
                 {/* Audio Section */}
-                <div className="bg-[#0E1730] rounded-lg p-4 md:p-6 border border-white/10">
+                <div className=" rounded-lg p-4 md:p-6 border border-white/10">
                     <h2 className="text-lg font-bold mb-4">Audio Quality</h2>
                     <div className="space-y-3">
                         <div className="flex items-center gap-3">
@@ -75,7 +75,7 @@ export default function SettingsPage() {
                 </div>
 
                 {/* About Section */}
-                <div className="bg-[#0E1730] rounded-lg p-4 md:p-6 border border-white/10">
+                <div className=" rounded-lg p-4 md:p-6 border border-white/10">
                     <h2 className="text-lg font-bold mb-4">About</h2>
                     <div className="space-y-2 text-gray-400 text-sm">
                         <p>My Music App v1.0.0</p>

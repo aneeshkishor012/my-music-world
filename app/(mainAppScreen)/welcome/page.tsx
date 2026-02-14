@@ -137,40 +137,78 @@ export default function PreferencesPage() {
     // --- Render Steps ---
 
     const renderStep1_Languages = () => (
-        <div className="space-y-4 animate-fadeIn">
-            <h2 className="text-xl sm:text-2xl font-bold text-center">Select Languages</h2>
-            <p className="text-gray-400 text-center text-sm sm:text-base">What kind of music do you listen to?</p>
+        <div className="space-y-6 animate-fadeIn">
 
+            <h2 className="text-white text-xl sm:text-2xl font-bold text-center tracking-wide">
+                Select Languages
+            </h2>
             <div className="flex flex-wrap justify-center gap-3">
-                {LANGUAGES.map(lang => (
-                    <button
-                        key={lang}
-                        onClick={() => toggleSelection(lang, selectedLanguages, setSelectedLanguages)}
-                        className={`
-                            px-4 py-1.5 sm:px-6 sm:py-2 rounded-full border border-gray-600 transition-all
-                            ${selectedLanguages.includes(lang)
-                                ? "bg-blue-600 border-blue-600 text-white shadow-[0_0_15px_rgba(37,99,235,0.5)]"
-                                : "hover:bg-gray-800 text-gray-300"}
-                        `}
-                    >
-                        {lang}
-                    </button>
-                ))}
+
+                {LANGUAGES.map((lang) => {
+                    const isSelected = selectedLanguages.includes(lang);
+
+                    return (
+                        <button
+                            key={lang}
+                            onClick={() =>
+                                toggleSelection(lang, selectedLanguages, setSelectedLanguages)
+                            }
+                            className={`
+                            px-4 py-1.5 sm:px-6 sm:py-2
+                            rounded-full
+                            text-sm sm:text-base
+                            font-medium
+                            transition-all duration-300
+                            border
+                            
+                            ${isSelected ? `
+                                bg-gradient-to-r
+                                from-purple-600
+                                via-indigo-600
+                                to-blue-600
+                                border-transparent
+                                text-white
+                                shadow-[0_0_20px_rgba(139,92,246,0.5)]
+                                scale-105
+                                `
+                                    : `
+                                bg-white/5
+                                border-white/10
+                                text-gray-300
+                                hover:bg-white/10
+                                hover:border-purple-500/40
+                                `}
+                            `}
+                        >
+                            {lang}
+                        </button>
+                    );
+                })}
+
             </div>
         </div>
     );
 
+
     const renderStep2_Actors = () => (
-        <div className="space-y-2 animate-fadeIn">
-            <h2 className="text-xl sm:text-2xl font-bold text-center">Favorite Artists</h2>
-            <p className="text-gray-400 text-center text-sm sm:text-base">Search and add your favorite singers/actors.</p>
+        <div className="space-y-1 animate-fadeIn">
+
+            <h2 className="text-white text-xl sm:text-2xl font-bold text-center tracking-wide">
+                Favorite Artists
+            </h2>
 
             {/* Selected Artists Chips */}
-            <div className="flex flex-wrap gap-2 justify-center mb-3">
-                {selectedActors.map(actor => (
-                    <div key={actor.id} className="flex items-center gap-2 bg-blue-600/20 text-blue-400 px-3 py-1 rounded-full border border-blue-600/50">
+            <div className="hidden md:flex flex-wrap gap-2 justify-center mb-3">
+                {selectedActors.map((actor) => (
+                    <div
+                        key={actor.id}
+                        className=" flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-purple-600/20 via-indigo-600/20 to-blue-600/20 border border-purple-500/40 text-purple-300   backdrop-blur-md " >
                         <span className="text-sm">{actor.name}</span>
-                        <button onClick={() => removeActor(actor.id)} className="hover:text-white" aria-label={`Remove ${actor.name}`}>
+                        <button
+                            onClick={() => removeActor(actor.id)}
+                            className="hover:text-white transition"
+                            aria-label={`Remove ${actor.name}`}
+                        >
                             <XMarkIcon className="w-4 h-4" />
                         </button>
                     </div>
@@ -179,163 +217,183 @@ export default function PreferencesPage() {
 
             {/* Search Input */}
             <div className="relative max-w-md mx-auto">
-                <div className="flex items-center border border-gray-700 focus-within:border-blue-500 rounded-lg">
-
+                <div className=" flex items-center rounded-xl border border-white/10 bg-white/5 backdrop-blur-md focus-within:border-purple-500/50 transition-all" >
                     <Input
                         prefix={<MagnifyingGlassIcon className="w-5 h-5 text-gray-400 mr-2" />}
-                        type="text"
                         placeholder="Search for artists (e.g. Arijit Singh)..."
-                        className="px-4 py-3 bg-[#1A2340] border-none outline-none text-white w-full"
                         variant="borderless"
+                        className="px-4 py-3 text-white"
                         value={artistQuery}
-                        allowClear={{ clearIcon: <XMarkIcon className="w-4 h-4 text-white " /> }}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setArtistQuery(e.target.value)}
+                        allowClear={{
+                            clearIcon: <XMarkIcon className="w-4 h-4 text-gray-400" />,
+                        }}
+                        onChange={(e) => setArtistQuery(e.target.value)}
                     />
                 </div>
 
                 {/* Search Results Dropdown */}
                 {artistQuery && (
-                    <div className="absolute z-10 w-full bg-[#1A2340] mt-2 rounded-lg shadow-xl border border-gray-700 max-h-60 overflow-y-auto">
-                        {searchArtistListLoading && <div className="p-4 text-center text-gray-400">Loading...</div>}
-                        {!searchArtistListLoading && searchArtistList.map((artist: any) => (
-                            <div
-                                key={artist.id}
-                                onClick={() => addActor(artist)}
-                                className="flex items-center gap-3 p-3 hover:bg-[#232F4D] cursor-pointer transition-colors border-b border-gray-700 last:border-none"
-                            >
-                                <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 bg-gray-600">
-                                    {/* Some API results might not have images, handling gracefully */}
-                                    {(artist.imageUri || artist.image) ? (
-                                        <Image
-                                            src={artist.imageUri || artist.image}
-                                            alt={artist.name}
-                                            width={40}
-                                            height={40}
-                                            className="object-cover w-full h-full"
-                                            unoptimized
-                                        />
-                                    ) : <div className="w-full h-full flex items-center justify-center text-xs">?</div>}
-                                </div>
-                                <div className="flex-1">
-                                    <h4 className="text-white text-sm">{artist.name}</h4>
-                                    <p className="text-gray-500 text-xs capitalize">{artist.description || artist.role}</p>
-                                </div>
-                                {selectedActors.find(a => a.id === artist.id) && <CheckCircleIcon className="w-5 h-5 text-green-500" />}
-                            </div>
-                        ))}
+                    <div className=" absolute z-30 w-full mt-2 rounded-xl bg-[#0b1120]/95  backdrop-blur-xl border border-white/10  shadow-2xl  max-h-60 overflow-y-auto  " >
+                        {searchArtistListLoading && (
+                            <div className="p-4 text-center text-gray-400">Loading...</div>
+                        )}
+
+                        {!searchArtistListLoading &&
+                            searchArtistList.map((artist: any) => {
+                                const isSelected = selectedActors.find(
+                                    (a) => a.id === artist.id
+                                );
+
+                                return (
+                                    <div
+                                        key={artist.id}
+                                        onClick={() => addActor(artist)}
+                                        className="flex items-center gap-3 p-3 hover:bg-white/5 cursor-pointer transition-all  border-b border-white/5 last:border-none  " >
+                                        <div className="w-10 h-10 rounded-full overflow-hidden bg-white/10 flex-shrink-0">
+                                            {(artist.imageUri || artist.image) ? (
+                                                <Image
+                                                    src={artist.imageUri || artist.image}
+                                                    alt={artist.name}
+                                                    width={40}
+                                                    height={40}
+                                                    className="object-cover w-full h-full"
+                                                    unoptimized
+                                                />
+                                            ) : (
+                                                <div className="w-full h-full flex items-center justify-center text-xs">
+                                                    ?
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        <div className="flex-1">
+                                            <h4 className="text-white text-sm">{artist.name}</h4>
+                                            <p className="text-gray-500 text-xs capitalize">
+                                                {artist.description || artist.role}
+                                            </p>
+                                        </div>
+
+                                        {isSelected && (
+                                            <CheckCircleIcon className="w-5 h-5 text-purple-500" />
+                                        )}
+                                    </div>
+                                );
+                            })}
                     </div>
                 )}
             </div>
 
-            {/* Default Artists (shown when search box is empty) */}
+            {/* Default Artists */}
             {!artistQuery && (
-                <div className="space-y-4 pt-1">
-                    <p className="text-center text-sm text-gray-400">Browse artists by language, or use search above.</p>
+                <div className="space-y-4 pt-2">
 
-                    {defaultArtistsError && (
-                        <div className="text-center text-sm text-red-400">
-                            {defaultArtistsError} Try searching instead.
-                        </div>
-                    )}
+                    <div className="  space-y-3  max-h-[38vh]  overflow-y-auto  pr-1 " >
+                        {Object.entries(defaultArtistsByLanguage).map(
+                            ([language, list]: any) => (
+                                <div key={language} className="space-y-3">
 
-                    <div className="space-y-2 max-h-[38vh] w-full overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-gray-800 scrollbar-track-transparent">
-                        {(() => {
-                            const preferred = selectedLanguages.filter((l) =>
-                                (DEFAULT_ARTIST_LANGUAGES as readonly string[]).includes(l)
-                            ) as DefaultArtistLanguage[];
-                            const languagesToShow = preferred.length ? preferred : [...DEFAULT_ARTIST_LANGUAGES];
+                                    <h3 className="text-lg font-semibold text-white px-1">
+                                        {language}
+                                    </h3>
 
-                            return languagesToShow.map((language) => {
-                                const list = defaultArtistsByLanguage[language] ?? [];
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                                        {list.map((artist: any) => {
+                                            const isSelected = selectedActors.find(
+                                                (a) => a.id === artist.id
+                                            );
 
-                                return (
-                                    <div key={language} className="space-y-3">
-                                        <h3 className="text-lg font-semibold text-white px-1">{language}</h3>
+                                            return (
+                                                <button
+                                                    key={artist.id}
+                                                    onClick={() => addActor(artist)}
+                                                    className={` group flex items-center gap-3 rounded-xl border px-3 py-2 transition-all text-left backdrop-blur-md
 
-                                        {defaultArtistsLoading && list.length === 0 ? (
-                                            <div className="text-sm text-gray-400 px-1">Loading {language} artists...</div>
-                                        ) : list.length === 0 ? (
-                                            <div className="text-sm text-gray-500 px-1">No artists found.</div>
-                                        ) : (
-                                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                                                {list.map((artist: any) => (
-                                                    <button
-                                                        key={artist.id}
-                                                        onClick={() => addActor(artist)}
-                                                        className="group flex items-center gap-3 rounded-lg border border-gray-700 bg-[#1A2340] px-3 py-2 hover:bg-[#232F4D] transition-colors text-left"
-                                                    >
-                                                        <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 bg-gray-600">
-                                                            {(artist.imageUri || artist.image) ? (
-                                                                <Image
-                                                                    src={artist.imageUri || artist.image}
-                                                                    alt={artist.name}
-                                                                    width={40}
-                                                                    height={40}
-                                                                    className="object-cover w-full h-full"
-                                                                    unoptimized
-                                                                />
-                                                            ) : (
-                                                                <div className="w-full h-full flex items-center justify-center text-xs">?</div>
-                                                            )}
-                                                        </div>
-
-                                                        <div className="min-w-0 flex-1">
-                                                            <div className="flex items-center justify-between gap-2">
-                                                                <span className="text-sm text-white truncate">{artist.name}</span>
-                                                                {selectedActors.find(a => a.id === artist.id) && (
-                                                                    <CheckCircleIcon className="w-4 h-4 text-green-500 flex-shrink-0" />
-                                                                )}
+                                                    ${isSelected ? `  bg-gradient-to-r from-purple-600/20 via-indigo-600/20 to-blue-600/20  border-purple-500/40  ` : ` bg-white/5  border-white/10  hover:bg-white/10  `} `}
+                                                >
+                                                    <div className="w-10 h-10 rounded-full overflow-hidden bg-white/10">
+                                                        {(artist.imageUri || artist.image) ? (
+                                                            <Image
+                                                                src={artist.imageUri || artist.image}
+                                                                alt={artist.name}
+                                                                width={40}
+                                                                height={40}
+                                                                className="object-cover w-full h-full"
+                                                                unoptimized
+                                                            />
+                                                        ) : (
+                                                            <div className="w-full h-full flex items-center justify-center text-xs">
+                                                                ?
                                                             </div>
-                                                            <span className="text-xs text-gray-500 truncate capitalize">
-                                                                {artist.description || artist.role || "Artist"}
-                                                            </span>
+                                                        )}
+                                                    </div>
+
+                                                    <div className="min-w-0 flex-1">
+                                                        <div className="text-[11px] text-white truncate">
+                                                            {artist.name}
                                                         </div>
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        )}
+                                                        <span className="text-[10px] text-gray-400 truncate capitalize block">
+                                                            {artist.description || artist.role || "Artist"}
+                                                        </span>
+                                                    </div>
+
+
+                                                    {isSelected && (
+                                                        <CheckCircleIcon className="w-4 h-4 text-purple-500 flex-shrink-0" />
+                                                    )}
+                                                </button>
+                                            );
+                                        })}
                                     </div>
-                                );
-                            });
-                        })()}
+
+                                </div>
+                            )
+                        )}
                     </div>
                 </div>
             )}
         </div>
     );
 
-    const renderStep3_Moods = () => (
-        <div className="space-y-4 animate-fadeIn">
-            <h2 className="text-xl sm:text-2xl font-bold text-center">What's your Vibe?</h2>
-            <p className="text-gray-400 text-center text-sm sm:text-base">Pick some moods to get you started.</p>
 
+    const renderStep3_Moods = () => (
+        <div className="space-y-1 animate-fadeIn">
+
+            <h2 className="text-white text-xl sm:text-2xl font-bold text-center tracking-wide">
+                What's your Vibe?
+            </h2>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 max-w-2xl mx-auto">
-                {MOODS.map(mood => (
-                    <div
-                        key={mood}
-                        onClick={() => toggleSelection(mood, selectedMoods, setSelectedMoods)}
-                        className={`
-                            cursor-pointer rounded-xl p-3 sm:p-4 text-center border transition-all duration-200
-                            ${selectedMoods.includes(mood)
-                                ? "bg-gradient-to-br from-purple-600 to-blue-600 border-transparent text-white scale-105"
-                                : "bg-[#1A2340] border-gray-700 hover:border-gray-500 text-gray-300"}
-                        `}
-                    >
-                        {mood}
-                    </div>
-                ))}
+
+                {MOODS.map((mood) => {
+                    const isSelected = selectedMoods.includes(mood);
+
+                    return (
+                        <div
+                            key={mood}
+                            onClick={() =>
+                                toggleSelection(mood, selectedMoods, setSelectedMoods)
+                            }
+                            className={` cursor-pointer rounded-xl  p-3 sm:p-4 text-center  font-medium transition-all duration-300 backdrop-blur-md border
+                                        ${isSelected ? ` bg-gradient-to-br from-purple-600 via-indigo-600 to-blue-600  border-transparent text-white shadow-[0_0_25px_rgba(139,92,246,0.5)] scale-105 ` : ` bg-white/5 border-white/10 text-gray-300 hover:bg-white/10 hover:border-purple-500/40 `} `}
+                        >
+                            {mood}
+                        </div>
+                    );
+                })}
+
             </div>
         </div>
     );
 
+
     return (
-        <div className="min-h-screen bg-[#0F0F1A] text-white flex flex-col items-center px-4 py-5 lg:py-7">
+        <div className="relative min-full flex flex-col items-center justify-center px-4 py-6 overflow-hidden">
             {/* Navigation Buttons */}
-            <div className="flex gap-3 pb-10">
+            <div className="flex gap-3 pb-8 justify-center">
+
                 {step > 1 && (
                     <button
                         onClick={() => setStep(step - 1)}
-                        className="px-6 py-2.5 sm:px-8 sm:py-3 rounded-xl bg-gray-800 hover:bg-gray-700 font-semibold transition-colors"
+                        className="text-white px-6 py-2.5 sm:px-8 sm:py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 font-semibold transition-all"
                     >
                         Back
                     </button>
@@ -344,33 +402,35 @@ export default function PreferencesPage() {
                 {step < 3 ? (
                     <button
                         onClick={() => setStep(step + 1)}
-                        className="px-6 py-2.5 sm:px-8 sm:py-3 rounded-xl bg-white text-black font-bold hover:bg-gray-200 transition-colors"
-                    >
+                        className="text-white px-6 py-2.5 sm:px-8 sm:py-3 rounded-xl bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 font-bold hover:scale-105 hover:shadow-purple-500/40 transition-all">
                         Next
                     </button>
                 ) : (
                     <button
                         onClick={handleSave}
-                        className="px-6 py-2.5 sm:px-8 sm:py-3 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold hover:shadow-lg hover:shadow-blue-500/30 transition-all transform hover:scale-105"
+                        className="text-white px-6 py-2.5 sm:px-8 sm:py-3 rounded-xl  bg-gradient-to-r  from-purple-600 via-indigo-600 to-blue-600 font-bold hover:scale-105 hover:shadow-purple-500/40 transition-all "
                     >
                         Start Listening
                     </button>
                 )}
             </div>
+
             {/* Progress Bar */}
-            <div className="w-11/12 sm:w-4/5 max-w-lg bg-gray-800 h-2 rounded-full mb-6 lg:mb-10 overflow-hidden">
+            <div className="w-full max-w-lg mx-auto bg-white/10 h-2 rounded-full mb-8 overflow-hidden">
                 <div
-                    className="bg-blue-500 h-full transition-all duration-500 ease-out"
+                    className="h-full bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 transition-all duration-500 ease-out"
                     style={{ width: `${(step / 3) * 100}%` }}
-                ></div>
+                />
             </div>
 
             {/* Content Area */}
-            <div className="w-full sm:w-4/5 max-w-3xl mb-6 lg:mb-10 min-h-[320px] lg:min-h-[380px]">
+            <div className="w-full max-w-3xl mx-auto h-[60%]">
                 {step === 1 && renderStep1_Languages()}
                 {step === 2 && renderStep2_Actors()}
                 {step === 3 && renderStep3_Moods()}
             </div>
+
         </div>
     );
+
 }

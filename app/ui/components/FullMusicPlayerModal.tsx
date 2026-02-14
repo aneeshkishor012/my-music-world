@@ -4,7 +4,7 @@ import SidebarPlayer from "./SidebarPlayer";
 
 export default function FullMusicPlayerModal({ onClose }: { onClose: () => void }) {
     return (
-        <div className="fixed top-0 right-0 bottom-0 left-0 z-50 md:hidden bg-[#0E1730] flex flex-col shadow-2xl border-l border-white/10 animate-slideInRight">
+        <div className="fixed top-0 right-0 bottom-0 left-0 z-[60] md:hidden  flex flex-col shadow-2xl border-l border-white/10 animate-slideInRight">
             {/* Header with Close Button */}
             {/* <div className="flex items-center justify-between p-4 bg-[#0B1A33] border-b border-white/10">
                 <h2 className="text-lg font-bold text-white">Player Queue</h2>

@@ -40,7 +40,7 @@ export default function FavoriteDetailsPage() {
 
     if (!item) {
         return (
-            <div className="h-full bg-[#12121F] text-white p-4 flex items-center justify-center">
+            <div className="h-full  text-white p-4 flex items-center justify-center">
                 <div className="text-center">
                     <p className="mb-4">Item not found in suggection.</p>
                     <button onClick={() => router.push('/favorites')} className="text-blue-400 hover:underline">
@@ -55,29 +55,29 @@ export default function FavoriteDetailsPage() {
         playList(fetchedSongs, index);
     };
     return (
-        <div className="h-full bg-[#12121F] text-white p-1 sm:p-2 overflow-hidden">
+        <div className="h-full  text-white p-1 sm:p-2 overflow-hidden">
             <div className="flex flex-col lg:flex-row gap-1 sm:gap-2 h-full w-full">
                 {/* LEFT CONTENT */}
                 <div className="flex-1 min-w-0 h-full overflow-y-auto pr-1 sm:pr-2 scrollbar-thin scrollbar-thumb-gray-800 scrollbar-track-transparent">
-                    <div className="bg-blue-500/10 pt-2 pb-2 pl-2 pr-2 rounded-xl mb-2">
-                        <div className="flex flex-row justify-between items-center px-2">
+                    <div className=" pt-2 pb-2 pl-2 pr-2 rounded-xl mb-2">
+                        <div className="flex lg:hidden flex-row justify-between items-center px-2">
                             <button
                                 onClick={() => router.back()}
-                                className="mb-4 px-3 py-1 bg-[#1A2340] rounded-md text-sm text-gray-300 hover:text-white hover:bg-[#232F4D] transition"
+                                className="border-none rounded-lg hover:!bg-white/10 bg-transparent text-white flex items-center justify-center transition-all duration-300"
                             >
                                 <ChevronLeftIcon className="w-6 h-6" />
                             </button>
                             <h4 className="text-sm text-blue-400 uppercase tracking-wider mb-1">{item.type}</h4>
 
                             <button
-                                className="mb-4 px-3 py-1 bg-[#1A2340] rounded-md text-sm text-gray-300 hover:text-white hover:bg-[#232F4D] transition"
+                                className="border-none rounded-lg hover:!bg-white/10 bg-transparent text-white flex items-center justify-center transition-all duration-300"
                             >
                                 <InformationCircleIcon className="w-6 h-6" />
                             </button>
                         </div>
 
-                        <div className="flex flex-col md:flex-row items-center gap-6 mb-4 px-2">
-                            <div className="w-32 h-32 relative shrink-0 bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+                        <div className="flex flex-col md:flex-row items-center gap-6 mb-4 px-2 mx-6">
+                            <div className="w-32 h-32 relative shrink-0  rounded-lg shadow-lg overflow-hidden">
                                 {item.imageUri ? (
                                     <Image
                                         src={item.imageUri}
@@ -110,7 +110,7 @@ export default function FavoriteDetailsPage() {
                         </div>
                     </div>
 
-                    <div className="bg-[#0E1730] rounded-xl p-2 sm:p-4">
+                    <div className=" rounded-xl p-2 sm:p-4">
                         <h3 className="text-xl font-bold mb-4 px-2">Songs</h3>
                         {loading ? (
                             <div className="text-gray-500 px-2">Loading songs...</div>
@@ -124,12 +124,18 @@ export default function FavoriteDetailsPage() {
                                         <div
                                             key={`${song.id}-${idx}`}
                                             onClick={() => handleItemClick(idx)}
-                                            className={`flex items-center p-3 bg-blue-500/10 rounded-lg cursor-pointer group transition ${isCurrent ? 'bg-[#1A2340] border border-blue-500/30' : 'hover:bg-[#1A2340] border border-transparent'}`}
-                                        >
+                                            className={`
+                                                flex items-center p-3 rounded-xl cursor-pointer group
+                                                transition-all duration-300
+                                                border border-white/10
+                                                bg-white/5
+                                                hover:bg-white/10
+                                                hover:scale-[1.01]
+                                                ${isCurrent ? "bg-gradient-to-r from-purple-600/20 via-indigo-600/20 to-blue-600/20 border-purple-500/40 shadow-lg shadow-purple-500/10" : ""} `}>
                                             <div className="w-8 text-center text-gray-500 mr-4 group-hover:text-white">
                                                 <span >{idx + 1}</span>
                                             </div>
-                                            <div className="w-10 h-10 relative mr-4 bg-gray-800 rounded overflow-hidden shrink-0">
+                                            <div className="w-10 h-10 relative mr-4 rounded-lg overflow-hidden shrink-0 border border-white/10">
                                                 {song.imageUri && <Image
                                                     src={song.imageUri}
                                                     alt={song.title}
@@ -138,7 +144,10 @@ export default function FavoriteDetailsPage() {
                                                     unoptimized />}
                                             </div>
                                             <div className="flex-1 min-w-0">
-                                                <p className={`text-sm truncate ${isCurrent ? 'text-blue-400' : 'text-white'}`}>{song.title || song.name}</p>
+                                                <p
+                                                    className={`text-sm truncate transition-colors duration-300 ${isCurrent ? "text-purple-300" : "text-white"}`} >
+                                                    {song.title || song.name}
+                                                </p>
                                                 <p className="text-xs text-gray-400 truncate">{song.description || song.label}</p>
                                             </div>
                                             <div className="text-sm text-gray-500 ml-4">

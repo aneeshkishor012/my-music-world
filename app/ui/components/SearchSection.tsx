@@ -96,7 +96,7 @@ export function ResuableSearchSection({ title, type, query, handleItemClick, onS
                                 {liked ? <HeartIconSolid className="w-4 h-4 text-red-500" /> : <HeartIcon className="w-4 h-4" />}
                             </button>
 
-                            <div className={`w-full aspect-square overflow-hidden bg-gray-800 mb-2 relative rounded-md`}>
+                            <div className={`w-full aspect-square overflow-hidden  mb-2 relative rounded-md`}>
                                 {(item.imageUri && (item.imageUri.startsWith('/') || item.imageUri.startsWith('http'))) ? (
                                     <Image
                                         src={item.imageUri}
@@ -137,7 +137,7 @@ export function ResuableSearchSection({ title, type, query, handleItemClick, onS
                     <div key={i} className="animate-pulse">
                         <div className="bg-gray-700 w-full aspect-square rounded-md mb-2"></div>
                         <div className="bg-gray-700 h-4 w-3/4 mb-1"></div>
-                        <div className="bg-gray-800 h-3 w-1/2"></div>
+                        <div className=" h-3 w-1/2"></div>
                     </div>
                 ))}
 

@@ -5,12 +5,12 @@ import SidebarPlayer from "@/app/ui/components/SidebarPlayer";
 
 export default function HomePage() {
     return (
-        <div className="h-full bg-[#12121F] text-white p-1 sm:p-2 overflow-hidden">
+        <div className="h-full text-white p-1 sm:p-2 overflow-hidden">
             <div className="flex flex-col lg:flex-row h-full w-full gap-1 sm:gap-2">
                 {/* LEFT CONTENT – Full width on mobile, 70% on desktop */}
                 <div className="flex-1 min-w-0 h-full overflow-hidden">
-                    <div className="bg-[#0E1730] rounded-lg sm:rounded-xl p-1 sm:p-2 h-full overflow-hidden">
-                        <Suspense fallback={<div className="animate-pulse bg-gray-800/50 rounded-xl h-20 w-full" />}>
+                    <div className="rounded-lg sm:rounded-xl p-1 h-full overflow-hidden">
+                        <Suspense fallback={<div className="animate-pulse /50 rounded-xl h-20 w-full" />}>
                             <SongCategoryScreen />
                         </Suspense>
                     </div>

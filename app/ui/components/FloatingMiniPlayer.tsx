@@ -34,7 +34,7 @@ export default function FloatingMiniPlayer({ onExpand }: { onExpand: () => void 
 
     return (
         <div
-            className="fixed bottom-32 left-4 z-30 md:hidden"
+            className="fixed bottom-32 left-4 z-[60] md:hidden"
             style={{
                 transform: `translate(${position.x}px, ${position.y}px)`,
             }}
