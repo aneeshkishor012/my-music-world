@@ -17,6 +17,14 @@ type Preferences = {
 
 type SuggestionType = "song" | "artist" | "album" | "playlist";
 
+const MOOD_KEYWORDS: Record<string, string[]> = {
+  Rock: ["rock", "guitar", "band", "electric"],
+  "Hip-Hop": ["hip hop", "rap", "trap", "beats"],
+  Party: ["party", "dance", "celebration", "club"],
+  Romance: ["romantic", "love", "melody", "heart"],
+  Pop: ["pop", "trending", "chartbuster", "hit"]
+};
+
 function buildSuggestionQuery({
   type,
   language,
@@ -28,36 +36,61 @@ function buildSuggestionQuery({
   mood: string;
   artistName: string;
 }) {
-  if (type === "artist") {
-    if (language) return `${language} singer`;
-    return "Popular singer";
-  }
 
+  const moodExpanded = mood
+    ? (MOOD_KEYWORDS[mood] || [mood]).join(" ")
+    : "";
+
+  // 🎯 Strong Artist Priority
   if (artistName) {
-    return mood ? `Best of ${artistName} ${mood}` : `Best of ${artistName}`;
+    if (language && moodExpanded)
+      return `${artistName} ${language} ${moodExpanded}`;
+
+    if (language)
+      return `${artistName} ${language} songs`;
+
+    if (moodExpanded)
+      return `${artistName} ${moodExpanded}`;
+
+    return `${artistName} hits`;
   }
 
-  if (language && mood) {
-    if (type === "song") return `Top ${language} ${mood} Songs`;
-    if (type === "album") return `Top ${language} ${mood} Albums`;
-    return `Top ${language} ${mood} Playlists`;
+  // 🎯 Language + Mood
+  if (language && moodExpanded) {
+    return `${language} ${moodExpanded} ${type === "song"
+        ? "songs"
+        : type === "album"
+          ? "albums"
+          : "playlists"
+      }`;
   }
 
+  // 🎯 Language only
   if (language) {
-    if (type === "song") return `Top ${language} Songs`;
-    if (type === "album") return `Top ${language} Albums`;
-    return `Top ${language} Playlists`;
+    return `${language} ${type === "song"
+        ? "songs"
+        : type === "album"
+          ? "albums"
+          : "playlists"
+      }`;
   }
 
-  if (mood) {
-    if (type === "song") return `Top ${mood} Songs`;
-    if (type === "album") return `Top ${mood} Albums`;
-    return `Top ${mood} Playlists`;
+  // 🎯 Mood only
+  if (moodExpanded) {
+    return `${moodExpanded} ${type === "song"
+        ? "songs"
+        : type === "album"
+          ? "albums"
+          : "playlists"
+      }`;
   }
 
-  if (type === "song") return "Trending songs";
-  if (type === "album") return "Trending albums";
-  return "Trending playlists";
+  // 🎯 Default fallback
+  return type === "song"
+    ? "trending songs"
+    : type === "album"
+      ? "trending albums"
+      : "trending playlists";
 }
 
 function Chip({
