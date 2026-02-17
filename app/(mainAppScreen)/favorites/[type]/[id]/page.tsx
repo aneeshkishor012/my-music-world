@@ -58,7 +58,6 @@ export default function FavoriteDetailsPage() {
             <div className="flex flex-col lg:flex-row gap-1 sm:gap-2 h-full w-full">
                 {/* LEFT CONTENT */}
                 <div className="flex-1 min-w-0 h-full overflow-y-auto pr-1 sm:pr-2 scrollbar-thin scrollbar-thumb-gray-800 scrollbar-track-transparent">
-                            <button
                     <PlaylistMasterCard item={item} songs={songs} handleItemClick={handleItemClick} />
 
 
