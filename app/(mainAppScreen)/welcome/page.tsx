@@ -233,7 +233,7 @@ export default function PreferencesPage() {
 
                 {/* Search Results Dropdown */}
                 {artistQuery && (
-                    <div className=" absolute z-30 w-full mt-2 rounded-xl bg-[#0b1120]/95  backdrop-blur-xl border border-white/10  shadow-2xl  max-h-60 overflow-y-auto  " >
+                    <div className=" absolute z-30 w-full mt-2 rounded-xl bg-[#0b1120]/95  backdrop-blur-xl border border-white/10  shadow-2xl  max-h-72 overflow-y-auto" >
                         {searchArtistListLoading && (
                             <div className="p-4 text-center text-gray-400">Loading...</div>
                         )}
@@ -386,7 +386,7 @@ export default function PreferencesPage() {
 
 
     return (
-        <div className="relative min-full flex flex-col items-center justify-center px-4 py-6 overflow-hidden">
+        <div className="relative min-full h-full flex flex-col items-center justify-center px-4 py-6 overflow-hidden">
             {/* Navigation Buttons */}
             <div className="flex gap-3 pb-8 justify-center">
 

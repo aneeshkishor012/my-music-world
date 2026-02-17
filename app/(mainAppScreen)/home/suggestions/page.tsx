@@ -354,7 +354,7 @@ function SuggestionsContent() {
       {/* Filter Modal */}
       {showFilterModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fadeIn">
-          <div className=" border border-white/10 rounded-2xl shadow-2xl w-full max-w-lg max-h-[80vh] flex flex-col overflow-hidden">
+          <div className="w-full max-w-lg max-h-[80vh] flex flex-col overflow-hidden backdrop-blur-2xl bg-[#0b1120]/85 border border-white/10 rounded-3xl shadow-[0_8px_40px_rgba(0,0,0,0.8),0_0_30px_rgba(139,92,246,0.15)]">
             <div className="flex items-center justify-between p-4">
               <h3 className="text-lg font-bold text-white">Filter Suggestions</h3>
               <button onClick={() => setShowFilterModal(false)} className="text-gray-400 hover:text-white">
