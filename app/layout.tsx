@@ -1,33 +1,33 @@
-import '@/app/ui/global.css';
-import { inter, lusitana } from '@/app/ui/fonts';
-import ThemeProvider from "./providers/ThemeProvider";
-import { PlayerProvider } from "./context/PlayerContext";
+import React from 'react';
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import AntdRegistry from './lib/AntdRegistry';
+import Providers from './providers';
+import AppLayout from './components/common/AppLayout';
+import './globals.css';
 
-export const metadata = {
-  title: "My Music App",
-  description: "Music App Theme Setup",
-  viewport: "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no",
+const inter = Inter({ subsets: ['latin'] });
+
+export const metadata: Metadata = {
+  title: 'Markkam | Shopping App',
+  description: 'A modern e-commerce application',
 };
 
-import { SearchProvider } from "./context/SearchContext";
-import { FavoritesProvider } from "./context/FavoritesContext";
-import BottomPlayer from "./ui/BottomPlayer";
-import Providers from './providers';
-
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
-      <body className={`${inter.className} antialiased`}>
-        <ThemeProvider>
-          <PlayerProvider>
-            <FavoritesProvider>
-              <SearchProvider>
-                <Providers children={children} />
-                <BottomPlayer />
-              </SearchProvider>
-            </FavoritesProvider>
-          </PlayerProvider>
-        </ThemeProvider>
+      <body className={inter.className} style={{ margin: 0, padding: 0 }}>
+        <AntdRegistry>
+          <Providers>
+            <AppLayout>
+              {children}
+            </AppLayout>
+          </Providers>
+        </AntdRegistry>
       </body>
     </html>
   );
