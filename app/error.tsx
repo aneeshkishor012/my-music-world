@@ -1,14 +1,14 @@
 "use client";
 
 import { Button } from "antd";
-import { WarningOutlined } from "@ant-design/icons";
+import { ExclamationTriangleIcon } from "@heroicons/react/24/solid";
 
 export default function ErrorPage({ error, reset }: { error: Error; reset: () => void }) {
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-[#0A0A0A] text-gray-200 p-6 text-center">
 
             {/* Icon */}
-            <WarningOutlined className="w-16 h-16 text-red-500 mb-4" />
+            <ExclamationTriangleIcon className="w-16 h-16 text-red-500 mb-4" />
 
             {/* Error Title */}
             <h1 className="text-3xl sm:text-4xl font-bold mb-2">
