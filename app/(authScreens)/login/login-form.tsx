@@ -9,7 +9,7 @@ import Link from "next/link";
 import { Button, Input } from "antd";
 import { useSearchParams } from "next/navigation";
 import { useActionState } from "react";
-import { authenticate } from "../lib/actions";
+import { authenticate } from "../../lib/actions";
 import styles from "./login-form.module.css";
 
 export default function LoginForm() {
